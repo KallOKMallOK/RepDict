@@ -20,9 +20,10 @@ public class Card {
     public Card(){
     }
 
-    public Card(String name, User user){
+    public Card(String name, User user, Integer cost){
         this.name = name;
         this.user = user;
+        this.cost = cost;
         this.subscribers = new ArrayList<>();
         subscribers.add(user);
         this.words = new ArrayList<>();
@@ -33,6 +34,12 @@ public class Card {
     private Integer id;
 
     private String name;
+
+    private Integer cost;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "parent_id")
+    private Card parent;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "author_id")
@@ -49,5 +56,11 @@ public class Card {
     joinColumns = {@JoinColumn(name = "card_id")},
     inverseJoinColumns = {@JoinColumn(name = "user_id")})
     private List<User> subscribers;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "cards_comments",
+            inverseJoinColumns = {@JoinColumn(name = "comment_id")},
+            joinColumns = {@JoinColumn(name = "card_id")})
+    private List<Comment> comments;
 
 }

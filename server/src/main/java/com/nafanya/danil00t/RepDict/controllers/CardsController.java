@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 /* TODO:
-*   Добавить возможность копировать карточку к себе для того чтобы редактировать.
+*   Сделать добавление комментария и систему лайков
 */
 
 @RestController
@@ -33,14 +33,17 @@ public class CardsController {
         return JsonUtils.parseCards(cardRepository.findAll());
     }
 
-    @PostMapping("/u{u_id}")
+    @PostMapping("/u{u_id}/add_card")
     public JSONObject addCard(@PathVariable(value = "u_id") Integer userId,
-                              @RequestParam String name){
+                              @RequestParam String name,
+                              @RequestParam Integer cost) throws NullPointerException{
+        if(cost < 0)
+            throw new NullPointerException();
         User user = userRepository.findById(userId).get();
         if(cardRepository.existsByUserAndName(user, name))
             return MainController.getERROR();
         else{
-            Card card = new Card(name, user);
+            Card card = new Card(name, user, cost);
             cardRepository.save(card);
            return JsonUtils.getCardInfo(cardRepository.findByUserAndName(user, name).get(0));
         }
@@ -97,8 +100,12 @@ public class CardsController {
             return MainController.getERROR();
         Card card = cardRepository.getById(cardId);
         User user = userRepository.getById(subscriberId);
-        if(!user.getSubscriptions().contains(card))
+        if(card.getCost().compareTo(user.getBalance()) > 0)
+            return MainController.getERROR();
+        if(!user.getSubscriptions().contains(card)) {
             user.getSubscriptions().add(card);
+            user.setBalance(user.getBalance() - card.getCost());
+        }
         userRepository.save(user);
         cardRepository.save(card);
         JSONObject object = new JSONObject();
@@ -130,7 +137,8 @@ public class CardsController {
         Card mainCard = cardRepository.getById(cardId);
         User user = userRepository.getById(userId);
         String name = mainCard.getName().substring(0);
-        Card newCard = new Card(name, user);
+        Integer cost = mainCard.getCost().intValue();
+        Card newCard = new Card(name, user, cost);
         mainCard.getWords().forEach(word -> {
             Word what = wordRepository.findById(word.getId()).get();
             newCard.getWords().add(what);

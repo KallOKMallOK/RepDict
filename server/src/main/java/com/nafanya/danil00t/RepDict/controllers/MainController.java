@@ -21,8 +21,17 @@ public class MainController {
         return o;
     }
 
+    private static JSONObject createSuccess(){
+        JSONObject o = new JSONObject();
+        o.put("data", "success");
+        return o;
+    }
+
     @Getter
     private static final JSONObject ERROR = createError();
+
+    @Getter
+    private static final JSONObject SUCCESS = createSuccess();
 
     private static final String KEY = "iodfgifdiogjv537489jdhknmvbnc5\"trolling\"ncnvbm, what? let's gosajlnvxc";
 

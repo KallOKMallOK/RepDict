@@ -29,6 +29,8 @@ public class User {
     @Column(name = "is_checked")
     private Boolean isChecked;
 
+    private Integer balance;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "subscriptions",
             joinColumns = {@JoinColumn(name = "user_id")},

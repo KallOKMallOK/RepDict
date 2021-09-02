@@ -31,6 +31,11 @@ public class JsonUtils {
             cardObject.put("id", card.getId());
             cardObject.put("name", card.getName());
             cardObject.put("author_id", card.getUser().getId());
+            Card parent = card.getParent();
+            if(parent != null)
+                cardObject.put("parent_id", card.getParent().getId());
+            else
+                cardObject.put("parent_id", null);
             cardObject.put("subscribers_count", card.getSubscribers().size());
             cardObject.put("words", wordsToArray(card.getWords()));
             cardsArray.add(cardObject);
@@ -51,6 +56,11 @@ public class JsonUtils {
         main.put("id", card.getId());
         main.put("name", card.getName());
         main.put("author_id", card.getUser().getId());
+        Card parent = card.getParent();
+        if(parent != null)
+            main.put("parent_id", card.getParent().getId());
+        else
+            main.put("parent_id", null);
         main.put("words", wordsToArray(card.getWords()));
         return main;
     }
