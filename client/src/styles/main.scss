@@ -1,0 +1,19 @@
+@import "vars";
+@import "fonts";
+/* 
+********************************************************************************
+***************************** MAIN CSS *****************************************
+********************************************************************************
+*/
+
+body{
+	background-color: $color-bg-dark;
+}
+
+.mark_red{
+	background-color: $color-bg-mark;
+	padding: 3px 5px;
+	border-radius: 3px;
+	color: white;
+	font-family: RobotoRegularItalic;
+}

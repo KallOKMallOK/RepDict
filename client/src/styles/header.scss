@@ -1,0 +1,45 @@
+@import "vars";
+@import "fonts";
+
+
+header.main_header {
+	padding: 30px 50px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+
+	.logo {
+		&_text {
+			a {
+				font-family: RobotoBlack;
+				color: white;
+				text-decoration: none;
+			}
+		}
+			
+	}
+	.menu {
+		&_list {
+			display: flex;
+			flex-direction: row;
+			&_item {
+				margin-right: 15px;
+				&:last-child{
+					margin-left: 40px;
+				}
+
+				&_link {
+					font-family: RobotoLight;
+					color: rgb(231, 231, 231);
+					text-decoration: none;
+					transition: all .2s ease-in-out;
+					border-bottom: 2px solid rgba(0, 0, 0, 0);
+					&:hover {
+						border-bottom: 2px solid $color-main;
+					}
+				}
+			}
+		}
+
+	}
+}

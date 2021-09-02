@@ -1,0 +1,73 @@
+@import "vars";
+// @import "fonts";
+
+.lesson_card{
+	&_wrap{
+		display: flex;
+		justify-content: center;
+		margin-bottom: 20px;
+		.lesson_card{
+			width: 450px;
+			height: 250px;
+			background-color: $color-bg-ligth;
+			box-shadow: 0 0 15px $color-main_;
+			border: 4px solid $color-main;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			position: relative;
+			border-radius: 20px;
+		}
+	}
+	&_num, &_word, &_hint{
+		font-family: RobotoBold;
+		color: white;
+	}
+	&_hint{
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		text-decoration: none;
+		background-color: transparent;
+		border: none;
+		cursor: pointer;
+	}
+	&_word{
+		font-size: 2em;
+	}
+	&_num{
+		position: absolute;
+		top: 20px;
+		left: 20px;
+	}
+}
+
+.answer{
+	&_section_wrap{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	&_input{
+		width: 360px;
+		height: 42px;
+		outline: none;
+		background-color: $color-bg-ligth;
+		border: 2px solid $color-bg-grey;
+		box-shadow: 0 0 10px rgba(47, 47, 47, 0.568);
+		border-radius: 25px;
+		padding: 0 20px;
+		color: white;
+		font-family: RobotoBold;
+	}
+	&_button_next_word {
+		width: 30px;
+		height: 30px;
+		background: url(../media/images/right-arrow.svg) no-repeat center;
+		color: #fff;
+		margin-left: 10px;
+		cursor: pointer;
+		/* border: 1px solid #000; */
+	}
+}

@@ -1,0 +1,37 @@
+@import "fonts";
+
+// Colors
+$color-main: #02a870;
+$color-main_: #02a87169; /* main, but with opacity */
+$color-main__: #04865b; /* main, but with opacity */
+$color-bg-ligth: #202022;
+$color-bg-dark: #161719;
+$color-bg-grey: #444748;
+$color-bg-mark: #db4f4f;
+$color-bg-mark_: #b34343;
+$color-bg-mark_: #993636;
+
+// mixins
+@mixin trs {
+	transition: all .3s ease-in-out;
+}
+
+@mixin button_default {
+	display: inline;
+	
+	font-family: RobotoBold;
+	background-color: transparent;
+	border: 3px solid $color-main;
+	padding: 7px 10px;
+	border-radius: 20px;
+	@include trs;
+	box-shadow: 0 0 5px $color-main_;
+	color: white;
+	outline: none;
+	cursor: pointer;
+
+	&:hover{
+		background-color: $color-main__;
+		/* border: 3px solid $color-bg-mark__; */
+	}
+}

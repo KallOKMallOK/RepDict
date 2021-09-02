@@ -1,0 +1,14 @@
+@import "vars";
+
+section.lesson_section{
+	padding: 20px 50px;
+	.lesson_info_item{
+		color: $color-bg-grey;
+		font-family: RobotoLight;
+		margin-bottom: 10px;
+		&_value{
+			font-family: RobotoLightItalic;
+			padding-left: 5px;
+		}
+	}
+}

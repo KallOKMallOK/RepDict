@@ -1,0 +1,27 @@
+import React from 'react';
+import { Link, RouteComponentProps, Router } from '@reach/router'
+
+// Components
+import Currsection from "../components/Currsection"
+import Card from "../components/Card"
+
+// App styles
+import "../styles/reset.scss"
+import '../styles/main.scss';
+
+interface IHomeProps extends RouteComponentProps {
+  init?: boolean
+  textHello?: string
+}
+
+
+const Home: React.FC<IHomeProps> = props => {
+  return (
+    <div className="home">
+		<Currsection info={{Hello: 20, "dflmdf fdf": "310/31"}} />
+		<Card currentWord={3} countWords={10} word="Spring" hint="Весна" />
+	 </div>
+  );
+}
+
+export default Home;
