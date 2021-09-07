@@ -4,12 +4,12 @@ enum ERefer {NOT, GOOGLE, VK, FACEBOOK}
 
 export interface IPerson{
 	login: string,
-	password: string,
-	email: string,
-	refer: ERefer
+	name: string
 }
-export const logIn = (person: IPerson) => {
+
+export const login = (person: IPerson) => {
 	return {
-		type: types.APP_LOGIN
+		type: types.APP_LOGIN,
+		payload: person
 	}
 }

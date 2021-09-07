@@ -24,9 +24,6 @@ header.main_header {
 			flex-direction: row;
 			&_item {
 				margin-right: 15px;
-				&:last-child{
-					margin-left: 40px;
-				}
 
 				&_link {
 					font-family: RobotoLight;

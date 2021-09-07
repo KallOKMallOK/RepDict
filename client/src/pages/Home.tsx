@@ -18,8 +18,9 @@ interface IHomeProps extends RouteComponentProps {
 const Home: React.FC<IHomeProps> = props => {
   return (
     <div className="home">
-		<Currsection info={{Hello: 20, "dflmdf fdf": "310/31"}} />
-		<Card currentWord={3} countWords={10} word="Spring" hint="Весна" />
+      {/* <Currsection info={{Hello: 20, "dflmdf fdf": "310/31"}} />
+      <Card currentWord={3} countWords={10} word="Spring" hint="Весна" /> */}
+      <p style={{color: "white"}}>Home, sweet home</p> 
 	 </div>
   );
 }

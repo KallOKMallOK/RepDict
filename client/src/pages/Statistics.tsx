@@ -1,10 +1,6 @@
 import React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom'
 
-// Components
-
-
-// App styles
 
 
 interface IStatisticsProps extends RouteComponentProps {

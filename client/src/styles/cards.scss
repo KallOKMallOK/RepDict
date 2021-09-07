@@ -4,8 +4,9 @@
 .cards{
 	display: flex;
 	flex-direction: row;
-	justify-content:space-between;
+	justify-content: flex-start;
 	flex-wrap: wrap;
+	gap: 3%;
 	&_main_name{
 		font-family: RobotoBold;
 		color: white;
@@ -15,10 +16,11 @@
 	.card{
 		display: flex;
 		flex-direction: row;
-		justify-content:space-between;
+		justify-content: space-between;
 		flex-wrap: wrap;
 		&_item{
-			width: 28%;
+			// cursor: pointer;
+			width: 31.3%;
 			height: 200px;
 			border: 4px solid $color-main;
 			padding: 15px 20px;
@@ -29,10 +31,10 @@
 			@include trs;
 			box-shadow: 0 0 15px $color-main_;
 			&_noactive:hover{
-				background-color: $color-main;
+				// background-color: $color-main;
 				.buttons_group button{
 					/* background-color: $color-bg-mark; */
-					box-shadow: 0 0 5px $color-main__;
+					// box-shadow: 0 0 5px $color-main__;
 				}
 			}
 			&_name{
@@ -61,6 +63,7 @@
 				button {
 					@include button_default;
 					margin-right: 10px;
+					width: 30%;
 				}
 			}
 		}

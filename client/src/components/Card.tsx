@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
 
 import "../styles/card.scss"
-import { IPerson, logIn } from "../redux/actions/app"
+import { IPerson, login } from "../redux/actions/app.action"
 
 
 interface IProps {
@@ -40,7 +40,7 @@ const mapStateToProps = (state: RootState) => ({
 })
 
 const mapDispatchToProps = () => ({
-	logIn: (person: IPerson) => logIn(person)
+	login: (person: IPerson) => login(person)
 })
 
 

@@ -1,33 +1,64 @@
-import React from 'react';
+import React, { createRef, MouseEvent } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { Link, RouteComponentProps, Router } from 'react-router-dom'
+import Action from "../redux/actions"
 
-import LoginFormComponent, { ERefer, IRefer } from "../components/LoginForm"
+import API from "../api"
 
 // Styles
-import "../styles/login.scss"
+import "../styles/forms.scss"
 
+const mapStateToProps = (state: any) => ({
+	auth: state.app.auth
+})
 
-interface IPropsLogin extends RouteComponentProps{
-	info?: Object
+const mapDispatchToProps = (f: Function) => ({
+	login: (user: any) => f(Action.app.login(user))
+})
+
+const connector = connect(mapStateToProps, mapDispatchToProps)
+
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+class Login extends React.Component<PropsFromRedux>{
+	public state: object = {}
+	private login = createRef<HTMLInputElement>()
+	private password = createRef<HTMLInputElement>()
+
+	constructor(props: PropsFromRedux){
+		super(props)
+	}
+
+	clickLogin(e: MouseEvent){
+		e.preventDefault()
+		API.login({
+			login: this.login.current?.value,
+			password: this.password.current?.value
+		})
+			.then(res => this.props.login(res.data))
+			.catch(err => console.log(err))
+	}
+
+	render(){
+		return(
+			<div className="registration">
+				<form>
+					<h2>Login</h2>
+					<div className="form-floating mb-3">
+						<input type="text" ref={this.login} className="form-control" id="floatingInput" placeholder="your login" />
+						<label htmlFor="floatingInput">Login</label>
+					</div>
+
+					<div className="form-floating mb-3">
+						<input type="password" ref={this.password} className="form-control" id="floatingInput" placeholder="your password" />
+						<label htmlFor="floatingInput">Password</label>
+					</div>
+
+					<button className="btn btn-primary" onClick={e => this.clickLogin(e)}>login</button>
+				</form>
+			</div>
+		)
+	}
 }
 
-
-const Login: React.FC<IPropsLogin> = props=> {
-	const refers: Array<IRefer> = [
-		{
-			name: ERefer.GOOGLE, 
-			linkIcon: "https://img.icons8.com/color/452/google-logo.png"
-		},
-		{
-			name: ERefer.VK,
-			linkIcon: "https://cdn.worldvectorlogo.com/logos/vk-com-logo.svg"
-		}
-	]
-  return (
-	<section className="section_form_login">
-		<LoginFormComponent refers={refers} />
-	</section>
-  );
-}
-
-export default Login;
+export default connector(Login)
