@@ -2,10 +2,10 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import * as types from "../types"
 
 const initialState = {
-   auth: false,
+   auth: true,
    user: {
-      name: "",
-      login: ""
+      name: "Данилут",
+      login: "daniil00t"
    }
 }
 

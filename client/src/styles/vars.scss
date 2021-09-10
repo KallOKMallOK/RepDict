@@ -4,6 +4,7 @@
 $color-main: #02a870;
 $color-main_: #02a87169; /* main, but with opacity */
 $color-main__: #04865b; /* main, but with opacity */
+$color-accent: #0d6efd;
 $color-bg-ligth: #202022;
 $color-bg-dark: #161719;
 $color-bg-grey: #444748;
@@ -34,4 +35,8 @@ $color-bg-mark_: #993636;
 		background-color: $color-main__;
 		/* border: 3px solid $color-bg-mark__; */
 	}
+}
+
+@mixin bs($blur, $size, $color) {
+	box-shadow: 0px 0px $blur $size $color;
 }

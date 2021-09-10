@@ -1,17 +1,25 @@
 import React from 'react';
-import { Link, RouteComponentProps, BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { connect, ConnectedProps } from 'react-redux';
+
+// Controllers data
 import API from "./api"
+import { routes } from './routes';
 import Action from "./redux/actions"
 
 // Components
 import Components from "./components"
+// import useOutsideClick from "./hoc/OutsideClicker"
+import Authorization from './hoc/Authorization'
 
 // App styles
 import "./styles/reset.scss"
 import './styles/main.scss';
-import { routes } from './routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { connect, ConnectedProps } from 'react-redux';
+
+// -----------------------------------------------------------------------------
+// ---------------------- Connect to redux emmiter -----------------------------
+// -----------------------------------------------------------------------------
 
 const mapStateToProps = (state: any) => ({
 	auth: state.app.auth
@@ -25,36 +33,53 @@ const connector = connect(mapStateToProps, mapDispatchToProps)
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 
-class App extends React.Component<PropsFromRedux>{
+interface StateApp{
+	auth: boolean
+}
+
+// -----------------------------------------------------------------------------
+// -------------------- App class including interfaces -------------------------
+// -----------------------------------------------------------------------------
+
+class App extends React.Component<PropsFromRedux, StateApp>{
+	public state: StateApp = {
+		auth: true
+	}
+	// Refs for element which need change because outside click
+	
+
 	constructor(props: PropsFromRedux){
 		super(props)
 	}
 
 	componentDidMount(){
+
 		if(localStorage.getItem("token") && localStorage.getItem("token")?.length !== 0){
 			API.auth()
 				.then(res => {
-					console.log(res)
-					!res.data.error && this.props.login(res.data)
+					if(!res.data.error){
+						this.setState({ auth: true })
+						this.props.login(res.data)
+					}
 				})
 				.catch(err => console.log(err))
 		}
+		
 	}
 
 	renderSwitch(){
 	 return(
 		<Switch>
 		  {routes.map(route => {
-			 // const component = route.isPrivate ? Authorization(route.component) : route.component;
-			 const component = route.component;
+			 const component = route.isPrivate ? Authorization(route.component, this.state.auth) : route.component;
 			 return (
 				<Route
 				  key={route.path}
-				  exact={route.isExact}
+				  exact
 				  path={route.path}
 				  component={component}
 				/>
-			 );
+			 )
 		  })}
 		</Switch>
 	)
@@ -72,7 +97,5 @@ class App extends React.Component<PropsFromRedux>{
 	 )
   }
 }
-
-
 
 export default connector(App)

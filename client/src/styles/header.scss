@@ -23,16 +23,64 @@ header.main_header {
 			display: flex;
 			flex-direction: row;
 			&_item {
-				margin-right: 15px;
+				margin-right: 25px;
 
 				&_link {
 					font-family: RobotoLight;
 					color: rgb(231, 231, 231);
 					text-decoration: none;
 					transition: all .2s ease-in-out;
+					padding: 2px 0;
 					border-bottom: 2px solid rgba(0, 0, 0, 0);
+					svg{
+						margin-right: 5px;
+						transition: all .2s ease-in-out;
+					}
 					&:hover {
 						border-bottom: 2px solid $color-main;
+						svg{
+							color: $color-main;
+						}
+					}
+				}
+			}
+			.active{
+				border-bottom: 2px solid $color-main;
+				svg{
+					color: $color-main;
+				}
+			}
+			.user_panel{
+				position: relative;
+				margin-left: 20px;
+				&_head{
+					cursor: pointer;
+					svg{
+						margin-right: 5px;
+					}
+				}
+				.dropdown{
+					position: absolute;
+					right: 0;
+					top: 35px;
+					background-color: $color-bg-ligth;
+					padding: 5px 0;
+					// min-width: 100px;
+					height: auto;
+					border-radius: 3px;
+					@include bs(10px, 0px, #000);
+					&_item{
+						text-align: center;
+						padding: 5px 0px;
+						a{
+							text-decoration: none;
+							padding: 5px 40px;
+							color: white;
+							transition: all .1s ease-in-out;
+							&:hover{
+								background-color: $color-accent;
+							}
+						}
 					}
 				}
 			}

@@ -1,4 +1,3 @@
-// import { StateFromReducersMapObject } from '@reduxjs/toolkit';
 import React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../redux/store';

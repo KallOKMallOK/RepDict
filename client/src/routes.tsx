@@ -1,6 +1,13 @@
 import Pages from "./pages"
-import Registration from "./pages/Registration"
-
+import { 
+	FaHome,
+	FaPlay,
+	FaList,
+	FaStore,
+	FaChartBar,
+	FaStar,
+} from "react-icons/fa"
+ 
 export interface IRoute{
 	isNavBar?: boolean,
 	isExact?: boolean,
@@ -8,7 +15,8 @@ export interface IRoute{
 	name: string,
 	component: any,
 	isPrivate?: boolean,
-	isLogin?: boolean
+	isLogin?: boolean,
+	icon?: typeof FaHome
 }
 
 export const routes: IRoute[] = [
@@ -20,7 +28,8 @@ export const routes: IRoute[] = [
 		isExact: true,
 		path: '/',
 		name: 'Home',
-		component: Pages.Home
+		component: Pages.Home,
+		icon: FaHome
 	},
 	{
 		isNavBar: true,
@@ -28,16 +37,28 @@ export const routes: IRoute[] = [
 		isExact: true,
 		path: '/play',
 		name: 'Play',
-		component: Pages.Home
+		component: Pages.Play,
+		icon: FaPlay
 	},
 	{
 		// public and private cards - card store
 		isNavBar: true,
 		isLogin: true,
 		isExact: true,
+		isPrivate: true,
 		path: '/cards',
 		name: 'Cards',
-		component: Pages.Cards
+		component: Pages.Cards,
+		icon: FaList
+	},
+	{
+		// public and private cards - card store
+		isNavBar: true,
+		isExact: true,
+		path: '/store',
+		name: 'Store',
+		component: Pages.Store,
+		icon: FaStore
 	},
 	{
 		isNavBar: true,
@@ -45,15 +66,16 @@ export const routes: IRoute[] = [
 		isExact: true,
 		path: '/statistics',
 		name: 'Statistics',
-		component: Pages.Statistics
+		component: Pages.Statistics,
+		icon: FaChartBar
 	},
 	{
 		isNavBar: true,
-		isLogin: true,
 		isExact: true,
 		path: '/rating',
 		name: 'Rating',
-		component: Pages.Statistics
+		component: Pages.Rating,
+		icon: FaStar
 	},
 	
 	// not auth
@@ -73,6 +95,8 @@ export const routes: IRoute[] = [
 		name: 'Login',
 		component: Pages.Login
 	},
+
+
 
 	// not in header
 	{
