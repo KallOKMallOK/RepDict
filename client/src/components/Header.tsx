@@ -40,7 +40,7 @@ interface AppProps extends PropsFromRedux{
 
 const Header: React.FC<AppProps> = props => {
 	const [dropdownVisible, openDropdownUser] = useState(false)
-	const [menuVisible, openMenuUser] = useState(true)
+	const [menuVisible, openMenuUser] = useState(false)
 
 	const dropdownRef = useRef<any>(null)
 	const match = useLocation().pathname

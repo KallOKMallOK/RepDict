@@ -28,7 +28,7 @@ section.lesson_section{
 // -----------------------------------------------------------------------------
 
 header.main_header {
-	padding: 30px 50px;
+	padding: 35px 50px;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -53,9 +53,10 @@ header.main_header {
 		&_list {
 			display: flex;
 			flex-direction: row;
+			margin-bottom: 0;
 			&_item {
 				margin-right: 25px;
-
+				font-family: RobotoLight;
 				&_link {
 					font-family: RobotoLight;
 					color: rgb(231, 231, 231);

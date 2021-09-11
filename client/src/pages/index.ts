@@ -6,8 +6,10 @@ import Registration from "./Registration"
 import Play from "./Play"
 import Store from "./Store"
 import Rating from "./Rating"
+import Main from "./Main"
 
 const Pages = {
+	Main,
 	Cards,
 	Home,
 	Statistics,

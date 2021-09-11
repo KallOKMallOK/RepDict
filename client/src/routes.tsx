@@ -23,10 +23,19 @@ export const routes: IRoute[] = [
 	// with auth
 	{
 		// dashboard - last cards and statistics
+		isNavBar: false,
+		isLogin: false,
+		isExact: true,
+		path: '/',
+		name: 'Main',
+		component: Pages.Main
+	},
+	{
+		// dashboard - last cards and statistics
 		isNavBar: true,
 		isLogin: true,
 		isExact: true,
-		path: '/',
+		path: '/home',
 		name: 'Home',
 		component: Pages.Home,
 		icon: FaHome

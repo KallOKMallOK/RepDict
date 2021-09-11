@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaPlus } from "react-icons/fa"
 
 // Components
 
@@ -16,22 +17,31 @@ const Cards: React.FC<ICardsProps> = props => {
 	return (
 		<React.Fragment>
 			<section className="lesson_section">
-				<h2 className="cards_main_name">Cards</h2>
+				<h2 className="cards_main_name">My Cards</h2>
 				<div className="cards">
-					{/* <div className="card_item card_item_active">
+
+					<div className="card_item card_item_noactive new_card">
+						<FaPlus />
+					</div>
+
+
+					<div className="card_item card_item_active">
 						<p className="card_item_name">Nature</p>
 						<span className="card_item_count_words">23 words</span>
 						<p className="card_item_count_repetitions">3 repetitions</p>
 						<div className="card_item_panel_adding">
-							<label>
-								<span className="card_item_panel_lang card_item_panel_lang_eng">Eng</span>
-								<input type="text" className="card_item_panel_adding_input _eng" placeholder="Input word on English" />
-							</label>
+
+							<div className="form-floating mb-3">
+								<input type="email" className="form-control" id="floatingInput" placeholder="name@example.com" />
+								<label htmlFor="floatingInput">Email address</label>
+							</div>
+
 							<span className="card_item_panel_toggler">↔</span>
-							<label>
-								<span className="card_item_panel_lang card_item_panel_lang_ru">Ru</span>
-								<input type="text" className="card_item_panel_adding_input _ru" placeholder="Введите слово на Русском" />
-							</label>
+
+							<div className="form-floating mb-3">
+								<input type="email" className="form-control" id="floatingInput" placeholder="name@example.com" />
+								<label htmlFor="floatingInput">Email address</label>
+							</div>
 
 
 							<button  className="card_item_panel_button_add">add</button>
@@ -66,7 +76,7 @@ const Cards: React.FC<ICardsProps> = props => {
 							<button  className="button_manipulate">save</button>
 							<button  className="button_manipulate">delete</button>
 						</div>
-					</div> */}
+					</div>
 					<div className="card_item card_item_noactive">
 						<p className="card_item_name">Kitchen</p>
 						<span className="card_item_count_words">51 words</span>
@@ -103,6 +113,7 @@ const Cards: React.FC<ICardsProps> = props => {
 							<button  className="button_manipulate">delete</button>
 						</div>
 					</div>
+					
 				</div>
 			</section>
 		</React.Fragment>
