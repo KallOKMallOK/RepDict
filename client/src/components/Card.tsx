@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { RootState } from '../redux/store';
 
-import "../styles/card.scss"
 import { IPerson, login } from "../redux/actions/app.action"
 
+import "../styles/components.scss"
 
 interface IProps {
 	currentWord: number,
@@ -34,7 +33,7 @@ const Card: React.FC<IProps> = props => {
 }
 
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: any) => ({
 	notification: state.app
 })
 

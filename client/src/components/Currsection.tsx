@@ -1,5 +1,6 @@
 import React from 'react';
-import "../styles/currsection.scss"
+
+import "../styles/components.scss"
 
 
 interface IProps{

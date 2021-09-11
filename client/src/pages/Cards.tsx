@@ -1,13 +1,12 @@
 import React from 'react';
-import { Link, RouteComponentProps, Router } from '@reach/router'
 
 // Components
 
 
 // App styles
-import "../styles/cards.scss"
+import "../styles/pages/Cards.scss"
 
-interface ICardsProps extends RouteComponentProps {
+interface ICardsProps {
 	init?: boolean
 	textHello?: string
 }

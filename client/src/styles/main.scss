@@ -1,5 +1,7 @@
 @import "vars";
 @import "fonts";
+// @import "~animate.css/source/animate.css";
+
 /* 
 ********************************************************************************
 ***************************** MAIN CSS *****************************************
@@ -16,4 +18,47 @@ body{
 	border-radius: 3px;
 	color: white;
 	font-family: RobotoRegularItalic;
+}
+
+
+// -----------------------------------------------------------------------------
+// ------------------------- Animations classes --------------------------------
+// -----------------------------------------------------------------------------
+
+@keyframes fadeIn {
+	from {
+	  opacity: 0;
+	}
+ 
+	to {
+	  opacity: 1;
+	}
+}
+
+
+@keyframes fadeOut {
+	from {
+	  opacity: 1;
+	  display: block;
+	}
+ 
+	to {
+	  opacity: 0;
+	  display: none;
+	}
+}
+
+
+.showedDB__fadeIn{
+	animation: 0.15s ease-in-out 0s alternate fadeIn;
+	display: block;
+}
+.showedDF__fadeIn{
+	animation: 0.15s ease-in-out 0s alternate fadeIn;
+	display: flex;
+}
+
+.closed{
+	// animation: 0.2s ease-in-out 0s alternate fadeOut;
+	display: none;
 }

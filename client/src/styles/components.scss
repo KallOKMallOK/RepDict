@@ -1,6 +1,31 @@
 @import "vars";
 @import "fonts";
+@import "~animate.css/source/animate.css";
 
+// -----------------------------------------------------------------------------
+// ---------------------------- Currsection ------------------------------------
+// -----------------------------------------------------------------------------
+
+
+
+section.lesson_section{
+	padding: 20px 50px;
+	.lesson_info_item{
+		color: $color-bg-grey;
+		font-family: RobotoLight;
+		margin-bottom: 10px;
+		&_value{
+			font-family: RobotoLightItalic;
+			padding-left: 5px;
+		}
+	}
+}
+
+
+
+// -----------------------------------------------------------------------------
+// ------------------------------- Header --------------------------------------
+// -----------------------------------------------------------------------------
 
 header.main_header {
 	padding: 30px 50px;
@@ -19,6 +44,12 @@ header.main_header {
 			
 	}
 	.menu {
+		.icon_bars{
+			display: none;
+			color: white;
+			font-size: 1.6em;
+			cursor: pointer;
+		}
 		&_list {
 			display: flex;
 			flex-direction: row;
@@ -44,6 +75,7 @@ header.main_header {
 					}
 				}
 			}
+			
 			.active{
 				a{
 					border-bottom: 2px solid $color-main;
@@ -71,6 +103,7 @@ header.main_header {
 					// min-width: 100px;
 					height: auto;
 					border-radius: 3px;
+					// animation: 0.2s ease-in-out 0s alternate fadeIn;
 					@include bs(10px, 0px, #000);
 					&_item{
 						text-align: center;

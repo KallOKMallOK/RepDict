@@ -15,6 +15,7 @@ import Authorization from './hoc/Authorization'
 // App styles
 import "./styles/reset.scss"
 import './styles/main.scss';
+import './styles/responsive.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // -----------------------------------------------------------------------------
