@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import { connect, ConnectedProps } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux'
 
 // Controllers data
 import API from "./api"
@@ -9,13 +9,13 @@ import Action from "./redux/actions"
 
 // Components
 import Components from "./components"
-// import useOutsideClick from "./hoc/OutsideClicker"
 import Authorization from './hoc/Authorization'
 
 // App styles
 import "./styles/reset.scss"
 import './styles/main.scss';
 import './styles/responsive.scss';
+import 'react-notifications/lib/notifications.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // -----------------------------------------------------------------------------
@@ -54,7 +54,6 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 	}
 
 	componentDidMount(){
-
 		if(localStorage.getItem("token") && localStorage.getItem("token")?.length !== 0){
 			API.auth()
 				.then(res => {

@@ -2,8 +2,6 @@ import React from 'react';
 import { Link, RouteComponentProps, Router } from '@reach/router'
 
 // Components
-import Currsection from "../components/Currsection"
-import Card from "../components/Card"
 
 // App styles
 import "../styles/reset.scss"

@@ -1,10 +1,10 @@
 import Header from "./Header"
-import Cards from "./Card"
+import { Deck } from "./Deck"
 import Currsection from "./Currsection"
 
 const Components = {
 	Header,
-	Cards,
+	Deck,
 	Currsection
 }
 
