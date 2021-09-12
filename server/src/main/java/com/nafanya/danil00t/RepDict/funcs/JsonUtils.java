@@ -1,8 +1,10 @@
 package com.nafanya.danil00t.RepDict.funcs;
 
+import com.nafanya.danil00t.RepDict.controllers.MainController;
 import com.nafanya.danil00t.RepDict.models.Card;
 import com.nafanya.danil00t.RepDict.models.User;
 import com.nafanya.danil00t.RepDict.models.Word;
+import org.jboss.jandex.Main;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -11,12 +13,18 @@ import java.util.List;
 public class JsonUtils {
 
     public static JSONObject parseUsers(Iterable<User> users){
-        JSONObject main = new JSONObject();
+        JSONObject main = MainController.createSuccess();
         JSONArray usersArray = new JSONArray();
         users.forEach(user -> {
             JSONObject userObject = new JSONObject();
-            userObject.put("id", user.getId());
             userObject.put("login", user.getLogin());
+            userObject.put("login", user.getLogin());
+            userObject.put("id", user.getId());
+            userObject.put("token", user.getToken());
+            userObject.put("name", user.getName());
+            userObject.put("balance", user.getBalance());
+            userObject.put("refer", user.getRefer());
+            userObject.put("is_checked", user.getIsChecked());
             usersArray.add(userObject);
         });
         main.put("data", usersArray);
@@ -24,7 +32,7 @@ public class JsonUtils {
     }
 
     public static JSONObject parseCards(List<Card> cards){
-        JSONObject main = new JSONObject();
+        JSONObject main = MainController.createSuccess();
         JSONArray cardsArray = new JSONArray();
         cards.forEach(card -> {
             JSONObject cardObject = new JSONObject();
@@ -45,14 +53,14 @@ public class JsonUtils {
     }
 
     public static JSONObject getUserInfo(User user){
-        JSONObject main = new JSONObject();
+        JSONObject main = MainController.createSuccess();
         main.put("login", user.getLogin());
         main.put("id", user.getId());
         return main;
     }
 
     public static JSONObject getCardInfo(Card card){
-        JSONObject main = new JSONObject();
+        JSONObject main = MainController.createSuccess();
         main.put("id", card.getId());
         main.put("name", card.getName());
         main.put("author_id", card.getUser().getId());
@@ -66,8 +74,20 @@ public class JsonUtils {
     }
 
     public static JSONObject getWordsInfo(List<Word> words){
-        JSONObject object = new JSONObject();
+        JSONObject object = MainController.createSuccess();
         object.put("data", wordsToArray(words));
+        return object;
+    }
+
+    public static JSONObject getUserJson(User user){
+        JSONObject object = MainController.getSUCCESS();
+        object.put("login", user.getLogin());
+        object.put("id", user.getId());
+        object.put("token", user.getToken());
+        object.put("name", user.getName());
+        object.put("balance", user.getBalance());
+        object.put("refer", user.getRefer());
+        object.put("is_checked", user.getIsChecked());
         return object;
     }
 
