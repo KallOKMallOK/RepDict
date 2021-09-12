@@ -57,10 +57,10 @@ public class Card {
     inverseJoinColumns = {@JoinColumn(name = "user_id")})
     private List<User> subscribers;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "cards_comments",
-            inverseJoinColumns = {@JoinColumn(name = "comment_id")},
-            joinColumns = {@JoinColumn(name = "card_id")})
-    private List<Comment> comments;
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "cards_comments",
+//            inverseJoinColumns = {@JoinColumn(name = "comment_id")},
+//            joinColumns = {@JoinColumn(name = "card_id")})
+//    private List<Comment> comments;
 
 }

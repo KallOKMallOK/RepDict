@@ -1,29 +1,35 @@
 package com.nafanya.danil00t.RepDict.controllers;
+import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
 import com.nafanya.danil00t.RepDict.funcs.JsonUtils;
 import com.nafanya.danil00t.RepDict.models.Card;
 import com.nafanya.danil00t.RepDict.models.User;
 import com.nafanya.danil00t.RepDict.repository.CardRepository;
 import com.nafanya.danil00t.RepDict.repository.UserRepository;
 import com.nafanya.danil00t.RepDict.repository.WordRepository;
+import lombok.Data;
 import lombok.Getter;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RestController
 public class MainController {
 
-    private static JSONObject createError(){
+    public static JSONObject createError(){
         JSONObject o = new JSONObject();
-        o.put("data", "error");
+        o.put("error", true);
         return o;
     }
 
-    private static JSONObject createSuccess(){
+    public static JSONObject createSuccess(){
         JSONObject o = new JSONObject();
-        o.put("data", "success");
+        o.put("error", false);
         return o;
     }
 
@@ -50,8 +56,8 @@ public class MainController {
     }
 
     @GetMapping("/users")
-    public JSONObject users(){
-        return JsonUtils.parseUsers(userRepository.findAll());
+    public JSONObject users(@RequestParam() String token) throws IOException {
+        return (LogRegController.MiddleWareIsAdmin(token, userRepository)) ? JsonUtils.parseUsers(userRepository.findAll()) : ERROR;
     }
 
     @GetMapping("/u{id}/subscriptions")
@@ -86,6 +92,8 @@ public class MainController {
             return ERROR;
         return JsonUtils.getWordsInfo(card.getWords());
     }
+
+    //TODO: registration fix
 
     @PostMapping("/u{u_id}/check")
     public JSONObject checkUser(
