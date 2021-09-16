@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux'
 import { app } from "./app.reducer"
+import { notification } from "./notification.reducer"
 
 
 const rootReducer = combineReducers({
-	app
+	app,
+	notification
 })
  
 export default rootReducer

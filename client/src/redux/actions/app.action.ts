@@ -1,4 +1,4 @@
-import * as types from "../types"
+import { APP } from "../types"
 
 enum ERefer {NOT, GOOGLE, VK, FACEBOOK}
 
@@ -9,7 +9,7 @@ export interface IPerson{
 
 export const login = (person: IPerson) => {
 	return {
-		type: types.APP_LOGIN,
+		type: APP.LOGIN,
 		payload: person
 	}
 }

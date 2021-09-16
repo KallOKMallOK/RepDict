@@ -1,5 +1,13 @@
-import React, { MouseEvent } from 'react'
-import { FaPlus } from "react-icons/fa"
+import React, { MouseEvent, useRef, useState } from 'react'
+import { 
+	FaPlus,
+	FaLock,
+	FaLockOpen,
+	FaEllipsisV,
+	FaHeart
+} from "react-icons/fa"
+import { Link } from 'react-router-dom'
+import useOutsideClick from '../hoc/OutsideClicker'
 
 import { LANGS } from "../redux/types"
 
@@ -20,25 +28,79 @@ export interface IDeck {
 	mainLang: LANGS,
 	secondaryLang: LANGS,
 	author?: string,
+	authorLink?: string,
 	description?: string
+	countLikes?: number
+	activeLike?: boolean
 
 	// Actions
 	edit?: actionClick,
-	delete?: actionClick
+	delete?: actionClick,
+	like?: actionClick
 }
 
 
 
 export const Deck: React.FC<IDeck> = props => {
-  return (
+
+	const [dropdownVisible, openDropdown] = useState(false)
+	const [activedLike, activeLike] = useState(props.activeLike || false)
+	const [countLikes, changeCountLikes] = useState(props.countLikes || 0)
+
+	const dropdownRef = useRef<any>(null)
+
+	useOutsideClick(dropdownRef, () => {
+		if(dropdownVisible) openDropdown(false)
+	})
+
+	const likeUser = (e: any) => {
+		activeLike(!activedLike)
+		activedLike?
+			changeCountLikes(countLikes - 1):
+			changeCountLikes(countLikes + 1)
+	}
+
+  	return (
 	<div className="card_item card_item_noactive">
-		<p className="card_item_name">{props.name}</p>
-		<span className="card_item_count_words">{props.countWords} words</span>
-		<p className="card_item_count_repetitions">{props.countRepetitions} repetitions</p>
-		<div className="buttons_group">
+		{/* control items */}
+		<div className="control">
+			<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
+			<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
+				<li className="dropdown_item">Edit</li>
+				<li className="dropdown_item">Delete</li>
+			</ul>
+		</div>
+		<p className="card_item_head">
+			<span className="private_lock">{props.isPrivate? <FaLock/>: <FaLockOpen/>}</span>
+			<span className="card_item_head_name">{props.name}</span>
+			{props.author !== undefined && <Link to={props.authorLink || "/users"} className="author">(by {props.author})</Link> }
+			
+		</p>
+
+		
+		<div className="middle_layer">
+			<div className="card_item_head_langs">
+				<div className="lang main_lang">{props.mainLang}</div>/
+				<div className="lang sec_lang">{props.secondaryLang}</div>
+			</div>
+			<div className="info">
+				<p className="info_count_words">{props.countWords} words</p>
+				<p className="info_count_repetitions">{props.countRepetitions} repetitions</p>
+			</div>
+		</div>
+
+		<p className="card_item_description">{props.description}</p>
+
+		<div className="footer">
+			<span className="likes" onClick={e => likeUser(e)}>
+				<span className={`heart ${activedLike? "active": "noactive"}`}><FaHeart/></span>
+				{countLikes}
+			</span>
+		</div>
+		{/* <div className="buttons_group">
 			<button className="button_manipulate" onClick={e => props.edit!(e, props.id)}>edit</button>
 			<button className="button_manipulate" onClick={e => props.delete!(e, props.id)}>delete</button>
-		</div>
+		</div> */}
 	</div>
   );
 }

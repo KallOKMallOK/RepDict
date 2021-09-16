@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit'
-import * as types from "../types"
+import { APP } from "../types"
 
 const initialState = {
    auth: true,
@@ -11,7 +11,7 @@ const initialState = {
 
 export const app = (state: Object = initialState, action: PayloadAction<any>) => {
    switch(action.type){
-      case types.APP_LOGIN:
+      case APP.LOGIN:
          localStorage.setItem("token", action.payload.token)
          return {
             ...state,

@@ -9,6 +9,7 @@ import Action from "./redux/actions"
 
 // Components
 import Components from "./components"
+import { Notification } from "./components/Notification"
 import Authorization from './hoc/Authorization'
 
 // App styles
@@ -23,7 +24,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // -----------------------------------------------------------------------------
 
 const mapStateToProps = (state: any) => ({
-	auth: state.app.auth
+	auth: state.app.auth,
+	notify: state.notification
 })
 
 const mapDispatchToProps = (f: Function) => ({
@@ -64,7 +66,9 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 				})
 				.catch(err => console.log(err))
 		}
-		
+		setTimeout(() => {
+			Notification.success("Ok!", "HEllossifjs sdfsalkj ", 3000)
+		}, 5000)
 	}
 
 	renderSwitch(){
@@ -92,6 +96,7 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 			 <div id='ui-content'>
 				{this.renderSwitch()}
 			 </div>
+			 <Components.Notification {...this.props.notify}/>
 		  </React.Fragment>
 		</Router>
 	 )

@@ -80,6 +80,8 @@ class Cards extends React.Component<ICardsProps>{
 								mainLang={LANGS.RUS} 
 								secondaryLang={LANGS.ENG} 
 								words={[]}
+
+
 								save={this.saveDeck.bind(this)}
 								delete={this.deleteDeck}
 								/>
@@ -92,10 +94,16 @@ class Cards extends React.Component<ICardsProps>{
 									id={deck.id}
 									name={deck.name}
 									countWords={deck.countWords} 
+									author="daniil00t"
+									authorLink="/user/8"
+									description="This deck about kitchen and some subjects in there"
 									countRepetitions={deck.countRepetitions} 
 									isPrivate={deck.isPrivate} 
 									mainLang={deck.mainLang} 
 									secondaryLang={deck.secondaryLang}
+									countLikes={10}
+									activeLike={false}
+
 									edit={this.editDeck.bind(this)}
 									delete={this.deleteDeck}
 									/>

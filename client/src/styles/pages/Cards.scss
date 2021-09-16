@@ -23,9 +23,10 @@
 		justify-content: space-between;
 		&_item{
 			// cursor: pointer;
+			position: relative;
 			flex: 0 0 31.3%;
 			min-width: 300px;
-			height: 200px;
+			min-height: 200px;
 			border: 4px solid $color-main;
 			padding: 15px 20px;
 			// position: relative;
@@ -41,11 +42,125 @@
 					// box-shadow: 0 0 5px $color-main__;
 				}
 			}
-			&_name{
-				font-family: RobotoBlack;
-				margin-bottom: 15px;
-				color: white;
+			&_head{
+				.private_lock{
+					color: rgb(173, 173, 173);
+					margin-right: 10px;
+				}
+				&_name{
+					font-family: RobotoBlack;
+					margin-bottom: 15px;
+					color: white;
+				}
+				.author{
+					color: white;
+					font-family: RobotoLight;
+					margin-left: 5px;
+					text-decoration: none;
+				}
 			}
+
+			.control{
+				position: absolute;
+				color: white;
+				right: 15px;
+				top: 10px;
+				display: flex;
+				// justify-content: flex-end;
+				align-items: flex-end;
+				flex-direction: column;
+				.icon{
+					font-size: 1.1em;
+					color: white;
+					display: block;
+					width: 30px;
+					height: 30px;
+					background-color: rgb(51, 51, 51);
+					padding: 0px 5px 4px 6px;
+					border-radius: 20px;
+					cursor: pointer;
+					@include trs;
+					&:hover{
+						background-color: rgb(65, 65, 65);
+					}
+				}
+				ul.dropdown.active{
+					padding: 5px 0;
+					background-color: rgb(51, 51, 51);
+					margin-top: 10px;
+					border-radius: 5px;
+					overflow: hidden;
+					@include bs(10px, 0px, rgb(29, 29, 29));
+					.dropdown_item{
+						// position: absolute;
+						@include fadeIn(0.15s);
+						background-color: rgb(51, 51, 51);
+						cursor: pointer;
+						padding: 5px 25px 5px 10px;
+						@include trs;
+						&:hover{
+							background-color: $color-accent;
+						}
+					}
+				}
+				.dropdown.noactive{
+					display: none;
+				}
+			}
+			.middle_layer{
+				display: flex;
+				justify-content: space-between;
+				.card_item_head_langs{
+					display: flex;
+					color: white;
+					align-items: center;
+					.lang{
+						color: white;
+						padding: 3px 5px;
+						border-radius: 3px;
+					}
+					.lang.main_lang{
+						background-color: $color-main;
+						margin-right: 3px;
+					}
+					.lang.sec_lang{
+						background-color: $color-accent;
+						margin-left: 3px;
+					}
+				}
+				.info{
+					p{
+						color: $color-bg-grey;
+						margin: 0;
+						text-align: right;
+					}
+				}
+			}
+			&_description{
+				color: white;
+				font-family: RobotoLight;
+				margin-top: 10px;
+			}
+			.footer{
+				text-align: right;
+				.likes{
+					cursor: pointer;
+					color: white;
+					font-family: RobotoBold;
+					.heart{
+						margin-right: 3px;
+						@include trs;
+					}
+
+					.heart.noactive{
+						color: rgb(144, 144, 144);
+					}
+					.heart.active{
+						color: rgb(195, 16, 16);
+					}
+				}
+			}
+
 			&_count_words{
 				// position: absolute;
 				right: 20px;
@@ -57,19 +172,19 @@
 				color: $color-bg-grey;
 				font-family: RobotoRegular;
 			}
-			.buttons_group{
-				// position: absolute;
-				bottom: 20px;
-				display: flex;
-				justify-content: center;
-				width: 100%;
-				margin-left: -20px;
-				button {
-					@include button_default;
-					margin-right: 10px;
-					width: 30%;
-				}
-			}
+			// .buttons_group{
+			// 	// position: absolute;
+			// 	bottom: 20px;
+			// 	display: flex;
+			// 	justify-content: center;
+			// 	width: 100%;
+			// 	margin-left: -20px;
+			// 	button {
+			// 		@include button_default;
+			// 		margin-right: 10px;
+			// 		width: 30%;
+			// 	}
+			// }
 		}
 		&_item.new_card{
 			display: flex;

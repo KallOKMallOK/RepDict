@@ -1,4 +1,5 @@
 @import "fonts";
+@import "~animate.css/source/animate.css";
 
 // Colors
 $color-main: #02a870;
@@ -14,7 +15,7 @@ $color-bg-mark_: #993636;
 
 // mixins
 @mixin trs {
-	transition: all .3s ease-in-out;
+	transition: all .2s ease-in-out;
 }
 
 @mixin button_default {
@@ -24,7 +25,7 @@ $color-bg-mark_: #993636;
 	background-color: transparent;
 	border: 3px solid $color-main;
 	padding: 7px 10px;
-	border-radius: 20px;
+	border-radius: 50px;
 	@include trs;
 	box-shadow: 0 0 5px $color-main_;
 	color: white;
@@ -39,4 +40,8 @@ $color-bg-mark_: #993636;
 
 @mixin bs($blur, $size, $color) {
 	box-shadow: 0px 0px $blur $size $color;
+}
+
+@mixin fadeIn($time){
+	animation: $time ease-in-out 0s alternate fadeIn;
 }
