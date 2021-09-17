@@ -1,4 +1,4 @@
-import React, {  useRef, useState } from 'react'
+import React, {  useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { connect, ConnectedProps } from 'react-redux'
 import { FaUser, FaBars } from "react-icons/fa"
@@ -49,10 +49,17 @@ const Header: React.FC<AppProps> = props => {
 		if(dropdownVisible) openDropdownUser(false)
 	})
 	
+	useEffect(() => {
+		if(menuVisible)
+			document.body.style.overflow = 'hidden'
+		else
+			document.body.style.overflow = 'unset'
+	}, [menuVisible ])
+	
 	return (
 		<header className="main_header">
 			<div className="logo">
-				<span className="logo_text"><Link to="/">RepDict</Link></span>
+				<span className="logo_text"><Link to="/" onClick={e => openMenuUser(false)}>RepDict</Link></span>
 			</div>
 
 			<div className="menu">

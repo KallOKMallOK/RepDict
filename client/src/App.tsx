@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import { connect, ConnectedProps } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux'
 
 // Controllers data
 import API from "./api"
@@ -9,13 +9,14 @@ import Action from "./redux/actions"
 
 // Components
 import Components from "./components"
-// import useOutsideClick from "./hoc/OutsideClicker"
+import { Notification } from "./components/Notification"
 import Authorization from './hoc/Authorization'
 
 // App styles
 import "./styles/reset.scss"
 import './styles/main.scss';
 import './styles/responsive.scss';
+import 'react-notifications/lib/notifications.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // -----------------------------------------------------------------------------
@@ -23,7 +24,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // -----------------------------------------------------------------------------
 
 const mapStateToProps = (state: any) => ({
-	auth: state.app.auth
+	auth: state.app.auth,
+	notify: state.notification
 })
 
 const mapDispatchToProps = (f: Function) => ({
@@ -54,7 +56,6 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 	}
 
 	componentDidMount(){
-
 		if(localStorage.getItem("token") && localStorage.getItem("token")?.length !== 0){
 			API.auth()
 				.then(res => {
@@ -65,7 +66,9 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 				})
 				.catch(err => console.log(err))
 		}
-		
+		setTimeout(() => {
+			Notification.success("Ok!", "HEllossifjs sdfsalkj ", 3000)
+		}, 5000)
 	}
 
 	renderSwitch(){
@@ -93,6 +96,7 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 			 <div id='ui-content'>
 				{this.renderSwitch()}
 			 </div>
+			 <Components.Notification {...this.props.notify}/>
 		  </React.Fragment>
 		</Router>
 	 )
