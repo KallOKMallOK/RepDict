@@ -5,7 +5,7 @@ import com.nafanya.danil00t.RepDict.models.Card;
 import com.nafanya.danil00t.RepDict.models.User;
 import com.nafanya.danil00t.RepDict.repository.CardRepository;
 import com.nafanya.danil00t.RepDict.repository.UserRepository;
-import com.nafanya.danil00t.RepDict.repository.WordRepository;
+//import com.nafanya.danil00t.RepDict.repository.WordRepository;
 import lombok.Data;
 import lombok.Getter;
 import org.json.simple.JSONObject;
@@ -47,8 +47,8 @@ public class MainController {
     @Autowired
     private CardRepository cardRepository;
 
-    @Autowired
-    private WordRepository wordRepository;
+//    @Autowired
+//    private WordRepository wordRepository;
 
     @GetMapping("/")
     public String main() {
@@ -60,15 +60,15 @@ public class MainController {
         return (LogRegController.MiddleWareIsAdmin(token, userRepository)) ? JsonUtils.parseUsers(userRepository.findAll()) : ERROR;
     }
 
-    @GetMapping("/u{id}/subscriptions")
-    public JSONObject userSubscriptions(@PathVariable(value = "id") Integer id){
-        if(!userRepository.existsById(id)) {
-            return ERROR;
-        }
-        return JsonUtils.parseCards(userRepository.getById(id).getSubscriptions());
-    }
+//    @GetMapping("/u{id}/subscriptions")
+//    public JSONObject userSubscriptions(@PathVariable(value = "id") Integer id){
+//        if(!userRepository.existsById(id)) {
+//            return ERROR;
+//        }
+//        return JsonUtils.parseCards(userRepository.getById(id).getSubscriptions());
+//    }
 
-    @GetMapping("/u{id}/works")
+    /*@GetMapping("/u{id}/works")
     public JSONObject userWorks(@PathVariable(value = "id") Integer id){
         if(!userRepository.existsById(id)) {
             return ERROR;
@@ -79,19 +79,19 @@ public class MainController {
                 .filter(card -> card.getUser().equals(user))
                 .collect(Collectors.toList());
         return JsonUtils.parseCards(works);
-    }
+    }*/
 
-    @GetMapping("/u{u_id}/c{c_id}")
+    /*@GetMapping("/u{u_id}/c{c_id}")
     public JSONObject cardDetails(
             @PathVariable(value = "u_id") Integer u_id,
             @PathVariable(value = "c_id") Integer c_id){
         if(!userRepository.existsById(u_id) || !cardRepository.existsById(c_id))
             return ERROR;
         Card card = cardRepository.getById(c_id);
-        if(!card.getUser().getId().equals(u_id))
-            return ERROR;
+//        if(!card.getUser().getId().equals(u_id))
+//            return ERROR;
         return JsonUtils.getWordsInfo(card.getWords());
-    }
+    }*/
 
     //TODO: registration fix
 

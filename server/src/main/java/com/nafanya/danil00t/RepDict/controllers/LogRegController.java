@@ -93,6 +93,10 @@ public class LogRegController {
         return user;
     }
 
+    public static boolean MiddleWare(String token, UserRepository userRepository) throws IOException {
+        return findUserByToken(token, userRepository) != null;
+    }
+
     public static boolean MiddleWareIsAdmin(String token, UserRepository userRepository) throws  IOException{
         User user = findUserByToken(token, userRepository);
         if(user == null)

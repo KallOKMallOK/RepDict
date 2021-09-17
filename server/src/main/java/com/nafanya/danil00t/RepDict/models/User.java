@@ -62,10 +62,10 @@ public class User {
 
     private String refer;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "subscriptions",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "card_id")})
-    private List<Card> subscriptions;
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "subscriptions",
+//            joinColumns = {@JoinColumn(name = "user_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "card_id")})
+//    private List<Card> subscriptions;
 
 }
