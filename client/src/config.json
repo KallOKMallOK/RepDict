@@ -2,9 +2,12 @@
 	"HOST": "http://192.168.95.176:5050",
 	"URLS": {
 		"MAIN": "/",
+
 		"USERS": "/users",
 		"REGISTRATION": "/registration",
 		"LOGIN": "/login",
-		"AUTH": "/auth"
+		"AUTH": "/auth",
+
+		"GET_DECKS": "/get_decks"
 	}
 }

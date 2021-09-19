@@ -58,6 +58,7 @@ export const Deck: React.FC<IDeck> = props => {
 		activedLike?
 			changeCountLikes(countLikes - 1):
 			changeCountLikes(countLikes + 1)
+		props.like!(e)
 	}
 
   	return (
@@ -66,8 +67,8 @@ export const Deck: React.FC<IDeck> = props => {
 		<div className="control">
 			<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
 			<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
-				<li className="dropdown_item">Edit</li>
-				<li className="dropdown_item">Delete</li>
+				<li className="dropdown_item" onClick={props.edit}>Edit</li>
+				<li className="dropdown_item" onClick={props.delete}>Delete</li>
 			</ul>
 		</div>
 		<p className="card_item_head">

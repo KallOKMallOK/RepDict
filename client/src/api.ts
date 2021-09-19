@@ -11,6 +11,7 @@ class API {
 		REGISTRATION: CONFIG.HOST + CONFIG.URLS.REGISTRATION,
 		LOGIN: CONFIG.HOST + CONFIG.URLS.LOGIN,
 		AUTH: CONFIG.HOST + CONFIG.URLS.AUTH,
+		GET_DECKS: CONFIG.HOST + CONFIG.URLS.GET_DECKS,
 	}
 
 	private static GET(url: string, data: any, options?: OptionsRequest): Promise<any>{
@@ -53,6 +54,14 @@ class API {
 
 	public static auth(): Promise<any>{
 		return this.GET(this.API_URLS.AUTH, {  })
+	}
+
+	// --------------------------------------------------------------------------
+	// -------------------------- Decks and Cards -------------------------------
+	// --------------------------------------------------------------------------
+
+	public static getDecks(): Promise<any>{
+		return this.GET(this.API_URLS.GET_DECKS, {  })
 	}
 }
 

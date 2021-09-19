@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react"
 import Action from "../redux/actions"
 import store from "../redux/store"
-import { connect, ConnectedProps } from "react-redux"
+
+import { FaTimes } from "react-icons/fa"
 
 enum EStatus{
 	SUCCESS = "SUCCESS", 
@@ -21,28 +22,33 @@ interface NotifyProps{
 
 export const Notification = {
 	success: (head: string, content: string, timeout: number = 2000) => {
-		store.dispatch(Action.notification.show("SUCCESS", head, content, timeout))
+		store.dispatch(Action.notification.show("success", head, content, timeout))
 	},
 	error: (head: string, content: string, timeout: number = 2000) => {
-		store.dispatch(Action.notification.show("ERROR", head, content, timeout))
+		store.dispatch(Action.notification.show("error", head, content, timeout))
 	},
 	warning: (head: string, content: string, timeout: number = 2000) => {
-		store.dispatch(Action.notification.show("WARNING", head, content, timeout))
+		store.dispatch(Action.notification.show("warning", head, content, timeout))
 	}
 }
 
 const NotificationContainer: React.FC<NotifyProps> = props => {
 	const [visible, changeVisible] = useState(props.visible)
 
+
 	props.visible && setTimeout(() => {
 		changeVisible(false)
 		store.dispatch(Action.notification.hide())
-	}, props.timeout? props.timeout: 2000)
+	}, props.timeout || 2000)
 
 	return (
-		<div className={`Notification notify_${props.type}`} style={{display: visible? "block": "none"}}>
-			<h2>{props.head}</h2>
-			<p>{props.content}</p>
+		<div className={`Notification notify_${props.type || "default"}`} style={{display: props.visible? "block": "none"}}>
+			<div className="Notification_wrapper_content">
+				<div className="close" onClick={e => store.dispatch(Action.notification.hide())}><FaTimes/></div>
+				<h2 className="head">{props.head}</h2>
+				<p className="content">{props.content}</p>
+
+			</div>
 		</div>
 	)
 }
