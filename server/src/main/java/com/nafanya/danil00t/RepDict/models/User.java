@@ -62,6 +62,22 @@ public class User {
 
     private String refer;
 
+    /* TODO:
+        * ONE TO MANY WITH DECKS
+    */
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "decks",
+        joinColumns = {@JoinColumn(name = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "id_owner")})
+    private List<Deck> owned;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "decks",
+            joinColumns = {@JoinColumn(name = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "id_author")}
+    )
+    private List<Deck> authored;
+
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "subscriptions",
 //            joinColumns = {@JoinColumn(name = "user_id")},

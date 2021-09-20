@@ -2,6 +2,7 @@ package com.nafanya.danil00t.RepDict.funcs;
 
 import com.nafanya.danil00t.RepDict.controllers.MainController;
 import com.nafanya.danil00t.RepDict.models.Card;
+import com.nafanya.danil00t.RepDict.models.Deck;
 import com.nafanya.danil00t.RepDict.models.User;
 //import com.nafanya.danil00t.RepDict.models.Word;
 import org.jboss.jandex.Main;
@@ -80,6 +81,27 @@ public class JsonUtils {
 //        object.put("data", wordsToArray(words));
 //        return object;
 //    }
+    public static JSONObject getDeckJson(Deck deck){
+        JSONObject object = new JSONObject();
+        object.put("id", deck.getId());
+        object.put("author_id", getUserJson(deck.getAuthor()));
+        object.put("owner_id", getUserJson(deck.getOwner()));
+        object.put("description", deck.getDescription());
+        object.put("count_repetitions", deck.getCountRepetitions());
+        object.put("count_words", deck.getCountWords());
+        object.put("is_private", deck.getIsPrivate());
+        object.put("likes", deck.getLikes());
+        object.put("name", deck.getName());
+        object.put("main_language", deck.getMainLanguage());
+        object.put("second_language", deck.getSecondLanguage());
+        object.put("price", deck.getPrice());
+        JSONArray array = new JSONArray();
+        deck.getCards().forEach(card -> {
+            array.add(getCardJson(card));
+        });
+        object.put("cards", array);
+        return object;
+    }
 
     public static JSONObject getUserJson(User user){
         JSONObject object = MainController.getSUCCESS();
@@ -90,6 +112,16 @@ public class JsonUtils {
         object.put("balance", user.getBalance());
         object.put("refer", user.getRefer());
         object.put("is_checked", user.getIsChecked());
+        return object;
+    }
+
+    public static JSONObject getCardJson(Card card){
+        JSONObject object = new JSONObject();
+        object.put("id", card.getId());
+        object.put("type", card.getType());
+        object.put("answer", card.getAnswer());
+        object.put("main_word", card.getMainWord());
+        object.put("description", card.getDescription());
         return object;
     }
 

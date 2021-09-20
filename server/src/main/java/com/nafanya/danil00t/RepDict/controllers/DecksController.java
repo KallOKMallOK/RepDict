@@ -1,13 +1,17 @@
 package com.nafanya.danil00t.RepDict.controllers;
 
 import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
+import com.nafanya.danil00t.RepDict.funcs.JsonUtils;
 import com.nafanya.danil00t.RepDict.models.Card;
 import com.nafanya.danil00t.RepDict.models.Deck;
+import com.nafanya.danil00t.RepDict.models.User;
 import com.nafanya.danil00t.RepDict.repository.CardRepository;
 import com.nafanya.danil00t.RepDict.repository.DeckRepository;
 import com.nafanya.danil00t.RepDict.repository.UserRepository;
 import lombok.Getter;
 import lombok.Setter;
+import org.jboss.jandex.Main;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.Name;
@@ -53,6 +57,7 @@ public class DecksController {
             card = cardRepository.save(card);
             System.out.println(card.getId());
             _deck.getCards().add(card);
+            _deck.setCountWords(_deck.getCountRepetitions() + 1);
         });
         deckRepository.save(_deck);
         return MainController.getSUCCESS();
@@ -60,9 +65,23 @@ public class DecksController {
 
     @GetMapping("/get_decks")
     public JSONObject getDecks(
-        @RequestBody GetDeckRequest request
-    ){
-        return MainController.getERROR();
+            //@RequestBody GetDeckRequest request
+        @RequestParam String token,
+        @RequestParam Integer userId
+    ) throws IOException{
+        if(!LogRegController.MiddleWare(token, userRepository))
+            return MainController.getERROR();
+        if(!userRepository.existsById(userId))
+            return MainController.getERROR();
+        User user = userRepository.getById(userId);
+        if(!user.getToken().equals(token))
+            return MainController.getERROR();
+        JSONArray array = new JSONArray();
+        user.getOwned().forEach(deck -> array.add(JsonUtils.getDeckJson(deck)));
+        JSONObject object = new JSONObject();
+        object.put("error", false);
+        object.put("decks", array);
+        return object;
     }
 }
 
