@@ -45,3 +45,6 @@ $color-bg-mark_: #993636;
 @mixin fadeIn($time){
 	animation: $time ease-in-out 0s alternate fadeIn;
 }
+@mixin fadeInDown($time){
+	animation: $time ease-in-out 0s alternate fadeInDown;
+}

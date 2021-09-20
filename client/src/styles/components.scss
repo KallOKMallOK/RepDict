@@ -123,6 +123,48 @@ header.main_header {
 				}
 			}
 		}
-
 	}
+}
+
+// Notification
+
+.Notification{
+	position: absolute;
+	bottom: 25px;
+	right: 15px;
+	padding: 10px 15px;
+	border-radius: 3px;
+	.Notification_wrapper_content{
+		position: relative;
+		.close{
+			position: absolute;
+			top: -5px;
+			right: -5px;
+			color: white;
+			cursor: pointer;
+		}
+		.head{
+			font-size: 1.4em;
+			font-family: RobotoBold;
+			color: white;
+		}
+	
+		.content{
+			font: 1em RobotoLight;
+			color: white;
+		}
+	}
+}
+
+.Notification.notify_success{
+	background-color: green !important;
+	@include fadeInDown(.2s);
+}
+.Notification.notify_error{
+	background-color: rgb(167, 24, 24) !important;
+	@include fadeInDown(.2s);
+}
+.Notification.notify_warning{
+	background-color: rgb(190, 207, 33) !important;
+	@include fadeInDown(.2s);
 }

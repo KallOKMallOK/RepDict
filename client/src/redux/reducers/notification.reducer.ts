@@ -3,8 +3,8 @@ import { NOTIFY, EStatusNotification } from "../types"
 const initialState = {
 	visible: false,
 	type: null,
-	head: "",
-	content: "",
+	head: "OK",
+	content: "sfsdfsdafsadf sadf sadf ",
 	timeout: 2000
 }
 
