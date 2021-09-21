@@ -84,8 +84,8 @@ public class JsonUtils {
     public static JSONObject getDeckJson(Deck deck){
         JSONObject object = new JSONObject();
         object.put("id", deck.getId());
-        object.put("author_id", getUserJson(deck.getAuthor()));
-        object.put("owner_id", getUserJson(deck.getOwner()));
+        object.put("author_login", deck.getAuthor().getLogin());
+        object.put("owner_login", deck.getOwner().getLogin());
         object.put("description", deck.getDescription());
         object.put("count_repetitions", deck.getCountRepetitions());
         object.put("count_words", deck.getCountWords());

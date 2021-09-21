@@ -66,16 +66,11 @@ public class DecksController {
     @GetMapping("/get_decks")
     public JSONObject getDecks(
             //@RequestBody GetDeckRequest request
-        @RequestParam String token,
-        @RequestParam Integer userId
+        @RequestParam String token
     ) throws IOException{
         if(!LogRegController.MiddleWare(token, userRepository))
             return MainController.getERROR();
-        if(!userRepository.existsById(userId))
-            return MainController.getERROR();
-        User user = userRepository.getById(userId);
-        if(!user.getToken().equals(token))
-            return MainController.getERROR();
+        User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
         JSONArray array = new JSONArray();
         user.getOwned().forEach(deck -> array.add(JsonUtils.getDeckJson(deck)));
         JSONObject object = new JSONObject();
