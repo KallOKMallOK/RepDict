@@ -1,6 +1,6 @@
 import React, { createRef, MouseEvent } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Link } from 'react-router-dom'
+import { Link, RouteComponentProps } from 'react-router-dom'
 import Action from "../redux/actions"
 
 import API from "../api"
@@ -19,7 +19,7 @@ const mapDispatchToProps = (f: Function) => ({
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
 
-type PropsFromRedux = ConnectedProps<typeof connector>
+type PropsFromRedux = ConnectedProps<typeof connector> & RouteComponentProps 
 
 
 interface StateLogin{
@@ -29,12 +29,14 @@ interface StateLogin{
 
 class Login extends React.Component<PropsFromRedux, StateLogin>{
 	public state = {
+		// validate
 		loginValidate: null,
 		passwordValidate: null
 	}
 	private login = createRef<HTMLInputElement>()
 	private password = createRef<HTMLInputElement>()
 
+	// eslint-disable-next-line @typescript-eslint/no-useless-constructor
 	constructor(props: PropsFromRedux){
 		super(props)
 	}
@@ -45,7 +47,11 @@ class Login extends React.Component<PropsFromRedux, StateLogin>{
 			login: this.login.current?.value,
 			password: this.password.current?.value
 		})
-			.then(res => this.props.login(res.data))
+			.then(res => {
+					this.props.login(res.data)
+					this.props.history.push("/")
+					Notification.success("OK", "Вы авторизованы!", 2000)
+				})
 			.catch(err => Notification.error("Error", "Error on server"))
 	}
 	validateForm(e: any){

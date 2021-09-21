@@ -68,7 +68,8 @@ class Cards extends React.Component<ICardsProps>{
 
 	componentDidMount(){
 		API.getDecks()
-			.then(data => !data.error && this.setState({ decks: [...this.state.decks, ...data] }))
+			// .then(data => console.log(data))
+			.then(data => !data.error && this.setState({ decks: [...this.state.decks, ...data.data.decks] }))
 			.catch(err => Notification.error("Error", "Failed to load data", 3000))
 	}
 
@@ -111,7 +112,7 @@ class Cards extends React.Component<ICardsProps>{
 									isPrivate={deck.isPrivate} 
 									mainLang={deck.mainLang} 
 									secondaryLang={deck.secondaryLang}
-									countLikes={10}
+									countLikes={deck.likes || 0}
 									activeLike={false}
 
 									edit={this.editDeck.bind(this)}

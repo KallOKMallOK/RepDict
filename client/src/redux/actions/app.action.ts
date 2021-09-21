@@ -13,3 +13,8 @@ export const login = (person: IPerson) => {
 		payload: person
 	}
 }
+export const logout = () => {
+	return {
+		type: APP.LOGOUT,
+	}
+}

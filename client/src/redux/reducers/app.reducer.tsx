@@ -2,10 +2,10 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { APP } from "../types"
 
 const initialState = {
-   auth: true,
+   auth: false,
    user: {
-      name: "Данилут",
-      login: "daniil00t"
+      name: "",
+      login: ""
    }
 }
 
@@ -19,6 +19,16 @@ export const app = (state: Object = initialState, action: PayloadAction<any>) =>
             user: {
                name: action.payload.name,
                login: action.payload.login
+            }
+         }
+      case APP.LOGOUT:
+         localStorage.removeItem("token")
+         return {
+            ...state,
+            auth: false,
+            user: {
+               name: "",
+               login: ""
             }
          }
       default:

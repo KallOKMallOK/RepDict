@@ -1,5 +1,5 @@
 import React, {  useEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useHistory } from 'react-router-dom'
 import { connect, ConnectedProps } from 'react-redux'
 import { FaUser, FaBars } from "react-icons/fa"
 
@@ -21,7 +21,8 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (f: Function) => ({
-	login: (user: any) => f(Action.app.login(user))
+	login: (user: any) => f(Action.app.login(user)),
+	logout: () => f(Action.app.logout())
 })
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
@@ -39,6 +40,8 @@ interface AppProps extends PropsFromRedux{
 // -----------------------------------------------------------------------------
 
 const Header: React.FC<AppProps> = props => {
+	const history = useHistory()
+
 	const [dropdownVisible, openDropdownUser] = useState(false)
 	const [menuVisible, openMenuUser] = useState(false)
 
@@ -55,6 +58,12 @@ const Header: React.FC<AppProps> = props => {
 		else
 			document.body.style.overflow = 'unset'
 	}, [menuVisible ])
+
+	const logout = (e: any) => {
+		props.logout()
+		openMenuUser(false)
+		// history.push("/")
+	}
 	
 	return (
 		<header className="main_header">
@@ -92,7 +101,7 @@ const Header: React.FC<AppProps> = props => {
 									<Link to="/settings" onClick={e => openMenuUser(false)}>Setting</Link>
 								</li>
 								<li className="dropdown_item">
-									<Link to="/logout" onClick={e => openMenuUser(false)}>Logout</Link>
+									<Link to="/" onClick={e => logout(e)}>Logout</Link>
 								</li>
 							</ul>
 						</li>

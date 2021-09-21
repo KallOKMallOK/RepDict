@@ -17,7 +17,8 @@ export enum EStatusNotification{
 
 
 export const APP = {
-	LOGIN: "APP/LOGIN"
+	LOGIN: "APP/LOGIN",
+	LOGOUT: "APP/LOGOUT",
 }
 
 export const NOTIFY = {

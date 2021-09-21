@@ -56,16 +56,16 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 	}
 
 	componentDidMount(){
-		// if(localStorage.getItem("token") && localStorage.getItem("token")?.length !== 0){
-		// 	API.auth()
-		// 		.then(res => {
-		// 			if(!res.data.error){
-		// 				this.setState({ auth: true })
-		// 				this.props.login(res.data)
-		// 			}
-		// 		})
-		// 		.catch(err => console.log(err))
-		// }
+		if(localStorage.getItem("token") && localStorage.getItem("token")?.length !== 0){
+			API.auth()
+				.then(res => {
+					if(!res.data.error){
+						this.setState({ auth: true })
+						this.props.login(res.data)
+					}
+				})
+				.catch(err => console.log(err))
+		}
 	}
 
 	renderSwitch(){

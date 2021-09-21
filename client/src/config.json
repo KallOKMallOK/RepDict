@@ -1,5 +1,5 @@
 {
-	"HOST": "http://192.168.95.176:5050",
+	"HOST": "http://repdict.live:5050/",
 	"URLS": {
 		"MAIN": "/",
 
