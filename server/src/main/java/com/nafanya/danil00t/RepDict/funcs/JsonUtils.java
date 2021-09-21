@@ -2,8 +2,9 @@ package com.nafanya.danil00t.RepDict.funcs;
 
 import com.nafanya.danil00t.RepDict.controllers.MainController;
 import com.nafanya.danil00t.RepDict.models.Card;
+import com.nafanya.danil00t.RepDict.models.Deck;
 import com.nafanya.danil00t.RepDict.models.User;
-import com.nafanya.danil00t.RepDict.models.Word;
+//import com.nafanya.danil00t.RepDict.models.Word;
 import org.jboss.jandex.Main;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -37,16 +38,17 @@ public class JsonUtils {
         cards.forEach(card -> {
             JSONObject cardObject = new JSONObject();
             cardObject.put("id", card.getId());
-            cardObject.put("name", card.getName());
-            cardObject.put("author_id", card.getUser().getId());
-            Card parent = card.getParent();
+            cardObject.put("main_word", card.getMainWord());
+            cardObject.put("answer", card.getAnswer());
+            cardObject.put("type", card.getType());
+            /*Card parent = card.getParent();
             if(parent != null)
                 cardObject.put("parent_id", card.getParent().getId());
             else
                 cardObject.put("parent_id", null);
             cardObject.put("subscribers_count", card.getSubscribers().size());
             cardObject.put("words", wordsToArray(card.getWords()));
-            cardsArray.add(cardObject);
+            cardsArray.add(cardObject);*/
         });
         main.put("data", cardsArray);
         return main;
@@ -62,20 +64,42 @@ public class JsonUtils {
     public static JSONObject getCardInfo(Card card){
         JSONObject main = MainController.createSuccess();
         main.put("id", card.getId());
-        main.put("name", card.getName());
-        main.put("author_id", card.getUser().getId());
-        Card parent = card.getParent();
-        if(parent != null)
-            main.put("parent_id", card.getParent().getId());
-        else
-            main.put("parent_id", null);
-        main.put("words", wordsToArray(card.getWords()));
+        main.put("main_word", card.getMainWord());
+        main.put("answer", card.getAnswer());
+        main.put("type", card.getType());
+//        Card parent = card.getParent();
+//        if(parent != null)
+//            main.put("parent_id", card.getParent().getId());
+//        else
+//            main.put("parent_id", null);
+//        main.put("words", wordsToArray(card.getWords()));
         return main;
     }
 
-    public static JSONObject getWordsInfo(List<Word> words){
-        JSONObject object = MainController.createSuccess();
-        object.put("data", wordsToArray(words));
+//    public static JSONObject getWordsInfo(List<Word> words){
+//        JSONObject object = MainController.createSuccess();
+//        object.put("data", wordsToArray(words));
+//        return object;
+//    }
+    public static JSONObject getDeckJson(Deck deck){
+        JSONObject object = new JSONObject();
+        object.put("id", deck.getId());
+        object.put("author_login", deck.getAuthor().getLogin());
+        object.put("owner_login", deck.getOwner().getLogin());
+        object.put("description", deck.getDescription());
+        object.put("count_repetitions", deck.getCountRepetitions());
+        object.put("count_words", deck.getCountWords());
+        object.put("is_private", deck.getIsPrivate());
+        object.put("likes", deck.getLikes());
+        object.put("name", deck.getName());
+        object.put("main_language", deck.getMainLanguage());
+        object.put("second_language", deck.getSecondLanguage());
+        object.put("price", deck.getPrice());
+        JSONArray array = new JSONArray();
+        deck.getCards().forEach(card -> {
+            array.add(getCardJson(card));
+        });
+        object.put("cards", array);
         return object;
     }
 
@@ -91,17 +115,27 @@ public class JsonUtils {
         return object;
     }
 
-    private static JSONArray wordsToArray(List<Word> w){
-        JSONArray words = new JSONArray();
-        if(w.size() == 0)
-            return words;
-        w.forEach(word -> {
-            JSONObject wordObject = new JSONObject();
-            wordObject.put("id", word.getId());
-            wordObject.put("first_word", word.getFirstWord());
-            wordObject.put("second_word", word.getSecondWord());
-            words.add(wordObject);
-        });
-        return words;
+    public static JSONObject getCardJson(Card card){
+        JSONObject object = new JSONObject();
+        object.put("id", card.getId());
+        object.put("type", card.getType());
+        object.put("answer", card.getAnswer());
+        object.put("main_word", card.getMainWord());
+        object.put("description", card.getDescription());
+        return object;
     }
+
+//    private static JSONArray wordsToArray(List<Word> w){
+//        JSONArray words = new JSONArray();
+//        if(w.size() == 0)
+//            return words;
+//        w.forEach(word -> {
+//            JSONObject wordObject = new JSONObject();
+//            wordObject.put("id", word.getId());
+//            wordObject.put("first_word", word.getFirstWord());
+//            wordObject.put("second_word", word.getSecondWord());
+//            words.add(wordObject);
+//        });
+//        return words;
+//    }
 }

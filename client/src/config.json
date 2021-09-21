@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
 	"HOST": "http://repdict.live:5050/",
+=======
+	"HOST": "http://localhost:5050",
+>>>>>>> dfd2cb35b330a7d956ad05b35a29fe61d470250d
 	"URLS": {
 		"MAIN": "/",
 
