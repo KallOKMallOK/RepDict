@@ -8,12 +8,14 @@ import com.nafanya.danil00t.RepDict.repository.UserRepository;
 import org.jboss.jandex.Main;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
-@RestController
+@Controller
 public class JsonTestController {
 
     @Autowired
@@ -41,6 +43,12 @@ public class JsonTestController {
         }
 
         return MainController.getSUCCESS();
+    }
+
+    @GetMapping("/TESTINGBABY")
+    public String test(){
+        System.out.println("зашел");
+        return "index";
     }
 
 }

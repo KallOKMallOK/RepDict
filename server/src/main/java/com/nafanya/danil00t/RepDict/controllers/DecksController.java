@@ -39,7 +39,7 @@ public class DecksController {
     public JSONObject newDeck(
         @RequestBody DeckRequest cards
     ) throws IOException {
-        if(!LogRegController.MiddleWare(cards.getToken(), userRepository))
+        if (!LogRegController.MiddleWare(cards.getToken(), userRepository))
             return MainController.getERROR();
         Deck deck = new Deck(cards.getName(),
                 cards.getIsPrivate(),
