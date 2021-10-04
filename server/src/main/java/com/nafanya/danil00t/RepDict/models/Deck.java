@@ -83,6 +83,12 @@ public class Deck {
             inverseJoinColumns = {@JoinColumn(name = "id_card")})
     private List<Card> cards;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "likes",
+            joinColumns = {@JoinColumn(name = "id_deck")},
+            inverseJoinColumns = {@JoinColumn(name = "id_user")})
+    private List<User> likesList;
+
     public void addCard(Card card){
         this.cards.add(card);
     }

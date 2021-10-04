@@ -77,6 +77,11 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "id_author")}
     )
     private List<Deck> authored;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "likes",
+            joinColumns = {@JoinColumn(name = "id_user")},
+            inverseJoinColumns = {@JoinColumn(name = "id_deck")})
+    private List<Deck> likesList;
 
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "subscriptions",

@@ -22,7 +22,9 @@ public class Card {
 
     public Card(String mainWord,
                 String answer,
-                String type){
+                String type,
+                String description){
+        this.description = description;
         this.mainWord = mainWord;
         this.answer = answer;
         this.type = type;

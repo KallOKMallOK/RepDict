@@ -45,7 +45,7 @@ public class JsonTestController {
         return MainController.getSUCCESS();
     }
 
-    @GetMapping("/TESTINGBABY")
+    @GetMapping("/*")
     public String test(){
         System.out.println("зашел");
         return "index";

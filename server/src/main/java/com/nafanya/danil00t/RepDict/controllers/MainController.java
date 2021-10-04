@@ -50,10 +50,10 @@ public class MainController {
 //    @Autowired
 //    private WordRepository wordRepository;
 
-    @GetMapping("/")
-    public String main() {
-        return "Главная страница сервера.";
-    }
+//    @GetMapping("/")
+//    public String main() {
+//        return "Главная страница сервера.";
+//    }
 
     @GetMapping("/users")
     public JSONObject users(@RequestParam() String token) throws IOException {
