@@ -49,8 +49,13 @@ class Login extends React.Component<PropsFromRedux, StateLogin>{
 		})
 			.then(res => {
 					this.props.login(res.data)
-					this.props.history.push("/")
-					Notification.success("OK", "Вы авторизованы!", 2000)
+					if(!res.data.error){
+						this.props.login(res.data)
+						this.props.history.push("/")
+						Notification.success("OK", "Вы авторизованы!", 3000)
+					}
+					else
+						Notification.error("Ошибка", "Неверный логин или пароль", 4000)
 				})
 			.catch(err => Notification.error("Error", "Error on server"))
 	}
