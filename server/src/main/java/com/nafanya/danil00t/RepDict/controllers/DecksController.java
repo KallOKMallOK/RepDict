@@ -72,7 +72,7 @@ public class DecksController {
             return MainController.getERROR();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
         JSONArray array = new JSONArray();
-        user.getOwned().forEach(deck -> array.add(JsonUtils.getDeckJson(deck)));
+        user.getOwned().forEach(deck -> array.add(JsonUtils.getDeckJson(deck, user)));
         JSONObject object = new JSONObject();
         object.put("error", false);
         object.put("decks", array);
@@ -83,6 +83,8 @@ public class DecksController {
     public JSONObject addLike(
             @RequestBody LikeRequest request
     ) throws IOException{
+        if(!LogRegController.MiddleWare(request.getToken(), userRepository))
+            return MainController.getERROR();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()));
         for(Deck deck : user.getLikesList()){
             if(deck.getId().equals(request.getDeckId())){

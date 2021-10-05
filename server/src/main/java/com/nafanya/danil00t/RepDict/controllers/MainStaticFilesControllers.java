@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @Controller
-public class JsonTestController {
+public class MainStaticFilesControllers {
 
     @Autowired
     CardRepository cardRepository;
@@ -47,7 +47,6 @@ public class JsonTestController {
 
     @GetMapping("/*")
     public String test(){
-        System.out.println("зашел");
         return "index";
     }
 

@@ -81,6 +81,12 @@ public class JsonUtils {
 //        object.put("data", wordsToArray(words));
 //        return object;
 //    }
+    public static JSONObject getDeckJson(Deck deck, User user){
+        JSONObject object = getDeckJson(deck);
+        object.put("liked", deck.getLikesList().contains(user));
+        return object;
+    }
+
     public static JSONObject getDeckJson(Deck deck){
         JSONObject object = new JSONObject();
         object.put("id", deck.getId());

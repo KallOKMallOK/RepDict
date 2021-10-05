@@ -81,7 +81,7 @@ public class Deck {
     @JoinTable(name = "decks_cards",
             joinColumns = {@JoinColumn(name = "id_deck")},
             inverseJoinColumns = {@JoinColumn(name = "id_card")})
-    private List<Card> cards;
+    private List<Card> cards;   
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "likes",
