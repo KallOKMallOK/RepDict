@@ -53,7 +53,11 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 				})
 					.then(res => {
 						// this.props.history.push("/")
-						this.props.login(res.data)
+						console.log(res)
+						if(!res.data.error)
+							this.props.login(res.data)
+						else
+							Notification.error("Ошибка", "Возможно, такой логин уже занят", 4000)
 					})
 					.catch(err => console.log(err))
 			}
