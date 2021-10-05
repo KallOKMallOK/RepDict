@@ -1,0 +1,127 @@
+@import "vars";
+@import "fonts";
+@import "~animate.css/source/animate.css";
+
+// -----------------------------------------------------------------------------
+// ---------------------------- Currsection ------------------------------------
+// -----------------------------------------------------------------------------
+
+
+
+section.lesson_section{
+	padding: 20px 50px;
+	.lesson_info_item{
+		color: $color-bg-grey;
+		font-family: RobotoLight;
+		margin-bottom: 10px;
+		&_value{
+			font-family: RobotoLightItalic;
+			padding-left: 5px;
+		}
+	}
+}
+
+
+
+// -----------------------------------------------------------------------------
+// ------------------------------- Header --------------------------------------
+// -----------------------------------------------------------------------------
+
+header.main_header {
+	padding: 30px 50px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+
+	.logo {
+		&_text {
+			a {
+				font-family: RobotoBlack;
+				color: white;
+				text-decoration: none;
+			}
+		}
+			
+	}
+	.menu {
+		.icon_bars{
+			display: none;
+			color: white;
+			font-size: 1.6em;
+			cursor: pointer;
+		}
+		&_list {
+			display: flex;
+			flex-direction: row;
+			&_item {
+				margin-right: 25px;
+
+				&_link {
+					font-family: RobotoLight;
+					color: rgb(231, 231, 231);
+					text-decoration: none;
+					transition: all .2s ease-in-out;
+					padding: 2px 0;
+					border-bottom: 2px solid rgba(0, 0, 0, 0);
+					svg{
+						margin-right: 5px;
+						transition: all .2s ease-in-out;
+					}
+					&:hover {
+						border-bottom: 2px solid $color-main;
+						svg{
+							color: $color-main;
+						}
+					}
+				}
+			}
+			
+			.active{
+				a{
+					border-bottom: 2px solid $color-main;
+				}
+				svg{
+					color: $color-main;
+				}
+			}
+			.user_panel{
+				position: relative;
+				margin-left: 20px;
+				&_head{
+					cursor: pointer;
+					font-family: RobotoRegular;
+					svg{
+						margin-right: 5px;
+					}
+				}
+				.dropdown{
+					position: absolute;
+					right: 0;
+					top: 35px;
+					background-color: $color-bg-ligth;
+					padding: 5px 0;
+					// min-width: 100px;
+					height: auto;
+					border-radius: 3px;
+					// animation: 0.2s ease-in-out 0s alternate fadeIn;
+					@include bs(10px, 0px, #000);
+					&_item{
+						text-align: center;
+						padding: 5px 0px;
+						a{
+							text-decoration: none;
+							font-family: RobotoLight;
+							padding: 5px 40px;
+							color: white;
+							transition: all .1s ease-in-out;
+							&:hover{
+								background-color: $color-accent;
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
+}
