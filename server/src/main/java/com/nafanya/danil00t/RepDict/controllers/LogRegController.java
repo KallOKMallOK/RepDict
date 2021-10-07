@@ -72,7 +72,14 @@ public class LogRegController {
 
     @GetMapping("/auth")
     public JSONObject auth(@RequestParam String token) throws IOException {
-        return (findUserByToken(token, userRepository) == null) ? MainController.getError() : MainController.getSuccess();
+        User user = findUserByToken(token, userRepository);
+        if(user == null)
+            return MainController.getError();
+        JSONObject object = MainController.getSuccess();
+        JSONObject o = JsonUtils.getUserJson(user);
+        o.remove("error");
+        object.put("data", o);
+        return object;
     }
 
     private static User findUserByToken(String token, UserRepository userRepository) throws IOException{
