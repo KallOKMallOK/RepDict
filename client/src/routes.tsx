@@ -50,14 +50,14 @@ export const routes: IRoute[] = [
 		icon: FaPlay
 	},
 	{
-		// public and private cards - card store
+		// public and private Decks - card store
 		isNavBar: true,
 		isLogin: true,
 		isExact: true,
 		isPrivate: true,
-		path: '/cards',
-		name: 'Cards',
-		component: Pages.Cards,
+		path: '/decks',
+		name: 'Decks',
+		component: Pages.Decks,
 		icon: FaList
 	},
 	{
