@@ -43,21 +43,19 @@ public class DecksController {
             return MainController.getError();
         Deck deck = new Deck(cards.getName(),
                 cards.getIsPrivate(),
-                cards.getIdUser(),
+                userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(cards.getToken())).getId(),
                 cards.getDescription(),
                 cards.getMainLang(),
                 cards.getSecondLang(),
                 cards.getPrice(),
                 userRepository);
-        System.out.println(cards.getMainLang());
         Deck _deck = deckRepository.save(deck);
-        System.out.println(_deck.getId() + "\nUser: " + _deck.getAuthor().getId());
         cards.getCards().forEach(c -> {
             Card card = new Card(c.getMain_word(), c.getAnswer(), c.getType());
             card = cardRepository.save(card);
-            System.out.println(card.getId());
             _deck.getCards().add(card);
         });
+        _deck.setCountWords(_deck.getCards().size());
         deckRepository.save(_deck);
         return MainController.getSuccess();
     }
@@ -88,17 +86,18 @@ public class DecksController {
         Deck deck = deckRepository.getById(request.getDeckId());
         if(!deck.getLikesList().contains(user)){
             deck.getLikesList().add(user);
-            user.getLikesList().add(deck);
-            deck.setLikes(user.getLikesList().size());
+            System.out.println(deck.getLikesList().size());
+            deck.setLikes(deck.getLikes() + 1);
+            System.out.println(deck.getLikes());
             deckRepository.save(deck);
-            userRepository.save(user);
             JSONObject object = MainController.getSuccess();
             object.put("status", true);
             return object;
         }
         deck.getLikesList().remove(user);
         user.getLikesList().remove(deck);
-        deck.setLikes(user.getLikesList().size());
+        System.out.println(deck.getLikesList().size());
+        deck.setLikes(deck.getLikes() - 1);
         deckRepository.save(deck);
         userRepository.save(user);
         JSONObject object = MainController.getSuccess();
@@ -232,7 +231,6 @@ class GetDeckRequest extends BanalRequest{
 class DeckRequest extends BanalRequest{
     String name;
     Boolean isPrivate;
-    Integer idUser;
     String description;
     String mainLang;
     String secondLang;
