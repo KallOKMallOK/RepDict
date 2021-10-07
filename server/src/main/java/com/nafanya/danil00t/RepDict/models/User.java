@@ -1,6 +1,7 @@
 package com.nafanya.danil00t.RepDict.models;
 
 import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
+import com.nafanya.danil00t.RepDict.repository.DeckRepository;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -62,26 +63,32 @@ public class User {
 
     private String refer;
 
-    /* TODO:
-        * ONE TO MANY WITH DECKS
-    */
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "decks",
-        joinColumns = {@JoinColumn(name = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "id_owner")})
-    private List<Deck> owned;
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "decks",
+//            joinColumns = {@JoinColumn(name = "id_owner")},
+//            inverseJoinColumns = {@JoinColumn(name = "id")})
+//    private List<Deck> owned;
+//
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "decks",
+//            joinColumns = {@JoinColumn(name = "id")},
+//            inverseJoinColumns = {@JoinColumn(name = "id_author")}
+//    )
+//    private List<Deck> authored;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "decks",
-            joinColumns = {@JoinColumn(name = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "id_author")}
-    )
-    private List<Deck> authored;
-    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "likes",
-            joinColumns = {@JoinColumn(name = "id_user")},
-            inverseJoinColumns = {@JoinColumn(name = "id_deck")})
+    joinColumns = {@JoinColumn(name = "id_user")},
+    inverseJoinColumns = {@JoinColumn(name="id_deck")})
     private List<Deck> likesList;
+
+    public List<Deck> getOwned(DeckRepository deckRepository){
+        return deckRepository.findAllByOwner(this);
+    }
+
+    public  List<Deck> getAuthored(DeckRepository deckRepository){
+        return deckRepository.findAllByAuthor(this);
+    }
 
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "subscriptions",

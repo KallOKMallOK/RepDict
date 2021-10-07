@@ -24,10 +24,10 @@ public class BalanceController {
     public JSONObject changeBalance(@PathVariable(value = "u_id") Integer userId,
                                     @RequestParam(value = "sum") Integer sum){
         if(!userRepository.existsById(userId))
-            return MainController.getERROR();
+            return MainController.getError();
         User user = userRepository.getById(userId);
         user.setBalance(user.getBalance() + sum);
-        return MainController.getSUCCESS();
+        return MainController.getSuccess();
     }
 
 }

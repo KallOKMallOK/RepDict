@@ -39,8 +39,8 @@ public class DecksController {
     public JSONObject newDeck(
         @RequestBody DeckRequest cards
     ) throws IOException {
-        if (!LogRegController.MiddleWare(cards.getToken(), userRepository))
-            return MainController.getERROR();
+        if(!LogRegController.MiddleWare(cards.getToken(), userRepository))
+            return MainController.getError();
         Deck deck = new Deck(cards.getName(),
                 cards.getIsPrivate(),
                 cards.getIdUser(),
@@ -53,26 +53,25 @@ public class DecksController {
         Deck _deck = deckRepository.save(deck);
         System.out.println(_deck.getId() + "\nUser: " + _deck.getAuthor().getId());
         cards.getCards().forEach(c -> {
-            Card card = new Card(c.getMainWord(), c.getAnswer(), c.getType(), c.getDescription());
+            Card card = new Card(c.getMain_word(), c.getAnswer(), c.getType());
             card = cardRepository.save(card);
             System.out.println(card.getId());
             _deck.getCards().add(card);
-            _deck.setCountWords(_deck.getCountRepetitions() + 1);
         });
         deckRepository.save(_deck);
-        return MainController.getSUCCESS();
+        return MainController.getSuccess();
     }
 
     @GetMapping("/get_decks")
     public JSONObject getDecks(
             //@RequestBody GetDeckRequest request
-        @RequestParam String token
+            @RequestParam String token
     ) throws IOException{
         if(!LogRegController.MiddleWare(token, userRepository))
-            return MainController.getERROR();
+            return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
         JSONArray array = new JSONArray();
-        user.getOwned().forEach(deck -> array.add(JsonUtils.getDeckJson(deck, user)));
+        user.getOwned(deckRepository).forEach(deck -> array.add(JsonUtils.getDeckJson(deck, user)));
         JSONObject object = new JSONObject();
         object.put("error", false);
         object.put("decks", array);
@@ -80,37 +79,41 @@ public class DecksController {
     }
 
     @PostMapping("/like")
-    public JSONObject addLike(
+    public JSONObject like(
             @RequestBody LikeRequest request
     ) throws IOException{
         if(!LogRegController.MiddleWare(request.getToken(), userRepository))
-            return MainController.getERROR();
+            return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()));
-        for(Deck deck : user.getLikesList()){
-            if(deck.getId().equals(request.getDeckId())){
-                user.getLikesList().remove(deck);
-                deck.getLikesList().remove(user);
-                deck.setLikes(deck.getLikesList().size());
-                userRepository.save(user);
-                deckRepository.save(deck);
-                return MainController.getSUCCESS();
-            }
-        }
         Deck deck = deckRepository.getById(request.getDeckId());
-        deck.getLikesList().add(user);
-        deck.setLikes(deck.getLikesList().size());
+        if(!deck.getLikesList().contains(user)){
+            deck.getLikesList().add(user);
+            user.getLikesList().add(deck);
+            deck.setLikes(user.getLikesList().size());
+            deckRepository.save(deck);
+            userRepository.save(user);
+            JSONObject object = MainController.getSuccess();
+            object.put("status", true);
+            return object;
+        }
+        deck.getLikesList().remove(user);
+        user.getLikesList().remove(deck);
+        deck.setLikes(user.getLikesList().size());
         deckRepository.save(deck);
-        return MainController.getSUCCESS();
+        userRepository.save(user);
+        JSONObject object = MainController.getSuccess();
+        object.put("status", false);
+        return object;
     }
 
     @PostMapping("/change_deck")
     public JSONObject changeDeck(
             @RequestBody TestRequest body
-            ) throws IOException{
+    ) throws IOException{
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(body.getToken()));
         Deck deck = deckRepository.getById(body.getIdDeck());
         if(!deck.getAuthor().getLogin().equals(user.getLogin()))
-            return MainController.getERROR();
+            return MainController.getError();
         body.getChanges().forEach(change -> {
             Card card;
             switch (change.getType()){
@@ -148,7 +151,7 @@ public class DecksController {
         });
         deck.setCountWords(deck.getCards().size());
         deckRepository.save(deck);
-        return MainController.getSUCCESS();
+        return MainController.getSuccess();
     }
 
     private void changeCardSwitch(JSONObject payload, Deck deck){
@@ -213,36 +216,37 @@ class BanalRequest{
 
 @Getter
 @Setter
-class GetDeckRequest extends BanalRequest{
-    private Integer userId;
-}
-
-@Getter
-@Setter
 class LikeRequest extends BanalRequest{
     private Integer deckId;
 }
 
 @Getter
 @Setter
+class GetDeckRequest extends BanalRequest{
+    Integer userId;
+}
+
+
+@Getter
+@Setter
 class DeckRequest extends BanalRequest{
-    private String name;
-    private Boolean isPrivate;
-    private Integer idUser;
-    private String description;
-    private String mainLang;
-    private String secondLang;
-    private Integer price;
-    private List<ListBody> cards;
+    String name;
+    Boolean isPrivate;
+    Integer idUser;
+    String description;
+    String mainLang;
+    String secondLang;
+    Integer price;
+    List<ListBody> cards;
 }
 
 @Getter
 @Setter
 class ListBody{
-    private String mainWord;
-    private String answer;
-    private String description;
-    private String type;
+    String main_word;
+    String answer;
+    String description;
+    String type;
 }
 
 @Getter

@@ -13,74 +13,6 @@ import java.util.List;
 
 public class JsonUtils {
 
-    public static JSONObject parseUsers(Iterable<User> users){
-        JSONObject main = MainController.createSuccess();
-        JSONArray usersArray = new JSONArray();
-        users.forEach(user -> {
-            JSONObject userObject = new JSONObject();
-            userObject.put("login", user.getLogin());
-            userObject.put("login", user.getLogin());
-            userObject.put("id", user.getId());
-            userObject.put("token", user.getToken());
-            userObject.put("name", user.getName());
-            userObject.put("balance", user.getBalance());
-            userObject.put("refer", user.getRefer());
-            userObject.put("is_checked", user.getIsChecked());
-            usersArray.add(userObject);
-        });
-        main.put("data", usersArray);
-        return main;
-    }
-
-    public static JSONObject parseCards(List<Card> cards){
-        JSONObject main = MainController.createSuccess();
-        JSONArray cardsArray = new JSONArray();
-        cards.forEach(card -> {
-            JSONObject cardObject = new JSONObject();
-            cardObject.put("id", card.getId());
-            cardObject.put("main_word", card.getMainWord());
-            cardObject.put("answer", card.getAnswer());
-            cardObject.put("type", card.getType());
-            /*Card parent = card.getParent();
-            if(parent != null)
-                cardObject.put("parent_id", card.getParent().getId());
-            else
-                cardObject.put("parent_id", null);
-            cardObject.put("subscribers_count", card.getSubscribers().size());
-            cardObject.put("words", wordsToArray(card.getWords()));
-            cardsArray.add(cardObject);*/
-        });
-        main.put("data", cardsArray);
-        return main;
-    }
-
-    public static JSONObject getUserInfo(User user){
-        JSONObject main = MainController.createSuccess();
-        main.put("login", user.getLogin());
-        main.put("id", user.getId());
-        return main;
-    }
-
-    public static JSONObject getCardInfo(Card card){
-        JSONObject main = MainController.createSuccess();
-        main.put("id", card.getId());
-        main.put("main_word", card.getMainWord());
-        main.put("answer", card.getAnswer());
-        main.put("type", card.getType());
-//        Card parent = card.getParent();
-//        if(parent != null)
-//            main.put("parent_id", card.getParent().getId());
-//        else
-//            main.put("parent_id", null);
-//        main.put("words", wordsToArray(card.getWords()));
-        return main;
-    }
-
-//    public static JSONObject getWordsInfo(List<Word> words){
-//        JSONObject object = MainController.createSuccess();
-//        object.put("data", wordsToArray(words));
-//        return object;
-//    }
     public static JSONObject getDeckJson(Deck deck, User user){
         JSONObject object = getDeckJson(deck);
         object.put("liked", deck.getLikesList().contains(user));
@@ -109,18 +41,6 @@ public class JsonUtils {
         return object;
     }
 
-    public static JSONObject getUserJson(User user){
-        JSONObject object = MainController.getSUCCESS();
-        object.put("login", user.getLogin());
-        object.put("id", user.getId());
-        object.put("token", user.getToken());
-        object.put("name", user.getName());
-        object.put("balance", user.getBalance());
-        object.put("refer", user.getRefer());
-        object.put("is_checked", user.getIsChecked());
-        return object;
-    }
-
     public static JSONObject getCardJson(Card card){
         JSONObject object = new JSONObject();
         object.put("id", card.getId());
@@ -128,6 +48,87 @@ public class JsonUtils {
         object.put("answer", card.getAnswer());
         object.put("main_word", card.getMainWord());
         object.put("description", card.getDescription());
+        return object;
+    }
+
+    public static JSONObject parseUsers(Iterable<User> users){
+        JSONObject main = MainController.getSuccess();
+        JSONArray usersArray = new JSONArray();
+        users.forEach(user -> {
+            JSONObject userObject = new JSONObject();
+            userObject.put("login", user.getLogin());
+            userObject.put("login", user.getLogin());
+            userObject.put("id", user.getId());
+            userObject.put("token", user.getToken());
+            userObject.put("name", user.getName());
+            userObject.put("balance", user.getBalance());
+            userObject.put("refer", user.getRefer());
+            userObject.put("is_checked", user.getIsChecked());
+            usersArray.add(userObject);
+        });
+        main.put("data", usersArray);
+        return main;
+    }
+
+    public static JSONObject parseCards(List<Card> cards){
+        JSONObject main = MainController.getSuccess();
+        JSONArray cardsArray = new JSONArray();
+        cards.forEach(card -> {
+            JSONObject cardObject = new JSONObject();
+            cardObject.put("id", card.getId());
+            cardObject.put("main_word", card.getMainWord());
+            cardObject.put("answer", card.getAnswer());
+            cardObject.put("type", card.getType());
+            /*Card parent = card.getParent();
+            if(parent != null)
+                cardObject.put("parent_id", card.getParent().getId());
+            else
+                cardObject.put("parent_id", null);
+            cardObject.put("subscribers_count", card.getSubscribers().size());
+            cardObject.put("words", wordsToArray(card.getWords()));
+            cardsArray.add(cardObject);*/
+        });
+        main.put("data", cardsArray);
+        return main;
+    }
+
+    public static JSONObject getUserInfo(User user){
+        JSONObject main = MainController.getSuccess();
+        main.put("login", user.getLogin());
+        main.put("id", user.getId());
+        return main;
+    }
+
+    public static JSONObject getCardInfo(Card card){
+        JSONObject main = MainController.getSuccess();
+        main.put("id", card.getId());
+        main.put("main_word", card.getMainWord());
+        main.put("answer", card.getAnswer());
+        main.put("type", card.getType());
+//        Card parent = card.getParent();
+//        if(parent != null)
+//            main.put("parent_id", card.getParent().getId());
+//        else
+//            main.put("parent_id", null);
+//        main.put("words", wordsToArray(card.getWords()));
+        return main;
+    }
+
+//    public static JSONObject getWordsInfo(List<Word> words){
+//        JSONObject object = MainController.createSuccess();
+//        object.put("data", wordsToArray(words));
+//        return object;
+//    }
+
+    public static JSONObject getUserJson(User user){
+        JSONObject object = MainController.getSuccess();
+        object.put("login", user.getLogin());
+        object.put("id", user.getId());
+        object.put("token", user.getToken());
+        object.put("name", user.getName());
+        object.put("balance", user.getBalance());
+        object.put("refer", user.getRefer());
+        object.put("is_checked", user.getIsChecked());
         return object;
     }
 
