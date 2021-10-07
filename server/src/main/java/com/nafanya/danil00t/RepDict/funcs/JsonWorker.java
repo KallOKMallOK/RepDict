@@ -16,7 +16,6 @@ public class JsonWorker {
             JSONObject obj = new JSONObject();
             JSONObject namePass = new JSONObject();
             namePass.put("id", user.getId());
-            namePass.put("password", user.getPassword());
             namePass.put("name", user.getLogin());
             usersArray.add(namePass);
         });
