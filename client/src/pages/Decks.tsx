@@ -11,34 +11,34 @@ import {
 
 
 // App styles
-import "../styles/pages/Cards.scss"
+import "../styles/pages/Decks.scss"
 import { Notification } from '../components/Notification';
 
-interface ICardsProps {
+interface IDecksProps {
 	init?: boolean
 	textHello?: string
 }
 
-class Cards extends React.Component<ICardsProps>{
+class Decks extends React.Component<IDecksProps>{
 	public state: any = {
 		decks: [
-			{
-				id: 1,
-				name: "Kitchen",
-				countWords: 3,
-				countRepetitions: 5,
-				isPrivate: false,
-				mainLang: LANGS.RUS,
-				secondaryLang: LANGS.ENG,
-				author: "daniil00t",
-				authorLink: "/user/8",
-				description: "This deck about kitchen and some subjects in there",
-			}
+			// {
+			// 	id: 1,
+			// 	name: "Kitchen",
+			// 	countWords: 3,
+			// 	countRepetitions: 5,
+			// 	isPrivate: false,
+			// 	mainLang: LANGS.RUS,
+			// 	secondaryLang: LANGS.ENG,
+			// 	author: "daniil00t",
+			// 	authorLink: "/user/8",
+			// 	description: "This deck about kitchen and some subjects in there",
+			// }
 		],
 		isEdit: false,
 		idEdit: -1
 	}
-	constructor(props: ICardsProps){
+	constructor(props: IDecksProps){
 		super(props)
 	}
 
@@ -65,6 +65,9 @@ class Cards extends React.Component<ICardsProps>{
 	like(){
 		console.log("like");
 	}
+	changePrivate(e: any, valuePrivate: boolean){
+		console.log(valuePrivate);
+	}
 
 	componentDidMount(){
 		API.getDecks()
@@ -77,13 +80,14 @@ class Cards extends React.Component<ICardsProps>{
 		return(
 			<React.Fragment>
 				<section className="lesson_section">
-					<h2 className="cards_main_name">My Cards</h2>
+					<h2 className="cards_main_name">My Decks</h2>
 					<div className="cards">
+						{/* deck for edit and add */}
 
 						{
 							this.state.isEdit && <DeckActive 
 								id={1}
-								name="Kitchen" 
+								name="New Deck" 
 								countWords={3} 
 								countRepetitions={4} 
 								isPrivate={true} 
@@ -97,6 +101,7 @@ class Cards extends React.Component<ICardsProps>{
 								/>
 						}
 
+						{/* Adding deck */}
 						<DeckAdd add={this.addDeck.bind(this)} />
 						
 						{
@@ -104,20 +109,22 @@ class Cards extends React.Component<ICardsProps>{
 								return <Deck
 									id={deck.id}
 									name={deck.name}
-									countWords={deck.countWords} 
-									author={deck.auhtor}
-									authorLink={deck.authorLink}
+									countWords={deck.count_words || 0} 
+									author={deck.author_login}
+									owner={deck.owner_login}
 									description={deck.description}
-									countRepetitions={deck.countRepetitions} 
-									isPrivate={deck.isPrivate} 
-									mainLang={deck.mainLang} 
-									secondaryLang={deck.secondaryLang}
+									countRepetitions={deck.count_repetitions || 0} 
+									isPrivate={deck.is_private} 
+									mainLang={deck.main_language.toUpperCase()} 
+									secondaryLang={deck.second_language.toUpperCase()}
 									countLikes={deck.likes || 0}
-									activeLike={false}
+									activeLike={deck.liked || false}
 
+									// active methods
 									edit={this.editDeck.bind(this)}
 									delete={this.deleteDeck}
 									like={this.like}
+									changePrivate={this.changePrivate.bind(this)}
 									/>
 							})
 						}
@@ -131,4 +138,4 @@ class Cards extends React.Component<ICardsProps>{
 	}
 }
 
-export default Cards;
+export default Decks;

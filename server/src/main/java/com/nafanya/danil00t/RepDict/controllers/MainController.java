@@ -21,23 +21,17 @@ import java.util.stream.Collectors;
 @RestController
 public class MainController {
 
-    public static JSONObject createError(){
+    public static JSONObject getError(){
         JSONObject o = new JSONObject();
         o.put("error", true);
         return o;
     }
 
-    public static JSONObject createSuccess(){
+    public static JSONObject getSuccess(){
         JSONObject o = new JSONObject();
         o.put("error", false);
         return o;
     }
-
-    @Getter
-    private static final JSONObject ERROR = createError();
-
-    @Getter
-    private static final JSONObject SUCCESS = createSuccess();
 
     private static final String KEY = "iodfgifdiogjv537489jdhknmvbnc5\"trolling\"ncnvbm, what? let's gosajlnvxc";
 
@@ -57,7 +51,7 @@ public class MainController {
 
     @GetMapping("/users")
     public JSONObject users(@RequestParam() String token) throws IOException {
-        return (LogRegController.MiddleWareIsAdmin(token, userRepository)) ? JsonUtils.parseUsers(userRepository.findAll()) : ERROR;
+        return (LogRegController.MiddleWareIsAdmin(token, userRepository)) ? JsonUtils.parseUsers(userRepository.findAll()) : getError();
     }
 
 //    @GetMapping("/u{id}/subscriptions")
@@ -101,7 +95,7 @@ public class MainController {
             @PathVariable(value = "u_id") Integer userId
             ){
         if(!userRepository.existsById(userId) || !key.equals(KEY))
-            return ERROR;
+            return getError();
         User user = userRepository.findById(userId).get();
         user.setIsChecked(true);
         userRepository.save(user);

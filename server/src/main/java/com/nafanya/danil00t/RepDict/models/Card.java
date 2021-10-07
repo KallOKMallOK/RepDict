@@ -22,12 +22,18 @@ public class Card {
 
     public Card(String mainWord,
                 String answer,
-                String type,
-                String description){
-        this.description = description;
+                String type){
         this.mainWord = mainWord;
         this.answer = answer;
         this.type = type;
+    }
+
+    public Card(String mainWord,
+                String answer,
+                String type,
+                String description){
+        this(mainWord, answer, type);
+        this.description = description;
     }
     /*public Card(String name, User user, Integer cost){
         this.name = name;

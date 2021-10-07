@@ -42,7 +42,7 @@ public class MainStaticFilesControllers {
             }
         }
 
-        return MainController.getSUCCESS();
+        return MainController.getSuccess();
     }
 
     @GetMapping("/*")
