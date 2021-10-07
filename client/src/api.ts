@@ -1,15 +1,21 @@
 import axios from "axios"
 import * as CONFIG from "./config.json"
+import { ActionChange } from "./domains/entity/actions.entity"
+import { IDeck } from "./domains/entity/desk.entity"
 
 interface OptionsRequest{
 	downloadFile: boolean
 }
 
 const API_URLS: any = {
-	REGISTRATION: CONFIG.HOST + CONFIG.URLS.REGISTRATION,
-	LOGIN: CONFIG.HOST + CONFIG.URLS.LOGIN,
-	AUTH: CONFIG.HOST + CONFIG.URLS.AUTH,
-	GET_DECKS: CONFIG.HOST + CONFIG.URLS.GET_DECKS,
+	REGISTRATION: 	CONFIG.HOST + CONFIG.URLS.REGISTRATION,
+	LOGIN: 			CONFIG.HOST + CONFIG.URLS.LOGIN,
+	AUTH: 			CONFIG.HOST + CONFIG.URLS.AUTH,
+	GET_DECKS: 		CONFIG.HOST + CONFIG.URLS.GET_DECKS,
+	GET_ALL_DECKS: CONFIG.HOST + CONFIG.URLS.GET_ALL_DECKS,
+	SET_LIKE: 		CONFIG.HOST + CONFIG.URLS.SET_LIKE,
+	ADD_DECK: 		CONFIG.HOST + CONFIG.URLS.ADD_DECK,
+	CHANGE_DECK: 	CONFIG.HOST + CONFIG.URLS.CHANGE_DECK,
 }
 
 const FAKE_DATA = (url: string) => {
@@ -67,7 +73,6 @@ const FAKE_DATA = (url: string) => {
 
 // Static class for wokring with API
 class API {
-
 	private static GET(url: string, data: any, options?: OptionsRequest): Promise<any>{
 		return axios.get(
 			url, 
@@ -100,16 +105,6 @@ class API {
 				resolve({ data: FAKE_DATA(url) })
 			}, 100)
 		})
-		// return axios.get(
-		// 	url, 
-		// 	{
-		// 		params: {
-		// 			...data, 
-		// 			token: localStorage.getItem("token") || ""
-		// 		},
-		// 		responseType: options?.downloadFile? "blob": "json"
-		// 	}
-		// )
 	}
 
 	private POSTFake (url: string, data: any, options?: OptionsRequest): Promise<any>{
@@ -138,8 +133,73 @@ class API {
 	// -------------------------- Decks and Cards -------------------------------
 	// --------------------------------------------------------------------------
 
+	// ***GET DATA***
+
+	// get decks for certain user (with token)
+	private static transormArrayOfDeck(response: any): IDeck[]{
+		return [...response.data.decks.map((deck: any) => ({
+			id: deck.id,
+			name: deck.name,
+			isPrivate: deck.is_private,
+			countWords: deck.count_words,
+			countRepetitions: deck.count_repetitions,
+			mainLang: deck.main_language,
+			secondaryLang: deck.second_language,
+			author: deck.author_login,
+			owner: deck.owner_login,
+			description: deck.description,
+			countLikes: deck.likes,
+			activeLike: deck.liked,
+			cards: deck.cards
+		}))]
+	}
+
 	public static getDecks(): Promise<any>{
-		return this.GETFake(API_URLS.GET_DECKS, { userId: 2 })
+		return new Promise<any> ((resolve, reject) => {
+			this.GET(API_URLS.GET_DECKS, {})
+				.then(response => {
+					const data: IDeck[] = this.transormArrayOfDeck(response)
+					resolve({
+						...response,
+						data: {
+							...response.data,
+							decks: data
+						}
+					})
+				})
+		})
+		
+	}
+	
+	public static getAllDecks(): Promise<any>{
+		return new Promise<any> ((resolve, reject) => {
+			this.GET(API_URLS.GET_ALL_DECKS, {})
+				.then(response => {
+					const data: IDeck[] = this.transormArrayOfDeck(response)
+					resolve({
+						...response,
+						data: {
+							...response.data,
+							decks: data
+						}
+					})
+				})
+		})
+		
+	}
+
+	// ***POST DATA***
+	public static addDeck(data: any): Promise<any>{
+		return this.POST(API_URLS.ADD_DECK, data)
+	}
+
+	// ***CHANGE DATA***
+	public static applyChanges(idDeck: number, changes: ActionChange[]){
+		return this.POST(API_URLS.CHANGE_DECK, { idDeck, changes})
+	}
+	// specific methods
+	public static setLike(deckId: number): Promise<any>{
+		return this.POST(API_URLS.SET_LIKE, { deckId })
 	}
 }
 
