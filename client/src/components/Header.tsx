@@ -1,5 +1,5 @@
-import React, {  useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import React, {  useEffect, useRef, useState } from 'react'
+import { Link, useLocation, useHistory } from 'react-router-dom'
 import { connect, ConnectedProps } from 'react-redux'
 import { FaUser, FaBars } from "react-icons/fa"
 
@@ -21,7 +21,8 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (f: Function) => ({
-	login: (user: any) => f(Action.app.login(user))
+	login: (user: any) => f(Action.app.login(user)),
+	logout: () => f(Action.app.logout())
 })
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
@@ -39,8 +40,10 @@ interface AppProps extends PropsFromRedux{
 // -----------------------------------------------------------------------------
 
 const Header: React.FC<AppProps> = props => {
+	const history = useHistory()
+
 	const [dropdownVisible, openDropdownUser] = useState(false)
-	const [menuVisible, openMenuUser] = useState(true)
+	const [menuVisible, openMenuUser] = useState(false)
 
 	const dropdownRef = useRef<any>(null)
 	const match = useLocation().pathname
@@ -49,10 +52,23 @@ const Header: React.FC<AppProps> = props => {
 		if(dropdownVisible) openDropdownUser(false)
 	})
 	
+	useEffect(() => {
+		if(menuVisible)
+			document.body.style.overflow = 'hidden'
+		else
+			document.body.style.overflow = 'unset'
+	}, [menuVisible ])
+
+	const logout = (e: any) => {
+		props.logout()
+		openMenuUser(false)
+		// history.push("/")
+	}
+	
 	return (
 		<header className="main_header">
 			<div className="logo">
-				<span className="logo_text"><Link to="/">RepDict</Link></span>
+				<span className="logo_text"><Link to="/" onClick={e => openMenuUser(false)}>RepDict</Link></span>
 			</div>
 
 			<div className="menu">
@@ -85,7 +101,7 @@ const Header: React.FC<AppProps> = props => {
 									<Link to="/settings" onClick={e => openMenuUser(false)}>Setting</Link>
 								</li>
 								<li className="dropdown_item">
-									<Link to="/logout" onClick={e => openMenuUser(false)}>Logout</Link>
+									<Link to="/" onClick={e => logout(e)}>Logout</Link>
 								</li>
 							</ul>
 						</li>

@@ -3,10 +3,10 @@ package com.nafanya.danil00t.RepDict.controllers;
 import com.nafanya.danil00t.RepDict.funcs.JsonUtils;
 import com.nafanya.danil00t.RepDict.models.Card;
 import com.nafanya.danil00t.RepDict.models.User;
-import com.nafanya.danil00t.RepDict.models.Word;
+//import com.nafanya.danil00t.RepDict.models.Word;
 import com.nafanya.danil00t.RepDict.repository.CardRepository;
 import com.nafanya.danil00t.RepDict.repository.UserRepository;
-import com.nafanya.danil00t.RepDict.repository.WordRepository;
+//import com.nafanya.danil00t.RepDict.repository.WordRepository;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CardsController {
-
+/*
     @Autowired
     private UserRepository userRepository;
 
@@ -32,7 +32,6 @@ public class CardsController {
     public JSONObject showCards(){
         return JsonUtils.parseCards(cardRepository.findAll());
     }
-
     @PostMapping("/u{u_id}/add_card")
     public JSONObject addCard(@PathVariable(value = "u_id") Integer userId,
                               @RequestParam String name,
@@ -165,5 +164,5 @@ public class CardsController {
         object.put("status", "success");
         return object;
     }
-
+*/
 }

@@ -1,11 +1,13 @@
 import Header from "./Header"
-import Cards from "./Card"
+import { Deck } from "./Deck"
 import Currsection from "./Currsection"
+import Notification from "./Notification"
 
 const Components = {
 	Header,
-	Cards,
-	Currsection
+	Deck,
+	Currsection,
+	Notification
 }
 
 export default Components

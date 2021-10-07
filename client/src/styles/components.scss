@@ -28,7 +28,7 @@ section.lesson_section{
 // -----------------------------------------------------------------------------
 
 header.main_header {
-	padding: 30px 50px;
+	padding: 35px 50px;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -53,9 +53,10 @@ header.main_header {
 		&_list {
 			display: flex;
 			flex-direction: row;
+			margin-bottom: 0;
 			&_item {
 				margin-right: 25px;
-
+				font-family: RobotoLight;
 				&_link {
 					font-family: RobotoLight;
 					color: rgb(231, 231, 231);
@@ -102,9 +103,9 @@ header.main_header {
 					padding: 5px 0;
 					// min-width: 100px;
 					height: auto;
-					border-radius: 3px;
+					border-radius: 5px;
 					// animation: 0.2s ease-in-out 0s alternate fadeIn;
-					@include bs(10px, 0px, #000);
+					@include bs(15px, 0px, rgb(15, 15, 15));
 					&_item{
 						text-align: center;
 						padding: 5px 0px;
@@ -122,6 +123,48 @@ header.main_header {
 				}
 			}
 		}
-
 	}
+}
+
+// Notification
+
+.Notification{
+	position: absolute;
+	bottom: 25px;
+	right: 15px;
+	padding: 10px 15px;
+	border-radius: 3px;
+	.Notification_wrapper_content{
+		position: relative;
+		.close{
+			position: absolute;
+			top: -5px;
+			right: -5px;
+			color: white;
+			cursor: pointer;
+		}
+		.head{
+			font-size: 1.4em;
+			font-family: RobotoBold;
+			color: white;
+		}
+	
+		.content{
+			font: 1em RobotoLight;
+			color: white;
+		}
+	}
+}
+
+.Notification.notify_success{
+	background-color: green !important;
+	@include fadeInDown(.2s);
+}
+.Notification.notify_error{
+	background-color: rgb(167, 24, 24) !important;
+	@include fadeInDown(.2s);
+}
+.Notification.notify_warning{
+	background-color: rgb(190, 207, 33) !important;
+	@include fadeInDown(.2s);
 }

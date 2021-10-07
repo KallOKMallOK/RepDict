@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface CardRepository extends JpaRepository<Card, Integer> {
     
-    List<Card> findByUser(User user);
+//    List<Card> findByUser(User user);
 
-    List<Card> findByUserAndName(User user, String name);
+//    List<Card> findByUserAndName(User user, String name);
 
-    boolean existsByUserAndName(User user, String name);
+//    boolean existsByUserAndName(User user, String name);
 
 }

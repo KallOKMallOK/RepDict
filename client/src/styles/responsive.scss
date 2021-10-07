@@ -3,51 +3,119 @@
 
 @media screen and (max-width: 660px) {
 
-// -----------------------------------------------------------------------------
-// ------------------------------- Header --------------------------------------
-// -----------------------------------------------------------------------------
-	.menu{
-		.icon_bars{
-			display: block !important;
-			position: absolute;
-			z-index: 999;
-			right: 50px;
-			top: 20px;
-		}
-		.menu_list.responsive_active{
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			display: flex;
-			flex-direction: column !important;
-			height: 100vh;
-			background-color: rgba(12, 12, 12, 0.835);
-			padding: 60px 20px;
-			
-			
-			.menu_list_item{
-				width: 100%;
-				margin-bottom: 10px;
-				a{
-					display: inline-block;
-					width: 100%;
-					text-align: center;
-					font-size: 1.6em;
-					border: none !important;
+	// -----------------------------------------------------------------------------
+	// ------------------------------- Header --------------------------------------
+	// -----------------------------------------------------------------------------
+	.main_header {
+		height: 90px !important;
+	
+		.logo {
+			&_text {
+				a {
+					font-family: RobotoBlack;
+					color: white;
+					text-decoration: none;
+					position: absolute;
+					z-index: 9999;
 				}
 			}
-			.user_panel{
-				order: -1;
-				text-align: center;
-				font-size: 1.6em;
-				margin-bottom: 20px;
+				
+		}
+		.menu{
+			z-index: 999;
+			.icon_bars{
+				display: block !important;
+				position: absolute;
+				z-index: 999;
+				right: 50px;
+				top: 20px;
 			}
-			
+			.menu_list.responsive_active{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				display: flex;
+				flex-direction: column !important;
+				height: 100vh;
+				background-color: rgba(12, 12, 12, 0.835);
+				padding: 60px 20px;
+				
+				
+				.menu_list_item{
+					width: 100%;
+					margin-bottom: 10px;
+					a{
+						display: inline-block;
+						width: 100%;
+						text-align: center;
+						font-size: 1.6em;
+						border: none !important;
+					}
+					&:first-child{
+						margin-top: 30px;
+					}
+				}
+				.user_panel{
+					order: -1;
+					text-align: center;
+					font-size: 1.1em;
+					margin-bottom: 50px !important;
+					margin-top: -28px;
+					// position: absolute;
+					// top: 30px;
+					// left: auto;
+					.dropdown{
+						display: none !important;
+					}
+				}
+				
+			}
 		}
 	}
 
 	.responsive_noactive.menu_list{
 		display: none !important;
+	}
+
+	// -----------------------------------------------------------------------------
+	// ------------------------------- Main --------------------------------------
+	// -----------------------------------------------------------------------------
+	
+	.Main{
+		.slider{
+			.image_wrapper{
+				display: none;
+			}
+			.text_block{
+				width: 100%;
+				text-align: center;
+			}
+		}
+	}
+
+
+	// -----------------------------------------------------------------------------
+	// ------------------------------- Cards --------------------------------------
+	// -----------------------------------------------------------------------------
+
+	.lesson_section{
+		padding: 0 !important;
+		.cards_main_name{ margin-left: 50px; }
+		.cards{
+			width: 100%;
+			justify-content: center;
+			.card{
+				width: 100%;
+				&_item{
+					width: 100%;
+					.card_item_panel{
+						&_item_words{
+							column-count: 2;
+						}
+					}
+				}
+			}
+		}
 	}
 }

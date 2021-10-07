@@ -16,7 +16,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="RepDict" options="-parameters" />
+      <module name="RepDict" options="-parameters --add-modules java.base" />
     </option>
   </component>
 </project>
