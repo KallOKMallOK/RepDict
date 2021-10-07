@@ -21,7 +21,6 @@ public class User {
 
     public User(String login, String password) throws IOException {
         this.login = login;
-        this.password = password;
         this.token = JWTokenUtils.GenerateJWToken(login, password);
         this.regDate = new Date();
         this.balance = 0;
@@ -45,7 +44,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String login, password;
+    private String login;
 
     @Column(name = "is_checked")
     private Boolean isChecked;
