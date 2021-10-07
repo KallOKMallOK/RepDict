@@ -60,6 +60,18 @@ public class DecksController {
         return MainController.getSuccess();
     }
 
+    @GetMapping("/get_all_decks")
+    public JSONObject getAllDecks(){
+        JSONObject object = MainController.getSuccess();
+        JSONArray decks = new JSONArray();
+        deckRepository.findAll().forEach(deck -> {
+            if(deck.getIsPrivate().equals(0))
+                decks.add(JsonUtils.getDeckJson(deck));
+        });
+        object.put("decks", decks);
+        return object;
+    }
+
     @GetMapping("/get_decks")
     public JSONObject getDecks(
             //@RequestBody GetDeckRequest request

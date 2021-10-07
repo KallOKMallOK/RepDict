@@ -224,3 +224,128 @@
     "error": false
 }
 ```
+
+>/get_all_decks
+### Input:
+```sh
+    empty
+```
+### Output
+```sh
+{
+    "decks": [
+        {
+            "is_private": 0,
+            "author_login": "admin",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 4,
+                    "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "мелодия",
+                    "description": null,
+                    "id": 5,
+                    "main_word": "loop",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 6,
+                    "main_word": "flow",
+                    "type": "default"
+                }
+            ],
+            "owner_login": "admin",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 0,
+            "name": "Lol Kek!!!",
+            "id": 2,
+            "likes": 0
+        },
+        {
+            "is_private": 0,
+            "author_login": "admin",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 7,
+                    "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "мелодия",
+                    "description": null,
+                    "id": 8,
+                    "main_word": "loop",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 9,
+                    "main_word": "flow",
+                    "type": "default"
+                }
+            ],
+            "owner_login": "admin",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 0,
+            "name": "Lol Kek!!!",
+            "id": 3,
+            "likes": 0
+        },
+        {
+            "is_private": 0,
+            "author_login": "admin",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 10,
+                    "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "мелодия",
+                    "description": null,
+                    "id": 11,
+                    "main_word": "loop",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 12,
+                    "main_word": "flow",
+                    "type": "default"
+                }
+            ],
+            "owner_login": "admin",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 0,
+            "name": "Lol Kek!!!",
+            "id": 4,
+            "likes": 0
+        }
+        ],
+        "error":false
+        }
+        ```
