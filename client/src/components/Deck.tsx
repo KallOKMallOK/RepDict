@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import useOutsideClick from '../hoc/OutsideClicker'
 
 import { LANGS } from "../redux/types"
+import { EditText } from './EditText'
 
 
 // -----------------------------------------------------------------------------
@@ -28,6 +29,7 @@ export interface IDeck {
 	mainLang: LANGS,
 	secondaryLang: LANGS,
 	author?: string,
+	owner?: string,
 	authorLink?: string,
 	description?: string
 	countLikes?: number
@@ -36,16 +38,28 @@ export interface IDeck {
 	// Actions
 	edit?: actionClick,
 	delete?: actionClick,
-	like?: actionClick
+	like?: actionClick,
+	changePrivate?: actionClick
+}
+export interface ICard{
+	id: number
+	main_word: string
+	answer: string
+	description: string
+	type: "default" | "choose"
 }
 
 
 
 export const Deck: React.FC<IDeck> = props => {
 
+	// Component states
 	const [dropdownVisible, openDropdown] = useState(false)
 	const [activedLike, activeLike] = useState(props.activeLike || false)
+
+	// Data states
 	const [countLikes, changeCountLikes] = useState(props.countLikes || 0)
+	const [isPrivate, changePrivate] = useState(props.isPrivate || false)
 
 	const dropdownRef = useRef<any>(null)
 
@@ -61,6 +75,13 @@ export const Deck: React.FC<IDeck> = props => {
 		props.like!(e)
 	}
 
+	const handleChangePrivate = (e: any) => {
+		if(props.author === props.owner){
+			props.changePrivate!(e, !isPrivate)
+			changePrivate(!isPrivate)
+		}
+	}
+
   	return (
 	<div className="card_item card_item_noactive">
 		{/* control items */}
@@ -68,14 +89,24 @@ export const Deck: React.FC<IDeck> = props => {
 			<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
 			<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
 				<li className="dropdown_item" onClick={props.edit}>Edit</li>
-				<li className="dropdown_item" onClick={props.delete}>Delete</li>
+				<li className="dropdown_item" onClick={e => props.delete!(e, props.id)}>Delete</li>
 			</ul>
 		</div>
+
+		{/* HEAD OF DECK */}
 		<p className="card_item_head">
-			<span className="private_lock">{props.isPrivate? <FaLock/>: <FaLockOpen/>}</span>
+			<span 
+				style={{cursor: props.author === props.owner ? "pointer": "default"}}
+				className="private_lock" 
+				onClick={e => handleChangePrivate(e)}
+			>
+				{isPrivate? <FaLock/>: <FaLockOpen/>}
+			</span>
 			<span className="card_item_head_name">{props.name}</span>
-			{props.author !== undefined && <Link to={props.authorLink || "/users"} className="author">(by {props.author})</Link> }
-			
+			{
+				props.author !== props.owner && 
+				<Link to={`/users/${props.author}`} className="author">(by {props.author})</Link> 
+			}
 		</p>
 
 		
@@ -98,10 +129,6 @@ export const Deck: React.FC<IDeck> = props => {
 				{countLikes}
 			</span>
 		</div>
-		{/* <div className="buttons_group">
-			<button className="button_manipulate" onClick={e => props.edit!(e, props.id)}>edit</button>
-			<button className="button_manipulate" onClick={e => props.delete!(e, props.id)}>delete</button>
-		</div> */}
 	</div>
   );
 }
@@ -120,21 +147,21 @@ export interface IDeckActive extends IDeck{
 export const DeckActive: React.FC<IDeckActive> = props => {
 	return (
 		<div className="card_item card_item_active">
-			<p className="card_item_name">Nature</p>
-			<span className="card_item_count_words">23 words</span>
-			<p className="card_item_count_repetitions">3 repetitions</p>
+			<p className="card_item_name"><EditText text="Nature" typeInput="text" onChanged={(old, _new) => console.log(old, _new)}/></p>
+			<span className="card_item_count_words">{props.countWords} words</span>
+			<p className="card_item_count_repetitions">{props.countRepetitions} repetitions</p>
 			<div className="card_item_panel_adding">
 
 				<div className="form-floating mb-3">
-					<input type="email" className="form-control" id="floatingInput" placeholder="name@example.com" />
-					<label htmlFor="floatingInput">Email address</label>
+					<input type="text" className="form-control" id="floatingInput" placeholder="type word..."/>
+					<label htmlFor="floatingInput">Main word</label>
 				</div>
 
 				<span className="card_item_panel_toggler">↔</span>
 
 				<div className="form-floating mb-3">
-					<input type="email" className="form-control" id="floatingInput" placeholder="name@example.com" />
-					<label htmlFor="floatingInput">Email address</label>
+					<input type="text" className="form-control" id="floatingInput" placeholder="type word..."/>
+					<label htmlFor="floatingInput">Second word</label>
 				</div>
 
 
@@ -143,26 +170,15 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 
 				<div className="card_item_panel_item_words">
 					<ul className="card_item_panel_item_words_ul">
-						<li className="item">First - Link</li>
-						<li className="item">Second - Link</li>
-						<li className="item">Third - Link</li>
-						<li className="item">Fourth - Link</li>
-						<li className="item">Fifth - Link</li>
-						<li className="item">Sixth - Link</li>
-						<li className="item">Seventh - Link</li>
-						<li className="item">Eighth - Link</li>
-						<li className="item">Ninth - Link</li>
-						<li className="item">Tenth - Link</li>
-						<li className="item">Eleventh Link</li>
-						<li className="item">Twelfth Link</li>
-						<li className="item">Thirteenth Link</li>
-						<li className="item">Fourteenth Link</li>
-						<li className="item">Fifteenth Link</li>
-						<li className="item">Sixteenth Link</li>
-						<li className="item">Seventeenth Link</li>
-						<li className="item">Eighteenth Link</li>
-						<li className="item">Nineteenth Link</li>
-						<li className="item">Twentieth Link</li>
+						{
+							props.words.map((card: ICard) => {
+								return <li className="item">
+									<span className="main_word">{card.main_word}</span>
+									-
+									<span className="second_word">{card.answer}</span>
+								</li>
+							})
+						}
 					</ul>
 				</div>
 			</div>
@@ -185,7 +201,9 @@ interface IDeckAdd{
 export const DeckAdd: React.FC<IDeckAdd> = props => {
 	return(
 		<div className="card_item card_item_noactive new_card">
-			<FaPlus onClick={e => props.add(e)}/>
+			<div className="svg_wrapper">
+				<FaPlus onClick={e => props.add(e)}/>
+			</div>
 		</div>
 	)
 }

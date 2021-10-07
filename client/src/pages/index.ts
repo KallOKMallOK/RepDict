@@ -1,4 +1,4 @@
-import Cards from "./Cards"
+import Decks from "./Decks"
 import Home from "./Home"
 import Login from "./Login"
 import Statistics from "./Statistics"
@@ -10,13 +10,12 @@ import Main from "./Main"
 
 const Pages = {
 	Main,
-	Cards,
+	Decks,
 	Home,
 	Statistics,
 	Play,
 	Store,
 	Rating,
-
 	Registration,
 	Login,
 }
