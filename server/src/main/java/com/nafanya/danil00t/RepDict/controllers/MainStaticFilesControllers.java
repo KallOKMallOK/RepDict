@@ -29,22 +29,6 @@ public class MainStaticFilesControllers {
         return JsonUtils.getCardInfo(cardRepository.findById(1).get());
     }
 
-    @GetMapping("/jwt")
-    public JSONObject Jwt(){
-
-        for(User user : userRepository.findAll()){
-            try {
-                user.setToken(JWTokenUtils.GenerateJWToken(user.getLogin(), user.getPassword()));
-                userRepository.save(user);
-            }
-            catch (Exception exc){
-                System.err.println("жес");
-            }
-        }
-
-        return MainController.getSuccess();
-    }
-
     @GetMapping("/*")
     public String test(){
         return "index";
