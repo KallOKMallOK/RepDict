@@ -32,11 +32,11 @@ public class LogRegController {
         String login = data.getLogin();
         String password = data.getPassword();
         if(!userRepository.existsByLogin(login))
-            return MainController.getERROR();
+            return MainController.getError();
         User user = userRepository.findByLogin(login).get(0);
         try {
             if (!JWTokenUtils.getPasswordFromJWToken(user.getToken()).equals(password))
-                return MainController.getERROR();
+                return MainController.getError();
         }
         catch (IOException exception){
             throw exception;
@@ -59,11 +59,11 @@ public class LogRegController {
         String password = data.getPassword();
 
         if(userRepository.existsByLogin(login))
-            return MainController.getERROR();
+            return MainController.getError();
         else {
             User user = new User(login, password, name/*, refer*/);
             if(!JWTokenUtils.getPasswordFromJWToken(user.getToken()).equals(password))
-                return MainController.getERROR();
+                return MainController.getError();
             user.setIsChecked(false);
             userRepository.save(user);
         }
@@ -72,7 +72,7 @@ public class LogRegController {
 
     @GetMapping("/auth")
     public JSONObject auth(@RequestParam String token) throws IOException {
-        return (findUserByToken(token, userRepository) == null) ? MainController.getERROR() : MainController.getSUCCESS();
+        return (findUserByToken(token, userRepository) == null) ? MainController.getError() : MainController.getSuccess();
     }
 
     private static User findUserByToken(String token, UserRepository userRepository) throws IOException{
@@ -93,8 +93,8 @@ public class LogRegController {
         return user;
     }
 
-    public static boolean MiddleWare(String token, UserRepository userRepository) throws IOException    {
-         return findUserByToken(token, userRepository) != null;
+    public static boolean MiddleWare(String token, UserRepository userRepository) throws IOException {
+        return findUserByToken(token, userRepository) != null;
     }
 
     public static boolean MiddleWareIsAdmin(String token, UserRepository userRepository) throws  IOException{
