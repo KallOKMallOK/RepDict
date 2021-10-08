@@ -9,7 +9,7 @@ import {
 import { Link } from 'react-router-dom'
 import { ActionChange } from '../domains/entity/actions.entity'
 import { ICard } from '../domains/entity/card.entity'
-import { IDeck } from '../domains/entity/desk.entity'
+import { IDeck } from '../domains/entity/deсk.entity'
 import useOutsideClick from '../hoc/OutsideClicker'
 
 import { LANGS } from "../redux/types"
@@ -22,8 +22,16 @@ import { EditText } from './EditText'
 
 type actionClick = (e: MouseEvent<any>, ...more: any[]) => void
 
+interface enableMethodsOptions{
+	enableDelete?: boolean
+	enableEdit?: boolean
+	enableLike?: boolean
+	enableChangePrivate?: boolean
+}
+
 export interface IDeckDefault extends IDeck{
 	index: number
+	enableMethods?: enableMethodsOptions
 	// Actions
 	edit?: actionClick,
 	delete?: actionClick,
@@ -67,23 +75,31 @@ export const Deck: React.FC<IDeckDefault> = props => {
   	return (
 	<div className="card_item card_item_noactive">
 		{/* control items */}
-		<div className="control">
-			<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
-			<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
-				<li className="dropdown_item" onClick={e => props.edit!(e, props.index)}>Edit</li>
-				<li className="dropdown_item" onClick={e => props.delete!(e, props.id)}>Delete</li>
-			</ul>
-		</div>
+		{
+			(props.enableMethods !== undefined && props.enableMethods.enableDelete && props.enableMethods.enableEdit) &&
+				<div className="control">
+					<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
+					<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
+						<li className="dropdown_item" onClick={e => props.edit!(e, props.index)}>Edit</li>
+						<li className="dropdown_item" onClick={e => props.delete!(e, props.id)}>Delete</li>
+					</ul>
+				</div>
+		}
+		
 
 		{/* HEAD OF DECK */}
 		<p className="card_item_head">
-			<span 
-				style={{cursor: props.author === props.owner ? "pointer": "default"}}
-				className="private_lock" 
-				onClick={e => handleChangePrivate(e)}
-			>
-				{isPrivate? <FaLock/>: <FaLockOpen/>}
-			</span>
+			{
+				(props.enableMethods !== undefined && props.enableMethods.enableChangePrivate) &&
+					<span 
+						style={{cursor: props.author === props.owner ? "pointer": "default"}}
+						className="private_lock" 
+						onClick={e => handleChangePrivate(e)}
+					>
+						{isPrivate? <FaLock/>: <FaLockOpen/>}
+					</span>
+			}
+			
 			<span className="card_item_head_name">{props.name}</span>
 			{
 				// props.author !== props.owner && 

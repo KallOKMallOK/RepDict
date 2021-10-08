@@ -110,7 +110,6 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 								countLikes={this.state.deckEdit!.countLikes || 0}
 								activeLike={this.state.deckEdit!.activeLike || false}
 
-
 								save={this.saveDeck.bind(this)}
 								delete={this.deleteDeck}
 								/>
@@ -137,6 +136,13 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 									activeLike={deck.activeLike || false}
 									cards={deck.cards}
 									key={`deck_${index}`}
+
+									// enables
+									enableMethods={{ 
+										enableChangePrivate: true, 
+										enableDelete: true, 
+										enableEdit:true 
+									}}
 
 									// active methods
 									edit={this.editDeck.bind(this)}

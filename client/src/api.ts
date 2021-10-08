@@ -1,7 +1,7 @@
 import axios from "axios"
 import * as CONFIG from "./config.json"
 import { ActionChange } from "./domains/entity/actions.entity"
-import { IDeck } from "./domains/entity/desk.entity"
+import { IDeck } from "./domains/entity/deсk.entity"
 
 interface OptionsRequest{
 	downloadFile: boolean

@@ -3,7 +3,7 @@ import React from 'react';
 import "../styles/pages/Decks.scss"
 import { Notification } from '../components/Notification';
 import { Deck, IDeckDefault } from '../components/Deck';
-import { IDeck } from "../domains/entity/desk.entity"
+import { IDeck } from "../domains/entity/deсk.entity"
 import API from '../api';
 
 interface StateStore{
@@ -20,6 +20,15 @@ class Store extends React.Component{
 	constructor(props: IStoreProps){
 		super(props)
 	}
+
+	// Methods
+	handleLike(e: any, id: number){
+		console.log("like", id);
+		API.setLike(id)
+			.then(response => console.log(response))
+			.catch(err => console.log(err))
+	}
+
 
 	componentDidMount(){
 		API.getAllDecks()
@@ -51,6 +60,8 @@ class Store extends React.Component{
 									activeLike={deck.activeLike || false}
 									cards={deck.cards}
 									key={`deck_${index}`}
+
+									like={this.handleLike}
 									/>
 							})
 						}
