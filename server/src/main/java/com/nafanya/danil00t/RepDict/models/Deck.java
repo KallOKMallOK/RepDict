@@ -59,11 +59,11 @@ public class Deck {
     @JoinColumn(name = "is_private")
     private Integer isPrivate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_author")
     private User author;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_owner")
     private User owner;
 
@@ -87,7 +87,7 @@ public class Deck {
         this.cards.add(card);
     }
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "likes",
             joinColumns = {@JoinColumn(name = "id_deck")},
             inverseJoinColumns = {@JoinColumn(name="id_user")})
