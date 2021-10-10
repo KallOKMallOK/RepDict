@@ -61,13 +61,23 @@ public class DecksController {
     }
 
     @GetMapping("/get_all_decks")
-    public JSONObject getAllDecks(){
+    public JSONObject getAllDecks(
+            @RequestParam(required = false) String token
+    ) throws IOException{
         JSONObject object = MainController.getSuccess();
         JSONArray decks = new JSONArray();
-        deckRepository.findAll().forEach(deck -> {
-            if(deck.getIsPrivate().equals(0))
-                decks.add(JsonUtils.getDeckJson(deck));
-        });
+        if(token == null)
+            deckRepository.findAll().forEach(deck -> {
+                if(deck.getIsPrivate().equals(0))
+                    decks.add(JsonUtils.getDeckJson(deck));
+            });
+        else {
+            User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
+            deckRepository.findAll().forEach(deck -> {
+                if (deck.getIsPrivate().equals(0) || deck.getOwner().equals(user))
+                    decks.add(JsonUtils.getDeckJson(deck, user));
+            });
+        }
         object.put("decks", decks);
         return object;
     }
