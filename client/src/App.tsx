@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 import { connect, ConnectedProps } from 'react-redux'
 
 // Controllers data
@@ -29,7 +29,8 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (f: Function) => ({
-	login: (user: any) => f(Action.app.login(user))
+	login: (user: any) => f(Action.app.login(user)),
+	logout: () => f(Action.app.logout()),
 })
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
@@ -56,15 +57,20 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 	}
 
 	componentDidMount(){
-		if(localStorage.getItem("token") && localStorage.getItem("token")?.length !== 0){
+		if(localStorage.getItem("token")?.length !== 0 && localStorage.getItem("token") !== "undefined"){
 			API.auth()
 				.then(res => {
+					console.log(res)
 					if(!res.data.error){
 						this.setState({ auth: true })
-						this.props.login(res.data)
+						this.props.login(res.data.data)
 					}
+					else this.props.logout()
 				})
 				.catch(err => console.log(err))
+		}
+		else{
+			this.setState({ auth: false })
 		}
 	}
 

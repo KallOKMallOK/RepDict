@@ -210,6 +210,11 @@
 			flex: 0 0 100%;
 			min-height: 300px;
 			height: auto;
+			.card_item_name{
+				span{
+					color: white;
+				}
+			}
 		}
 	}
 	
