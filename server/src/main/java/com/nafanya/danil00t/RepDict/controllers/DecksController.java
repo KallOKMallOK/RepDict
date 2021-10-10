@@ -10,11 +10,9 @@ import com.nafanya.danil00t.RepDict.repository.DeckRepository;
 import com.nafanya.danil00t.RepDict.repository.UserRepository;
 import lombok.Getter;
 import lombok.Setter;
-import org.jboss.jandex.Main;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.Name;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -129,8 +127,10 @@ public class DecksController {
 
     @PostMapping("/change_deck")
     public JSONObject changeDeck(
-            @RequestBody TestRequest body
+            @RequestBody ChangeRequest body
     ) throws IOException{
+        if(!LogRegController.MiddleWare(body.getToken(), userRepository))
+            return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(body.getToken()));
         Deck deck = deckRepository.getById(body.getIdDeck());
         if(!deck.getAuthor().getLogin().equals(user.getLogin()))
@@ -173,6 +173,20 @@ public class DecksController {
         deck.setCountWords(deck.getCards().size());
         deckRepository.save(deck);
         return MainController.getSuccess();
+    }
+
+    @PostMapping("/delete_deck")
+    public JSONObject deleteDeck(
+            @RequestBody LikeRequest request
+    ) throws IOException{
+        if(!LogRegController.MiddleWare(request.getToken(), userRepository))
+            return MainController.getError();
+        Deck deck = deckRepository.getById(request.getDeckId());
+        if(!deck.getAuthor().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
+            return MainController.getError();
+        cardRepository.deleteAll(deck.getCards());
+        deckRepository.delete(deck);
+        return getDecks(request.getToken());
     }
 
     private void changeCardSwitch(JSONObject payload, Deck deck){
@@ -271,14 +285,14 @@ class ListBody{
 
 @Getter
 @Setter
-class TestRequest extends BanalRequest{
+class ChangeRequest extends BanalRequest{
     int idDeck;
-    private List<TestBody> changes;
+    private List<ChangeBody> changes;
 }
 
 @Getter
 @Setter
-class TestBody{
+class ChangeBody {
     private String type;
     private JSONObject payload;
 }

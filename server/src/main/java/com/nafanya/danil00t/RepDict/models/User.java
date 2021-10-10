@@ -75,7 +75,7 @@ public class User {
 //    )
 //    private List<Deck> authored;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "likes",
     joinColumns = {@JoinColumn(name = "id_user")},
     inverseJoinColumns = {@JoinColumn(name="id_deck")})
