@@ -228,7 +228,7 @@
 >/get_all_decks
 ### Input:
 ```sh
-    empty
+    empty OR token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
 ```
 ### Output
 ```sh
@@ -269,7 +269,8 @@
             "count_words": 0,
             "name": "Lol Kek!!!",
             "id": 2,
-            "likes": 0
+            "likes": 0,
+	    "liked":false
         },
         {
             "is_private": 0,
@@ -306,7 +307,8 @@
             "count_words": 0,
             "name": "Lol Kek!!!",
             "id": 3,
-            "likes": 0
+            "likes": 0,
+	    "liked":false
         },
         {
             "is_private": 0,
@@ -343,9 +345,10 @@
             "count_words": 0,
             "name": "Lol Kek!!!",
             "id": 4,
-            "likes": 0
+            "likes": 0,
+	    "liked":false
         }
         ],
         "error":false
         }
-        ```
+```
