@@ -214,6 +214,7 @@ public class DecksController {
                 card.setDescription((String) payload.get("description"));
                 break;
         }
+        card.generateRating();
         card = cardRepository.save(card);
     }
 

@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /*TODO:
-    * Удаление деки.
     * Реализация рейтинга и сложность карточки.
+    * Поддержка HTTPS.
  */
 
 @CrossOrigin
