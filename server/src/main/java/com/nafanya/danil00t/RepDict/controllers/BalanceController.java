@@ -1,33 +1,74 @@
 package com.nafanya.danil00t.RepDict.controllers;
 
+import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
+import com.nafanya.danil00t.RepDict.models.Card;
 import com.nafanya.danil00t.RepDict.models.User;
+import com.nafanya.danil00t.RepDict.repository.CardRepository;
+import com.nafanya.danil00t.RepDict.repository.DeckRepository;
 import com.nafanya.danil00t.RepDict.repository.UserRepository;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
+@CrossOrigin
 public class BalanceController {
 
     @Autowired
     private UserRepository userRepository;
 
-    /* TODO:
-        * СДЕЛАТЬ РЕАЛЬНОЕ ВЗАИМОДЕЙСТВИЕ С ПЛАТЕЖНОЙ СИСТЕМОЙ И СОЕДЕНИТЬ ЭТО С ПОДПИСКОЙ ПРИ НЕНУЛЕВОЙ ЦЕНЕ
-     */
+    @Autowired
+    private CardRepository cardRepository;
 
-    // ------------- ЗАГЛУШКА ------------- //
-    @GetMapping("/u{u_id}/add_to_balance")
-    public JSONObject changeBalance(@PathVariable(value = "u_id") Integer userId,
-                                    @RequestParam(value = "sum") Integer sum){
-        if(!userRepository.existsById(userId))
+    @Autowired
+    private DeckRepository deckRepository;
+
+    @PostMapping("/statistic")
+    public JSONObject statistic(
+            @RequestBody StatisticRequest request
+    ) throws IOException {
+        if(!LogRegController.MiddleWare(request.getToken(), userRepository))
             return MainController.getError();
-        User user = userRepository.getById(userId);
-        user.setBalance(user.getBalance() + sum);
-        return MainController.getSuccess();
+        User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()));
+        Integer deltaRating = 0;
+        for(CardResult result : request.getResults())
+            deltaRating += getBalls(result);
+        user.setBalance(user.getBalance() + deltaRating);
+        user.setRating(user.getRating() + deltaRating);
+        userRepository.save(user);
+        JSONObject object = MainController.getSuccess();
+        object.put("score", deltaRating);
+        return object;
     }
 
+    private Integer getBalls(CardResult result){
+        if(!result.getAnswer())
+            return 0;
+        Integer cardRating = 0;
+        Integer timeBonus = 0;
+        if(result.getTime().compareTo(60) < 0)
+            timeBonus += (int) Math.pow((result.getTime() - 60)/10d, 2);
+        Card card = cardRepository.getById(result.getIdCard());
+        cardRating += card.getRating() + timeBonus;
+        return cardRating * 10;
+    }
+}
+
+@Getter
+@Setter
+class StatisticRequest extends BanalRequest{
+    private List<CardResult> results; //success/all answers
+}
+
+@Getter
+@Setter
+class CardResult{
+    private Integer idCard;
+    private Integer time;
+    private Boolean answer;
 }

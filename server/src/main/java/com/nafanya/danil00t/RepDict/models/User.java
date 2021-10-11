@@ -27,6 +27,8 @@ public class User {
         this.isChecked = false;
         this.role = 0;
         this.refer = null;
+        this.rating = 0;
+        this.donatBalance = 0;
         this.name = "окси";
     }
 
@@ -51,11 +53,16 @@ public class User {
 
     private Integer balance;
 
+    @Column(name = "donat_balance")
+    private Integer donatBalance;
+
     private String token;
 
     private Integer role;
 
     private String name;
+
+    private Integer rating;
 
     @Column(name = "reg_date")
     private Date regDate;

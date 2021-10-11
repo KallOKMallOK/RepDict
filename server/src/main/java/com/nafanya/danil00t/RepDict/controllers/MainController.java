@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 /*TODO:
     * Реализация рейтинга и сложность карточки.
+    * Поддержка HTTPS.
  */
 
 @CrossOrigin
