@@ -27,6 +27,8 @@ public class User {
         this.isChecked = false;
         this.role = 0;
         this.refer = null;
+        this.rating = 0;
+        this.donatBalance = 0;
         this.name = "окси";
     }
 
@@ -51,11 +53,16 @@ public class User {
 
     private Integer balance;
 
+    @Column(name = "donat_balance")
+    private Integer donatBalance;
+
     private String token;
 
     private Integer role;
 
     private String name;
+
+    private Integer rating;
 
     @Column(name = "reg_date")
     private Date regDate;
@@ -75,7 +82,7 @@ public class User {
 //    )
 //    private List<Deck> authored;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "likes",
     joinColumns = {@JoinColumn(name = "id_user")},
     inverseJoinColumns = {@JoinColumn(name="id_deck")})

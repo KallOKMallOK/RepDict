@@ -17,6 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*TODO:
+    * Реализация рейтинга и сложность карточки.
+    * Поддержка HTTPS.
+ */
+
 @CrossOrigin
 @RestController
 public class MainController {

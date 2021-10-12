@@ -10,11 +10,9 @@ import com.nafanya.danil00t.RepDict.repository.DeckRepository;
 import com.nafanya.danil00t.RepDict.repository.UserRepository;
 import lombok.Getter;
 import lombok.Setter;
-import org.jboss.jandex.Main;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.Name;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -61,13 +59,23 @@ public class DecksController {
     }
 
     @GetMapping("/get_all_decks")
-    public JSONObject getAllDecks(){
+    public JSONObject getAllDecks(
+            @RequestParam(required = false) String token
+    ) throws IOException{
         JSONObject object = MainController.getSuccess();
         JSONArray decks = new JSONArray();
-        deckRepository.findAll().forEach(deck -> {
-            if(deck.getIsPrivate().equals(0))
-                decks.add(JsonUtils.getDeckJson(deck));
-        });
+        if(token == null)
+            deckRepository.findAll().forEach(deck -> {
+                if(deck.getIsPrivate().equals(0))
+                    decks.add(JsonUtils.getDeckJson(deck));
+            });
+        else {
+            User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
+            deckRepository.findAll().forEach(deck -> {
+                if (deck.getIsPrivate().equals(0) || deck.getOwner().equals(user))
+                    decks.add(JsonUtils.getDeckJson(deck, user));
+            });
+        }
         object.put("decks", decks);
         return object;
     }
@@ -119,8 +127,10 @@ public class DecksController {
 
     @PostMapping("/change_deck")
     public JSONObject changeDeck(
-            @RequestBody TestRequest body
+            @RequestBody ChangeRequest body
     ) throws IOException{
+        if(!LogRegController.MiddleWare(body.getToken(), userRepository))
+            return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(body.getToken()));
         Deck deck = deckRepository.getById(body.getIdDeck());
         if(!deck.getAuthor().getLogin().equals(user.getLogin()))
@@ -165,6 +175,20 @@ public class DecksController {
         return MainController.getSuccess();
     }
 
+    @PostMapping("/delete_deck")
+    public JSONObject deleteDeck(
+            @RequestBody LikeRequest request
+    ) throws IOException{
+        if(!LogRegController.MiddleWare(request.getToken(), userRepository))
+            return MainController.getError();
+        Deck deck = deckRepository.getById(request.getDeckId());
+        if(!deck.getAuthor().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
+            return MainController.getError();
+        cardRepository.deleteAll(deck.getCards());
+        deckRepository.delete(deck);
+        return getDecks(request.getToken());
+    }
+
     private void changeCardSwitch(JSONObject payload, Deck deck){
         Card card = null;
         Integer cardId = (Integer) payload.get("id");
@@ -190,6 +214,7 @@ public class DecksController {
                 card.setDescription((String) payload.get("description"));
                 break;
         }
+        card.generateRating();
         card = cardRepository.save(card);
     }
 
@@ -261,14 +286,14 @@ class ListBody{
 
 @Getter
 @Setter
-class TestRequest extends BanalRequest{
+class ChangeRequest extends BanalRequest{
     int idDeck;
-    private List<TestBody> changes;
+    private List<ChangeBody> changes;
 }
 
 @Getter
 @Setter
-class TestBody{
+class ChangeBody {
     private String type;
     private JSONObject payload;
 }

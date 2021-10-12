@@ -144,13 +144,162 @@
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
 }
 ```
-
+>/delete_deck
+### Input:
+```sh
+{
+	"deckId":4,
+	"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImFkbWluIiwibG9naW4iOiJhZG1pbiJ9.0A_h5-_WN0OeoT1eWQoeIWZR2_wACsfxmWSRu_WBOGo"
+}
+```
+### Output:
+```sh
+{
+    "decks": [
+        {
+            "is_private": 1,
+            "author_login": "admin",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 1,
+                    "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 3,
+                    "main_word": "flow",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 22,
+                    "main_word": "guap",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 32,
+                    "main_word": "guap",
+                    "type": "default"
+                }
+            ],
+            "owner_login": "admin",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": true,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 4,
+            "name": "RAP",
+            "id": 1,
+            "likes": 2
+        }
+    ],
+    "error": false
+}
+```
+/statistic
+### Input:
+```sh
+    {
+	"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImFkbWluIiwibG9naW4iOiJhZG1pbiJ9.0A_h5-_WN0OeoT1eWQoeIWZR2_wACsfxmWSRu_WBOGo",
+	"results":[
+		{
+			"idCard":1,
+			"time":41,
+			"answer":true
+		},
+		{
+			"idCard":3,
+			"time":57,
+			"answer":true
+		},
+		{
+			"idCard":22,
+			"time":10,
+			"answer":false
+		},
+		{
+			"idCard":32,
+			"time":7,
+			"answer":true
+		}
+		]
+}
+```
+### Output:
+```sh
+{
+    "score": 390,
+    "error": false
+}
+```
 ## GET.
 >/get_decks
 ### Input:
 ```sh
 {
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
+}
+```
+### Output:
+```sh
+{
+    "decks": [
+        {
+            "is_private": 1,
+            "author_login": "admin",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 1,
+                    "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 3,
+                    "main_word": "flow",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 22,
+                    "main_word": "guap",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 32,
+                    "main_word": "guap",
+                    "type": "default"
+                }
+            ],
+            "owner_login": "admin",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": true,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 4,
+            "name": "RAP",
+            "id": 1,
+            "likes": 2
+        }
+    ],
+    "error": false
 }
 ```
 ### Output:
@@ -216,8 +365,10 @@
         "balance": 0,
         "refer": null,
         "name": "nafanya",
+        "rating": 0,
         "is_checked": false,
         "id": 2,
+        "donat_balance": 0,
         "login": "nafanya",
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
     },
@@ -228,7 +379,7 @@
 >/get_all_decks
 ### Input:
 ```sh
-    empty
+    empty OR token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
 ```
 ### Output
 ```sh
@@ -269,7 +420,8 @@
             "count_words": 0,
             "name": "Lol Kek!!!",
             "id": 2,
-            "likes": 0
+            "likes": 0,
+	    "liked":false
         },
         {
             "is_private": 0,
@@ -306,7 +458,8 @@
             "count_words": 0,
             "name": "Lol Kek!!!",
             "id": 3,
-            "likes": 0
+            "likes": 0,
+	    "liked":false
         },
         {
             "is_private": 0,
@@ -343,9 +496,11 @@
             "count_words": 0,
             "name": "Lol Kek!!!",
             "id": 4,
-            "likes": 0
+            "likes": 0,
+	    "liked":false
         }
         ],
         "error":false
         }
 ```
+
