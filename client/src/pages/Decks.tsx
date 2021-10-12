@@ -59,7 +59,10 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 
 	saveDeck(e: MouseEvent<HTMLElement>, id: number, changes: ActionChange[]){
 		API.applyChanges(id, changes)
-			.then(response => console.log(response))
+			.then(response => {
+				console.log(response)
+				this.setState({ isEdit: false })
+			})
 			.catch(err => console.log(err))
 	}
 	editDeck(e: MouseEvent<HTMLElement>, index: number){
@@ -80,8 +83,27 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		console.log("like", id);
 	}
 
-	changePrivate(e: any, valuePrivate: boolean){
-		console.log(valuePrivate);
+	changePrivate(e: any, id: number, valuePrivate: boolean){
+		API.applyChanges(id, [
+			{
+				type: "CHANGE_DECK",
+				payload: {
+					name: "isPrivate",
+					value: Number(valuePrivate)
+				}
+			}
+		])
+			.then(resp => console.log(resp))
+			.catch(err => console.log(err))
+	}
+
+	createNewDeck(e: any, data: any){
+		API.addDeck(data)
+			.then(response => {
+				console.log(response)
+				this.setState({ isNewDeck: false })
+			})
+			.catch(err => console.log(err))
 	}
 
 	componentDidMount(){
@@ -121,10 +143,15 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 								countLikes={this.state.deckEdit!.countLikes || 0}
 								activeLike={this.state.deckEdit!.activeLike || false}
 
+								enableMethods={{
+									enableSave: true,
+									enableDelete: true
+								}}
 								save={this.saveDeck.bind(this)}
 								delete={this.deleteDeck}
 								/>
 						}
+						{/* New Deck */}
 						{
 							this.state.isNewDeck && <DeckActive
 								index={-1}
@@ -142,8 +169,11 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 								countLikes={0}
 								activeLike={false}
 
-								save={this.saveDeck.bind(this)}
-							
+								enableMethods={{
+									enableCreate: true
+								}}
+								create={this.createNewDeck}
+
 							/>
 						}
 
