@@ -57,7 +57,7 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 	}
 
 	componentDidMount(){
-		if(localStorage.getItem("token")?.length !== 0 && localStorage.getItem("token") !== "undefined"){
+		if(localStorage.getItem("token")?.length !== undefined && localStorage.getItem("token") !== "undefined"){
 			API.auth()
 				.then(res => {
 					console.log(res)

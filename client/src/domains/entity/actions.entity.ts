@@ -1,11 +1,11 @@
 interface ActionChangeDeckPayload{
 	name: string
-	value: string
+	value: string | number
 }
 interface ActionChangeCardPayload{
 	id: number
 	name: string
-	value: string
+	value: string | number
 
 }
 interface ActionNewCardPayload{

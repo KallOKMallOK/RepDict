@@ -14,6 +14,7 @@ import useOutsideClick from '../hoc/OutsideClicker'
 
 import { LANGS } from "../redux/types"
 import { EditText } from './EditText'
+import { Notification } from './Notification'
 
 
 // -----------------------------------------------------------------------------
@@ -27,16 +28,20 @@ interface enableMethodsOptions{
 	enableEdit?: boolean
 	enableLike?: boolean
 	enableChangePrivate?: boolean
+	enableSubscribe?: boolean
+	enableSave?: boolean
+	enableCreate?: boolean
 }
 
 export interface IDeckDefault extends IDeck{
 	index: number
 	enableMethods?: enableMethodsOptions
 	// Actions
-	edit?: actionClick,
-	delete?: actionClick,
-	like?: actionClick,
+	edit?: actionClick
+	delete?: actionClick
+	like?: actionClick
 	changePrivate?: actionClick
+	subscribe?: actionClick
 }
 
 
@@ -58,18 +63,28 @@ export const Deck: React.FC<IDeckDefault> = props => {
 	})
 
 	const likeUser = (e: any) => {
-		activeLike(!activedLike)
-		activedLike?
-			changeCountLikes(countLikes - 1):
-			changeCountLikes(countLikes + 1)
-		props.like!(e, props.id)
+		console.log(props.enableMethods)
+		if(props.enableMethods?.enableLike){
+			activeLike(!activedLike)
+			activedLike?
+				changeCountLikes(countLikes - 1):
+				changeCountLikes(countLikes + 1)
+			props.like!(e, props.id)
+		}
+		else{
+			Notification.warning("Warning", "Please, sign in", 3000)
+		}
 	}
 
 	const handleChangePrivate = (e: any) => {
 		if(props.author === props.owner){
-			props.changePrivate!(e, !isPrivate)
+			props.changePrivate!(e, props.id, !isPrivate)
 			changePrivate(!isPrivate)
 		}
+	}
+	const handleEdit = (e: any, index: number) => {
+		openDropdown(false)
+		props.edit!(e, props.index)
 	}
 
   	return (
@@ -80,7 +95,8 @@ export const Deck: React.FC<IDeckDefault> = props => {
 				<div className="control">
 					<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
 					<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
-						<li className="dropdown_item" onClick={e => props.edit!(e, props.index)}>Edit</li>
+						<li className="dropdown_item" onClick={e => console.log(e)}>Play</li>
+						<li className="dropdown_item" onClick={e => handleEdit(e, props.index)}>Edit</li>
 						<li className="dropdown_item" onClick={e => props.delete!(e, props.id)}>Delete</li>
 					</ul>
 				</div>
@@ -122,6 +138,11 @@ export const Deck: React.FC<IDeckDefault> = props => {
 		<p className="card_item_description">{props.description}</p>
 
 		<div className="footer">
+			{
+				props.enableMethods?.enableSubscribe ?
+				<button className="btn btn-primary disabled">Subsctibe</button>:
+				<div></div>
+			}
 			<span className="likes" onClick={e => likeUser(e)}>
 				<span className={`heart ${activedLike? "active": "noactive"}`}><FaHeart/></span>
 				{countLikes}
@@ -138,7 +159,8 @@ export const Deck: React.FC<IDeckDefault> = props => {
 
 
 export interface IDeckActive extends IDeckDefault{
-	save: actionClick
+	save?: actionClick
+	create?: actionClick
 }
 
 
@@ -146,10 +168,25 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 	const [cards, addCard] = useState(props.cards)
 	const [countCards, incCountCards] = useState(props.countWords)
 	const [changes, addChange] = useState([] as ActionChange[])
+	const [name, changeName] = useState(props.name || "Deck name")
+	// const [isPrivate, changeName] = useState(props.name || "Deck name")
 
 	const mainWordRef = useRef<HTMLInputElement>(null)
 	const secondWordRef = useRef<HTMLInputElement>(null)
 
+	const handleChangeName = (newValue: string) => {
+		changeName(newValue)
+		const payloadChangeName = {
+			name: "name",
+			value: newValue
+		}
+		addChange(oldChanges => {
+			return [...oldChanges, {
+				type: "CHANGE_DECK",
+				payload: payloadChangeName
+			}]
+		})
+	}
 
 	const handleAddCard = (e: any) => {
 		const newCard: ICard = {
@@ -169,9 +206,24 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		})
 		// mainWordRef.current?.value = ""
 	}
+
+	// For creating
+	const handleCreateDeck = (e: any) => {
+		const dataNewDeck = {
+			name,
+			isPrivate: false,
+			description: "",
+			mainLang: "RU",
+			secondLang: "ENG",
+			price: 0,
+			cards: cards
+		}
+		props.create!(e, dataNewDeck)
+	}
+
 	return (
 		<div className="card_item card_item_active">
-			<p className="card_item_name"><EditText text={props.name} typeInput="text" onChanged={(old, _new) => console.log(old, _new)}/></p>
+			<p className="card_item_name"><EditText text={name} typeInput="text" onChanged={(old, _new) => handleChangeName(_new as string)}/></p>
 			<span className="card_item_count_words">{countCards} words</span>
 			<p className="card_item_count_repetitions">{props.countRepetitions} repetitions</p>
 			<div className="card_item_panel_adding">
@@ -207,8 +259,18 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 				</div>
 			</div>
 			<div className="buttons_group">
-				<button className="button_manipulate" onClick={e => props.save(e, props.id, changes)}>save</button>
-				<button className="button_manipulate" onClick={e => props.delete!(e, props.id)}>delete</button>
+				{
+					props.enableMethods?.enableCreate && 
+					<button className="button_manipulate" onClick={handleCreateDeck}>create</button>
+				}
+				{
+					props.enableMethods?.enableSave && 
+						<button className="button_manipulate" onClick={e => props.save!(e, props.id, changes)}>save</button>
+				}
+				{
+					props.enableMethods?.enableDelete &&
+						<button className="button_manipulate" onClick={e => props.delete!(e, props.id)}>delete</button>
+				}
 			</div>
 		</div>
 	)
