@@ -13,21 +13,21 @@ enum EStatus{
 
 
 interface NotifyProps{
-	visible: boolean,
-	head: string,
-	content: string,
-	type: EStatus,
+	visible: boolean
+	head: string
+	content: string
+	type: EStatus
 	timeout?: number
 }
 
 export const Notification = {
-	success: (head: string, content: string, timeout: number = 2000) => {
+	success: (head: string, content: NotifyProps['content'], timeout: number = 2000) => {
 		store.dispatch(Action.notification.show("success", head, content, timeout))
 	},
-	error: (head: string, content: string, timeout: number = 2000) => {
+	error: (head: string, content: NotifyProps['content'], timeout: number = 2000) => {
 		store.dispatch(Action.notification.show("error", head, content, timeout))
 	},
-	warning: (head: string, content: string, timeout: number = 2000) => {
+	warning: (head: string, content: NotifyProps['content'], timeout: number = 2000) => {
 		store.dispatch(Action.notification.show("warning", head, content, timeout))
 	}
 }

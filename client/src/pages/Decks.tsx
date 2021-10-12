@@ -16,6 +16,7 @@ import {
 import "../styles/pages/Decks.scss"
 import { Notification } from '../components/Notification';
 import { ActionChange } from '../domains/entity/actions.entity';
+import { connect, ConnectedProps } from 'react-redux';
 
 interface IDecksProps {
 	init?: boolean
@@ -28,8 +29,17 @@ interface StateDecks{
 	isEdit: boolean
 	deckEdit: IDeckDefault | null
 }
+const mapStateToProps = (state: any) => ({
+	auth: state.app.auth,
+	user: state.app.user,
+	notify: state.notification
+})
+const connector = connect(mapStateToProps)
 
-class Decks extends React.Component<IDecksProps, StateDecks>{
+type PropsFromRedux = IDecksProps & ConnectedProps<typeof connector>
+
+
+class Decks extends React.Component<PropsFromRedux, StateDecks>{
 	public state: StateDecks = {
 		decks: [],
 
@@ -37,13 +47,13 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 		isEdit: false,
 		deckEdit: null
 	}
-	constructor(props: IDecksProps){
+	constructor(props: PropsFromRedux){
 		super(props)
 	}
 
 	addDeck(e: MouseEvent<any>){
 		this.setState({
-			isEdit: true
+			isNewDeck: true
 		})
 	}
 
@@ -85,6 +95,7 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 	}
 
 	render(){
+		console.log(this.props.auth)
 		return(
 			<React.Fragment>
 				<section className="lesson_section">
@@ -114,6 +125,27 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 								delete={this.deleteDeck}
 								/>
 						}
+						{
+							this.state.isNewDeck && <DeckActive
+								index={-1}
+								id={-1}
+								name={"New Deck"} 
+								countWords={0} 
+								countRepetitions={0} 
+								isPrivate={false} 
+								mainLang={"RU"} 
+								secondaryLang={"ENG"} 
+								cards={[]}
+								author={this.props.user.login}
+								owner={this.props.user.login}
+								description={""}
+								countLikes={0}
+								activeLike={false}
+
+								save={this.saveDeck.bind(this)}
+							
+							/>
+						}
 
 						{/* Adding deck */}
 						<DeckAdd add={this.addDeck.bind(this)} />
@@ -141,7 +173,8 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 									enableMethods={{ 
 										enableChangePrivate: true, 
 										enableDelete: true, 
-										enableEdit:true 
+										enableEdit:true,
+										enableLike: true
 									}}
 
 									// active methods
@@ -152,9 +185,6 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 									/>
 							})
 						}
-
-						
-						
 					</div>
 				</section>
 			</React.Fragment>
@@ -162,4 +192,4 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 	}
 }
 
-export default Decks;
+export default connector(Decks)

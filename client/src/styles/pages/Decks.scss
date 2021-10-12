@@ -142,7 +142,10 @@
 				margin-top: 10px;
 			}
 			.footer{
-				text-align: right;
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-end;
+				// justify-content: flex-end;
 				.likes{
 					cursor: pointer;
 					color: white;
