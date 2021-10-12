@@ -5,19 +5,26 @@ import { Notification } from '../components/Notification';
 import { Deck, IDeckDefault } from '../components/Deck';
 import { IDeck } from "../domains/entity/deсk.entity"
 import API from '../api';
+import { connect, ConnectedProps } from 'react-redux';
 
 interface StateStore{
 	decks: IDeck[]
 }
 
-interface IStoreProps{
-}
+const mapStateToProps = (state: any) => ({
+	auth: state.app.auth,
+	notify: state.notification
+})
+const connector = connect(mapStateToProps)
 
-class Store extends React.Component{
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+
+class Store extends React.Component<PropsFromRedux>{
 	public state: any = {
 		decks: []
 	}
-	constructor(props: IStoreProps){
+	constructor(props: PropsFromRedux){
 		super(props)
 	}
 
@@ -62,6 +69,11 @@ class Store extends React.Component{
 									key={`deck_${index}`}
 
 									like={this.handleLike}
+
+									enableMethods={{
+										enableLike: this.props.auth,
+										enableSubscribe: true
+									}}
 									/>
 							})
 						}
@@ -76,4 +88,4 @@ class Store extends React.Component{
 }
 
 
-export default Store;
+export default connector(Store)

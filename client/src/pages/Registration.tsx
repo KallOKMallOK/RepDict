@@ -1,5 +1,6 @@
 import React, { createRef, MouseEvent } from "react"
 import { connect, ConnectedProps } from "react-redux"
+import { RouteComponentProps } from "react-router-dom"
 
 import API from "../api"
 import { Notification } from "../components/Notification"
@@ -17,7 +18,7 @@ const mapDispatchToProps = (f: Function) => ({
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
 
-type PropsFromRedux = ConnectedProps<typeof connector>
+type PropsFromRedux = ConnectedProps<typeof connector> & RouteComponentProps 
 
 interface RegistrationState{
 	nameValidate: boolean | null
@@ -52,10 +53,12 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 					refer: null
 				})
 					.then(res => {
-						// this.props.history.push("/")
+						
 						console.log(res)
-						if(!res.data.error)
+						if(!res.data.error){
 							this.props.login(res.data)
+							this.props.history.push("/")
+						}
 						else
 							Notification.error("Ошибка", "Возможно, такой логин уже занят", 4000)
 					})

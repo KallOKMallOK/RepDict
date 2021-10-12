@@ -16,6 +16,7 @@ import {
 import "../styles/pages/Decks.scss"
 import { Notification } from '../components/Notification';
 import { ActionChange } from '../domains/entity/actions.entity';
+import { connect, ConnectedProps } from 'react-redux';
 
 interface IDecksProps {
 	init?: boolean
@@ -28,8 +29,17 @@ interface StateDecks{
 	isEdit: boolean
 	deckEdit: IDeckDefault | null
 }
+const mapStateToProps = (state: any) => ({
+	auth: state.app.auth,
+	user: state.app.user,
+	notify: state.notification
+})
+const connector = connect(mapStateToProps)
 
-class Decks extends React.Component<IDecksProps, StateDecks>{
+type PropsFromRedux = IDecksProps & ConnectedProps<typeof connector>
+
+
+class Decks extends React.Component<PropsFromRedux, StateDecks>{
 	public state: StateDecks = {
 		decks: [],
 
@@ -37,19 +47,22 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 		isEdit: false,
 		deckEdit: null
 	}
-	constructor(props: IDecksProps){
+	constructor(props: PropsFromRedux){
 		super(props)
 	}
 
 	addDeck(e: MouseEvent<any>){
 		this.setState({
-			isEdit: true
+			isNewDeck: true
 		})
 	}
 
 	saveDeck(e: MouseEvent<HTMLElement>, id: number, changes: ActionChange[]){
 		API.applyChanges(id, changes)
-			.then(response => console.log(response))
+			.then(response => {
+				console.log(response)
+				this.setState({ isEdit: false })
+			})
 			.catch(err => console.log(err))
 	}
 	editDeck(e: MouseEvent<HTMLElement>, index: number){
@@ -70,8 +83,27 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 		console.log("like", id);
 	}
 
-	changePrivate(e: any, valuePrivate: boolean){
-		console.log(valuePrivate);
+	changePrivate(e: any, id: number, valuePrivate: boolean){
+		API.applyChanges(id, [
+			{
+				type: "CHANGE_DECK",
+				payload: {
+					name: "isPrivate",
+					value: Number(valuePrivate)
+				}
+			}
+		])
+			.then(resp => console.log(resp))
+			.catch(err => console.log(err))
+	}
+
+	createNewDeck(e: any, data: any){
+		API.addDeck(data)
+			.then(response => {
+				console.log(response)
+				this.setState({ isNewDeck: false })
+			})
+			.catch(err => console.log(err))
 	}
 
 	componentDidMount(){
@@ -85,6 +117,7 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 	}
 
 	render(){
+		console.log(this.props.auth)
 		return(
 			<React.Fragment>
 				<section className="lesson_section">
@@ -110,9 +143,38 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 								countLikes={this.state.deckEdit!.countLikes || 0}
 								activeLike={this.state.deckEdit!.activeLike || false}
 
+								enableMethods={{
+									enableSave: true,
+									enableDelete: true
+								}}
 								save={this.saveDeck.bind(this)}
 								delete={this.deleteDeck}
 								/>
+						}
+						{/* New Deck */}
+						{
+							this.state.isNewDeck && <DeckActive
+								index={-1}
+								id={-1}
+								name={"New Deck"} 
+								countWords={0} 
+								countRepetitions={0} 
+								isPrivate={false} 
+								mainLang={"RU"} 
+								secondaryLang={"ENG"} 
+								cards={[]}
+								author={this.props.user.login}
+								owner={this.props.user.login}
+								description={""}
+								countLikes={0}
+								activeLike={false}
+
+								enableMethods={{
+									enableCreate: true
+								}}
+								create={this.createNewDeck}
+
+							/>
 						}
 
 						{/* Adding deck */}
@@ -141,7 +203,8 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 									enableMethods={{ 
 										enableChangePrivate: true, 
 										enableDelete: true, 
-										enableEdit:true 
+										enableEdit:true,
+										enableLike: true
 									}}
 
 									// active methods
@@ -152,9 +215,6 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 									/>
 							})
 						}
-
-						
-						
 					</div>
 				</section>
 			</React.Fragment>
@@ -162,4 +222,4 @@ class Decks extends React.Component<IDecksProps, StateDecks>{
 	}
 }
 
-export default Decks;
+export default connector(Decks)

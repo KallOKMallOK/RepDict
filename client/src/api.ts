@@ -4,7 +4,8 @@ import { ActionChange } from "./domains/entity/actions.entity"
 import { IDeck } from "./domains/entity/deсk.entity"
 
 interface OptionsRequest{
-	downloadFile: boolean
+	token?: boolean
+	downloadFile?: boolean
 }
 
 const API_URLS: any = {
@@ -77,9 +78,11 @@ class API {
 		return axios.get(
 			url, 
 			{
-				params: {
+				params: options?.token ? {
 					...data, 
 					token: localStorage.getItem("token") || ""
+				} : {
+					...data
 				},
 				responseType: options?.downloadFile? "blob": "json"
 			}
@@ -87,12 +90,15 @@ class API {
 	}
 
 	private static POST(url: string, data: any, options?: OptionsRequest): Promise<any>{
+		const bodyRequest = options?.token ? {
+			...data, 
+			token: localStorage.getItem("token") || ""
+		} : {
+			...data
+		}
 		return axios.post(
 			url, 
-			{
-				...data, 
-				token: localStorage.getItem("token") || ""
-			},
+			bodyRequest,
 			{
 				responseType: options?.downloadFile? "blob": "json"
 			}
@@ -126,7 +132,7 @@ class API {
 	}
 
 	public static auth(): Promise<any>{
-		return this.GET(API_URLS.AUTH, {  })
+		return this.GET(API_URLS.AUTH, {  }, { token: true })
 	}
 
 	// --------------------------------------------------------------------------
@@ -156,7 +162,7 @@ class API {
 
 	public static getDecks(): Promise<any>{
 		return new Promise<any> ((resolve, reject) => {
-			this.GET(API_URLS.GET_DECKS, {})
+			this.GET(API_URLS.GET_DECKS, {}, { token: true })
 				.then(response => {
 					const data: IDeck[] = this.transormArrayOfDeck(response)
 					resolve({
@@ -173,7 +179,7 @@ class API {
 	
 	public static getAllDecks(): Promise<any>{
 		return new Promise<any> ((resolve, reject) => {
-			this.GET(API_URLS.GET_ALL_DECKS, {})
+			this.GET(API_URLS.GET_ALL_DECKS, (localStorage.getItem("token")?.length !== undefined ? { token: localStorage.getItem("token") }: {}))
 				.then(response => {
 					const data: IDeck[] = this.transormArrayOfDeck(response)
 					resolve({
@@ -190,16 +196,16 @@ class API {
 
 	// ***POST DATA***
 	public static addDeck(data: any): Promise<any>{
-		return this.POST(API_URLS.ADD_DECK, data)
+		return this.POST(API_URLS.ADD_DECK, data, { token: true })
 	}
 
 	// ***CHANGE DATA***
 	public static applyChanges(idDeck: number, changes: ActionChange[]){
-		return this.POST(API_URLS.CHANGE_DECK, { idDeck, changes})
+		return this.POST(API_URLS.CHANGE_DECK, { idDeck, changes}, { token: true })
 	}
 	// specific methods
 	public static setLike(deckId: number): Promise<any>{
-		return this.POST(API_URLS.SET_LIKE, { deckId })
+		return this.POST(API_URLS.SET_LIKE, { deckId }, { token: true })
 	}
 }
 
