@@ -88,6 +88,12 @@ public class User {
     inverseJoinColumns = {@JoinColumn(name="id_deck")})
     private List<Deck> likesList;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(name = "subscriptions",
+    joinColumns = {@JoinColumn(name="id_user")},
+    inverseJoinColumns = {@JoinColumn(name="id_deck")})
+    private List<Deck> subscriptions;
+
     public List<Deck> getOwned(DeckRepository deckRepository){
         return deckRepository.findAllByOwner(this);
     }

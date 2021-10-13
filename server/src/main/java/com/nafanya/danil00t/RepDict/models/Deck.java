@@ -42,6 +42,24 @@ public class Deck {
         cards = new ArrayList<Card>();
     }
 
+    public Deck(Deck deck, User owner){
+        author = deck.getAuthor();
+        countRepetitions = 0;
+        countWords = deck.getCountWords();
+        isPrivate = deck.getIsPrivate();
+        description = deck.getDescription();
+        mainLanguage = deck.getMainLanguage();
+        secondLanguage = deck.getSecondLanguage();
+        likes = 0;
+        price = 0;
+        this.owner = owner;
+        name = deck.getName() + " (clone)";
+        cards = new ArrayList<Card>();
+        for(Card card : deck.getCards()){
+            cards.add(new Card(card));
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -82,6 +100,12 @@ public class Deck {
             joinColumns = {@JoinColumn(name = "id_deck")},
             inverseJoinColumns = {@JoinColumn(name = "id_card")})
     private List<Card> cards;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(name = "subscriptions",
+            joinColumns = {@JoinColumn(name="id_deck")},
+            inverseJoinColumns = {@JoinColumn(name="id_user")})
+    private List<User> subscribers;
 
     public void addCard(Card card){
         this.cards.add(card);

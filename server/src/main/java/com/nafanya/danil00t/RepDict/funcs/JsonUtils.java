@@ -103,6 +103,7 @@ public class JsonUtils {
     public static JSONObject getCardInfo(Card card){
         JSONObject main = MainController.getSuccess();
         main.put("id", card.getId());
+        main.put("description", card.getDescription());
         main.put("main_word", card.getMainWord());
         main.put("answer", card.getAnswer());
         main.put("type", card.getType());
