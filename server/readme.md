@@ -241,6 +241,39 @@
     "error": false
 }
 ```
+
+>/subscribe
+### Inout:
+```sh
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ",
+    "deckId":1
+}
+```
+### Output:
+```sh
+{
+    "error":false,
+    "status":true
+}
+```
+
+>/copy_deck
+### Input:
+```sh
+{ 
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ",
+    "deckId":1
+}
+```
+### Output:
+```sh
+{
+    "error":false,
+    "cloneId":15
+}
+```
+
 ## GET.
 >/get_decks
 ### Input:
@@ -252,7 +285,49 @@
 ### Output:
 ```sh
 {
-    "decks": [
+    "authored": [
+        {
+            "is_private": 0,
+            "author_login": "nafanya",
+            "cards": [],
+            "owner_login": "nafanya",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": false,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 0,
+            "name": "Nafanya's deck",
+            "id": 13,
+            "likes": 0
+        },
+        {
+            "is_private": 0,
+            "author_login": "nafanya",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 36,
+                    "main_word": "rap",
+                    "type": "default"
+                }
+            ],
+            "owner_login": "nafanya",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": false,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 1,
+            "name": "Another",
+            "id": 14,
+            "likes": 0
+        }
+    ],
+    "subscriptions": [
         {
             "is_private": 1,
             "author_login": "admin",
@@ -299,38 +374,37 @@
             "likes": 2
         }
     ],
-    "error": false
-}
-```
-### Output:
-```sh
-{
-    "decks": [
+    "owned": [
         {
-            "is_private": 0,
-            "author_login": "nafanya",
-            "cards": [],
-            "owner_login": "nafanya",
-            "description": "тут чисто про реп",
-            "count_repetitions": 0,
-            "liked": false,
-            "main_language": "eng",
-            "second_language": "rus",
-            "price": 0,
-            "count_words": 0,
-            "name": "Nafanya's deck",
-            "id": 13,
-            "likes": 0
-        },
-        {
-            "is_private": 0,
-            "author_login": "nafanya",
+            "is_private": 1,
+            "author_login": "admin",
             "cards": [
                 {
                     "answer": "реп",
                     "description": null,
-                    "id": 36,
+                    "id": 37,
                     "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 38,
+                    "main_word": "flow",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 39,
+                    "main_word": "guap",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 40,
+                    "main_word": "guap",
                     "type": "default"
                 }
             ],
@@ -341,9 +415,9 @@
             "main_language": "eng",
             "second_language": "rus",
             "price": 0,
-            "count_words": 1,
-            "name": "Another",
-            "id": 14,
+            "count_words": 4,
+            "name": "RAP (clone)",
+            "id": 15,
             "likes": 0
         }
     ],
@@ -503,4 +577,3 @@
         "error":false
         }
 ```
-
