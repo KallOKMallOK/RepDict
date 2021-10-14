@@ -25,3 +25,12 @@ export const NOTIFY = {
 	SHOW: "NOTIFY/SHOW",
 	HIDE: "NOTIFY/HIDE",
 }
+
+export enum POPUP_TYPES{
+	"ALERT", "CONFIRM", "PROMPT"
+}
+export const POPUP = {
+	SHOW: "POPUP/SHOW",
+	HIDE: "POPUP/HIDE",
+	SUCCESS: "POPUP/SUCCESS",
+}

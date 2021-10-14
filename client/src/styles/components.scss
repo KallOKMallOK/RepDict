@@ -129,7 +129,7 @@ header.main_header {
 // Notification
 
 .Notification{
-	position: absolute;
+	position: fixed;
 	bottom: 25px;
 	right: 15px;
 	padding: 10px 15px;
@@ -168,4 +168,100 @@ header.main_header {
 .Notification.notify_warning{
 	background-color: rgb(190, 207, 33) !important;
 	@include fadeInDown(.2s);
+}
+
+
+// Popup
+
+.Popup__wrapper{
+	position: fixed;
+	z-index: 999;
+	width: calc(100vw - 20px);
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.719);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	top: 0;
+	overflow: hidden;
+	.Popup{
+		width: 40%;
+		height: 35%;
+		min-width: 350px;
+		min-height: 200px;
+		background-color: darken($color-main, 3%);
+		border-radius: 10px;
+		color: white;
+		position: relative;
+		padding: 20px 30px;
+		.close_button{
+			position: absolute;
+			right: 10px;
+			top: 5px;
+			cursor: pointer;
+		}
+		.head{
+			font: 1.2em RobotoBold;
+			margin-bottom: 20px;
+			color: white;
+		}
+		.content{
+			font: 1em RobotoLight;
+			color: white;
+		}
+		.control_botton{
+			position: absolute;
+			bottom: 20px;
+			width: calc(100% - 60px);
+			.Popup_confirm{
+				display: flex;
+				justify-content: flex-end;
+				gap: 10px;
+			}
+		}
+	}
+	&.body__hidden{
+		overflow-y: hidden;
+	}
+}
+.Popup__wrapper.noactive{
+	display: none;
+}
+
+// PRELOADER
+.loader__wrapper{
+	width: calc(100% - 20px);
+	// height: 100vh;
+	height: 100%;
+	position: absolute;
+	z-index: 999;
+	top: 0;
+
+	background-color: $color-bg-dark;
+	.loader {
+		position: absolute;
+		top: calc(50% - 2.5em);
+		left: calc(50% - 2.5em);
+		width: 2.5em;
+		height: 2.5em;
+		border: 0.4em solid rgb(88, 88, 88);
+		border-left: 0.4em solid rgb(0, 2, 139);
+		border-radius: 50%;
+		animation: load8 0.7s infinite linear;
+		transition: opacity 0.3s;
+	}
+	 
+	&--hide {
+		opacity: 0;
+		display: none;
+	}
+	
+	@keyframes load8 {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
 }
