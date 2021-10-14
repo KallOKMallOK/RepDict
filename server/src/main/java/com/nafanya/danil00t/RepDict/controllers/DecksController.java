@@ -111,7 +111,7 @@ public class DecksController {
         object.put("owned_pages", ownedPages);
         JSONArray owned = new JSONArray();
         int fromIndex, toIndex;
-        fromIndex = (ownedPages - 1) * decksOnOnePage;
+        fromIndex = (ownedPage - 1) * decksOnOnePage;
         toIndex = ownedPage.equals(ownedPages) ? ownedList.size() : fromIndex + decksOnOnePage;
         user.getOwned(deckRepository).subList(fromIndex, toIndex).forEach(deck -> {
             owned.add(JsonUtils.getDeckJson(deck, user));
@@ -123,7 +123,7 @@ public class DecksController {
         if(subscribedPage > subscriptionPages)
             return MainController.getError();
         object.put("subscription_pages", subscriptionPages);
-        fromIndex = (subscriptionPages - 1) * decksOnOnePage;
+        fromIndex = (subscribedPage - 1) * decksOnOnePage;
         toIndex = subscribedPage.equals(subscriptionPages) ? subscriptionsList.size() : fromIndex + decksOnOnePage;
         user.getSubscriptions().subList(fromIndex, toIndex).forEach(deck -> {
             if(!deck.getOwner().equals(user)) subscriptions.add(JsonUtils.getDeckJson(deck, user));
