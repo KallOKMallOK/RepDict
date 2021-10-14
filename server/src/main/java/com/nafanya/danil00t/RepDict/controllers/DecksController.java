@@ -8,6 +8,7 @@ import com.nafanya.danil00t.RepDict.models.User;
 import com.nafanya.danil00t.RepDict.repository.CardRepository;
 import com.nafanya.danil00t.RepDict.repository.DeckRepository;
 import com.nafanya.danil00t.RepDict.repository.UserRepository;
+import com.sun.tools.javac.Main;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONArray;
@@ -23,6 +24,8 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class DecksController {
+
+    private final Integer decksOnOnePage = 10;
 
     @Autowired
     UserRepository userRepository;
@@ -60,18 +63,27 @@ public class DecksController {
 
     @GetMapping("/get_all_decks")
     public JSONObject getAllDecks(
-            @RequestParam(required = false) String token
+            @RequestParam(required = false) String token,
+            @RequestParam(defaultValue = "1") Integer page
     ) throws IOException{
         JSONObject object = MainController.getSuccess();
+        List<Deck> decksList = deckRepository.findAllByOrderByIdDesc();
+        int pages = (Integer) (decksList.size()  / decksOnOnePage) + 1;
+        object.put("pages", pages);
+        if(page > pages)
+            return MainController.getError();
         JSONArray decks = new JSONArray();
+        int fromIndex = (page - 1) * decksOnOnePage;
+        int toIndex = page.equals(pages) ? decksList.size() : fromIndex + decksOnOnePage;
+        decksList = decksList.subList(fromIndex, toIndex);
         if(token == null)
-            deckRepository.findAll().forEach(deck -> {
+            decksList.forEach(deck -> {
                 if(deck.getIsPrivate().equals(0))
                     decks.add(JsonUtils.getDeckJson(deck));
             });
         else {
             User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
-            deckRepository.findAll().forEach(deck -> {
+            decksList.forEach(deck -> {
                 if (deck.getIsPrivate().equals(0) || deck.getOwner().equals(user))
                     decks.add(JsonUtils.getDeckJson(deck, user));
             });
@@ -83,20 +95,39 @@ public class DecksController {
     @GetMapping("/get_decks")
     public JSONObject getDecks(
             //@RequestBody GetDeckRequest request
-            @RequestParam String token
+            @RequestParam String token,
+            @RequestParam(defaultValue = "1", name = "owned_page") Integer ownedPage,
+            @RequestParam(defaultValue = "1", name = "subscribed_page") Integer subscribedPage
     ) throws IOException{
         if(!LogRegController.MiddleWare(token, userRepository))
             return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
+        JSONObject object = new JSONObject();
+
+        List<Deck> ownedList = deckRepository.findAllByOwnerOrderByIdDesc(user);
+        int ownedPages = (int) (ownedList.size() / 10) + 1;
+        if(ownedPage > ownedPages)
+            return MainController.getError();
+        object.put("owned_pages", ownedPages);
         JSONArray owned = new JSONArray();
-        JSONArray subscriptions = new JSONArray();
-        user.getOwned(deckRepository).forEach(deck -> {
+        int fromIndex, toIndex;
+        fromIndex = (ownedPages - 1) * decksOnOnePage;
+        toIndex = ownedPage.equals(ownedPages) ? ownedList.size() : fromIndex + decksOnOnePage;
+        user.getOwned(deckRepository).subList(fromIndex, toIndex).forEach(deck -> {
             owned.add(JsonUtils.getDeckJson(deck, user));
         });
-        user.getSubscriptions().forEach(deck -> {
+
+        JSONArray subscriptions = new JSONArray();
+        List<Deck> subscriptionsList = user.getSubscriptions();
+        int subscriptionPages = (int) (subscriptionsList.size() / 10) + 1;
+        if(subscribedPage > subscriptionPages)
+            return MainController.getError();
+        object.put("subscription_pages", subscriptionPages);
+        fromIndex = (subscriptionPages - 1) * decksOnOnePage;
+        toIndex = subscribedPage.equals(subscriptionPages) ? subscriptionsList.size() : fromIndex + decksOnOnePage;
+        user.getSubscriptions().subList(fromIndex, toIndex).forEach(deck -> {
             if(!deck.getOwner().equals(user)) subscriptions.add(JsonUtils.getDeckJson(deck, user));
         });
-        JSONObject object = new JSONObject();
         object.put("error", false);
         object.put("owned", owned);
         object.put("subscriptions", subscriptions);
@@ -193,7 +224,7 @@ public class DecksController {
             return MainController.getError();
         cardRepository.deleteAll(deck.getCards());
         deckRepository.delete(deck);
-        return getDecks(request.getToken());
+        return MainController.getSuccess();
     }
 
     @PostMapping("/subscribe")
