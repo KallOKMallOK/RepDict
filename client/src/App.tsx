@@ -8,16 +8,18 @@ import { routes } from './routes';
 import Action from "./redux/actions"
 
 // Components
-import Components from "./components"
-import { Notification } from "./components/Notification"
+import Components, { showLoader, hideLoader } from "./components"
 import Authorization from './hoc/Authorization'
+import ModalContainer from "./components/modals"
+
 
 // App styles
 import "./styles/reset.scss"
-import './styles/main.scss';
-import './styles/responsive.scss';
-import 'react-notifications/lib/notifications.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/main.scss'
+import './styles/responsive.scss'
+import 'react-notifications/lib/notifications.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { POPUP_TYPES } from './redux/types'
 
 // -----------------------------------------------------------------------------
 // ---------------------- Connect to redux emmiter -----------------------------
@@ -25,12 +27,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const mapStateToProps = (state: any) => ({
 	auth: state.app.auth,
-	notify: state.notification
+	notify: state.notification,
+	popupProps: state.popup
 })
 
 const mapDispatchToProps = (f: Function) => ({
 	login: (user: any) => f(Action.app.login(user)),
 	logout: () => f(Action.app.logout()),
+	confirm: (head: string, content: string, close: () => void, success: (s: boolean) => void) => 
+		f(Action.popup.show(POPUP_TYPES.CONFIRM, head, content, {close, success}))
 })
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
@@ -41,11 +46,41 @@ interface StateApp{
 	auth: boolean
 }
 
+
+// -----------------------------------------------------------------------------
+// ------------------------- Switcher for Router -------------------------------
+// -----------------------------------------------------------------------------
+
+class Switcher extends React.PureComponent<StateApp>{
+	constructor(props: any){
+		super(props)
+	}
+	render(){
+		return(
+			<Switch>
+				{routes.map(route => {
+					const component = route.isPrivate ? Authorization(route.component, this.props.auth) : route.component;
+					return (
+						<Route
+						key={route.path}
+						exact
+						path={route.path}
+						component={component}
+						/>
+					)
+				})}
+			</Switch>
+		)
+	}
+}
+
+
 // -----------------------------------------------------------------------------
 // -------------------- App class including interfaces -------------------------
 // -----------------------------------------------------------------------------
 
-class App extends React.Component<PropsFromRedux, StateApp>{
+
+class App extends React.PureComponent<PropsFromRedux, StateApp>{
 	public state: StateApp = {
 		auth: true
 	}
@@ -66,44 +101,28 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 						this.props.login(res.data.data)
 					}
 					else this.props.logout()
+					
 				})
 				.catch(err => console.log(err))
 		}
 		else{
 			this.setState({ auth: false })
 		}
+		hideLoader()
 	}
 
-	renderSwitch(){
-	 return(
-		<Switch>
-		  {routes.map(route => {
-			 const component = route.isPrivate ? Authorization(route.component, this.state.auth) : route.component;
-			 return (
-				<Route
-				  key={route.path}
-				  exact
-				  path={route.path}
-				  component={component}
-				/>
-			 )
-		  })}
-		</Switch>
-	)
-	}
-  render(){
-	 return(
-		<Router>
-		  <React.Fragment>
-			 <Components.Header routes={routes.filter(route => route.isNavBar)}/>
-			 <div id='ui-content'>
-				{this.renderSwitch()}
-			 </div>
-			 <Components.Notification {...this.props.notify}/>
-		  </React.Fragment>
+	render(){
+		return(
+			<Router>
+			<React.Fragment>
+				<Components.Header routes={routes.filter(route => route.isNavBar)}/>
+				<Switcher auth={this.state.auth}/>
+				<Components.Notification {...this.props.notify}/>
+				<ModalContainer {...this.props.popupProps}/>
+			</React.Fragment>
 		</Router>
-	 )
-  }
+		)
+	}
 }
 
 export default connector(App)

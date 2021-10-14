@@ -7,11 +7,12 @@ export interface IDeck{
 	countWords: number,
 	countRepetitions: number,
 	mainLang: string,
-	secondaryLang: string,
+	secondLang: string,
 	author?: string,
 	owner?: string,
 	description: string | null
 	countLikes: number
 	activeLike: boolean
-	cards: ICard[]
+	cards: ICard[],
+	subscribed?: boolean
 }

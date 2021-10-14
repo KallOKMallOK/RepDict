@@ -7,6 +7,7 @@ import {
 	FaHeart
 } from "react-icons/fa"
 import { Link } from 'react-router-dom'
+import API from '../api'
 import { ActionChange } from '../domains/entity/actions.entity'
 import { ICard } from '../domains/entity/card.entity'
 import { IDeck } from '../domains/entity/deсk.entity'
@@ -51,6 +52,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 	// Component states
 	const [dropdownVisible, openDropdown] = useState(false)
 	const [activedLike, activeLike] = useState(props.activeLike || false)
+	const [subscribed, changeSubscribed] = useState(props.subscribed || false)
 
 	// Data states
 	const [countLikes, changeCountLikes] = useState(props.countLikes || 0)
@@ -85,6 +87,10 @@ export const Deck: React.FC<IDeckDefault> = props => {
 	const handleEdit = (e: any, index: number) => {
 		openDropdown(false)
 		props.edit!(e, props.index)
+	}
+	const handleChangeSubscribed = () => {
+		API.subscribe(props.id)
+		changeSubscribed(!subscribed)
 	}
 
   	return (
@@ -127,7 +133,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 		<div className="middle_layer">
 			<div className="card_item_head_langs">
 				<div className="lang main_lang">{props.mainLang}</div>/
-				<div className="lang sec_lang">{props.secondaryLang}</div>
+				<div className="lang sec_lang">{props.secondLang}</div>
 			</div>
 			<div className="info">
 				<p className="info_count_words">{props.countWords} words</p>
@@ -140,8 +146,8 @@ export const Deck: React.FC<IDeckDefault> = props => {
 		<div className="footer">
 			{
 				props.enableMethods?.enableSubscribe ?
-				<button className="btn btn-primary disabled">Subsctibe</button>:
-				<div></div>
+					<button className={`btn btn-${!subscribed? "primary": "danger"}`} onClick={e => handleChangeSubscribed()}>{subscribed? "Unsubscribe": "Subscribe"}</button>:
+					<div></div>
 			}
 			<span className="likes" onClick={e => likeUser(e)}>
 				<span className={`heart ${activedLike? "active": "noactive"}`}><FaHeart/></span>
