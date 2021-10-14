@@ -144,6 +144,135 @@
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
 }
 ```
+>/delete_deck
+### Input:
+```sh
+{
+	"deckId":4,
+	"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImFkbWluIiwibG9naW4iOiJhZG1pbiJ9.0A_h5-_WN0OeoT1eWQoeIWZR2_wACsfxmWSRu_WBOGo"
+}
+```
+### Output:
+```sh
+{
+    "decks": [
+        {
+            "is_private": 1,
+            "author_login": "admin",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 1,
+                    "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 3,
+                    "main_word": "flow",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 22,
+                    "main_word": "guap",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 32,
+                    "main_word": "guap",
+                    "type": "default"
+                }
+            ],
+            "owner_login": "admin",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": true,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 4,
+            "name": "RAP",
+            "id": 1,
+            "likes": 2
+        }
+    ],
+    "error": false
+}
+```
+/statistic
+### Input:
+```sh
+    {
+	"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImFkbWluIiwibG9naW4iOiJhZG1pbiJ9.0A_h5-_WN0OeoT1eWQoeIWZR2_wACsfxmWSRu_WBOGo",
+	"results":[
+		{
+			"idCard":1,
+			"time":41,
+			"answer":true
+		},
+		{
+			"idCard":3,
+			"time":57,
+			"answer":true
+		},
+		{
+			"idCard":22,
+			"time":10,
+			"answer":false
+		},
+		{
+			"idCard":32,
+			"time":7,
+			"answer":true
+		}
+		]
+}
+```
+### Output:
+```sh
+{
+    "score": 390,
+    "error": false
+}
+```
+
+>/subscribe
+### Inout:
+```sh
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ",
+    "deckId":1
+}
+```
+### Output:
+```sh
+{
+    "error":false,
+    "status":true
+}
+```
+
+>/copy_deck
+### Input:
+```sh
+{ 
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ",
+    "deckId":1
+}
+```
+### Output:
+```sh
+{
+    "error":false,
+    "cloneId":15
+}
+```
 
 ## GET.
 >/get_decks
@@ -156,15 +285,66 @@
 ### Output:
 ```sh
 {
-    "decks": [
+    "subscriptions": [
+        {
+            "is_private": 0,
+            "author_login": "admin",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 1,
+                    "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 3,
+                    "main_word": "flow",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 22,
+                    "main_word": "guap",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 32,
+                    "main_word": "guap",
+                    "type": "default"
+                }
+            ],
+            "is_owner": false,
+            "owner_login": "admin",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": true,
+            "subscribed": true,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 4,
+            "name": "rap",
+            "id": 1,
+            "likes": 2
+        }
+    ],
+    "owned": [
         {
             "is_private": 0,
             "author_login": "nafanya",
             "cards": [],
+            "is_owner": true,
             "owner_login": "nafanya",
             "description": "тут чисто про реп",
             "count_repetitions": 0,
             "liked": false,
+            "subscribed": false,
             "main_language": "eng",
             "second_language": "rus",
             "price": 0,
@@ -185,16 +365,65 @@
                     "type": "default"
                 }
             ],
+            "is_owner": true,
             "owner_login": "nafanya",
             "description": "тут чисто про реп",
             "count_repetitions": 0,
             "liked": false,
+            "subscribed": false,
             "main_language": "eng",
             "second_language": "rus",
             "price": 0,
             "count_words": 1,
             "name": "Another",
             "id": 14,
+            "likes": 0
+        },
+        {
+            "is_private": 1,
+            "author_login": "admin",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 37,
+                    "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 38,
+                    "main_word": "flow",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 39,
+                    "main_word": "guap",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 40,
+                    "main_word": "guap",
+                    "type": "default"
+                }
+            ],
+            "is_owner": true,
+            "owner_login": "nafanya",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": false,
+            "subscribed": false,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 4,
+            "name": "RAP (clone)",
+            "id": 15,
             "likes": 0
         }
     ],
@@ -216,11 +445,165 @@
         "balance": 0,
         "refer": null,
         "name": "nafanya",
+        "rating": 0,
         "is_checked": false,
         "id": 2,
+        "donat_balance": 0,
         "login": "nafanya",
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
     },
+    "error": false
+}
+```
+
+>/get_all_decks
+### Input:
+```sh
+    empty OR token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
+```
+### Output
+```sh
+{
+    "decks": [
+        {
+            "is_private": 0,
+            "author_login": "admin",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 1,
+                    "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 3,
+                    "main_word": "flow",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 22,
+                    "main_word": "guap",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 32,
+                    "main_word": "guap",
+                    "type": "default"
+                }
+            ],
+            "is_owner": false,
+            "owner_login": "admin",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": true,
+            "subscribed": true,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 4,
+            "name": "rap",
+            "id": 1,
+            "likes": 2
+        },
+        {
+            "is_private": 0,
+            "author_login": "nafanya",
+            "cards": [],
+            "is_owner": true,
+            "owner_login": "nafanya",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": false,
+            "subscribed": false,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 0,
+            "name": "Nafanya's deck",
+            "id": 13,
+            "likes": 0
+        },
+        {
+            "is_private": 0,
+            "author_login": "nafanya",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 36,
+                    "main_word": "rap",
+                    "type": "default"
+                }
+            ],
+            "is_owner": true,
+            "owner_login": "nafanya",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": false,
+            "subscribed": false,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 1,
+            "name": "Another",
+            "id": 14,
+            "likes": 0
+        },
+        {
+            "is_private": 1,
+            "author_login": "admin",
+            "cards": [
+                {
+                    "answer": "реп",
+                    "description": null,
+                    "id": 37,
+                    "main_word": "rap",
+                    "type": "default"
+                },
+                {
+                    "answer": "техника",
+                    "description": null,
+                    "id": 38,
+                    "main_word": "flow",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 39,
+                    "main_word": "guap",
+                    "type": "default"
+                },
+                {
+                    "answer": "богатство",
+                    "description": null,
+                    "id": 40,
+                    "main_word": "guap",
+                    "type": "default"
+                }
+            ],
+            "is_owner": true,
+            "owner_login": "nafanya",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": false,
+            "subscribed": false,
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 4,
+            "name": "RAP (clone)",
+            "id": 15,
+            "likes": 0
+        }
+    ],
     "error": false
 }
 ```

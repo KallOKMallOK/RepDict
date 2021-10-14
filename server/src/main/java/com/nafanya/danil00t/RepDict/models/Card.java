@@ -26,6 +26,7 @@ public class Card {
         this.mainWord = mainWord;
         this.answer = answer;
         this.type = type;
+        generateRating();
     }
 
     public Card(String mainWord,
@@ -34,6 +35,10 @@ public class Card {
                 String description){
         this(mainWord, answer, type);
         this.description = description;
+    }
+
+    public Card(Card card){
+        this(card.getMainWord(), card.getAnswer(), card.getType(), card.getDescription());
     }
     /*public Card(String name, User user, Integer cost){
         this.name = name;
@@ -57,7 +62,9 @@ public class Card {
 
     private String type;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    private Integer rating;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "decks_cards",
             joinColumns = {@JoinColumn(name = "id_card")},
             inverseJoinColumns = {@JoinColumn(name = "id_deck")})
@@ -94,5 +101,22 @@ public class Card {
 //            inverseJoinColumns = {@JoinColumn(name = "comment_id")},
 //            joinColumns = {@JoinColumn(name = "card_id")})
 //    private List<Comment> comments;
+
+    public void generateRating(){
+        switch(this.type){
+            case "Choice":
+                String[] answers = this.answer.split("[\\^\\$]:");
+                rating = 1 + mainWord.length() / 5;
+                for(String a : answers){
+                    rating += 1 + a.length() / 5;
+                }
+                rating /= answers.length;
+                break;
+            default:
+                rating = 1 + mainWord.length() / 5;
+                rating += 1 + answer.length() / 5;
+                break;
+        }
+    }
 
 }

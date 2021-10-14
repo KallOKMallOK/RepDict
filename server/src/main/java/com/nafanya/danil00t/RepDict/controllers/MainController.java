@@ -17,6 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*TODO:
+    * Поддержка HTTPS.ч
+ */
+
 @CrossOrigin
 @RestController
 public class MainController {

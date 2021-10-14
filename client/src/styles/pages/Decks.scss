@@ -140,9 +140,16 @@
 				color: white;
 				font-family: RobotoLight;
 				margin-top: 10px;
+				margin-bottom: 40px;
 			}
 			.footer{
-				text-align: right;
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-end;
+				position: absolute;
+				bottom: 10px;
+				width: calc(100% - 40px);
+				// justify-content: flex-end;
 				.likes{
 					cursor: pointer;
 					color: white;
@@ -172,19 +179,6 @@
 				color: $color-bg-grey;
 				font-family: RobotoRegular;
 			}
-			// .buttons_group{
-			// 	// position: absolute;
-			// 	bottom: 20px;
-			// 	display: flex;
-			// 	justify-content: center;
-			// 	width: 100%;
-			// 	margin-left: -20px;
-			// 	button {
-			// 		@include button_default;
-			// 		margin-right: 10px;
-			// 		width: 30%;
-			// 	}
-			// }
 		}
 		&_item.new_card{
 			display: flex;
@@ -210,6 +204,11 @@
 			flex: 0 0 100%;
 			min-height: 300px;
 			height: auto;
+			.card_item_name{
+				span{
+					color: white;
+				}
+			}
 		}
 	}
 	

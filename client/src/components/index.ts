@@ -7,7 +7,21 @@ const Components = {
 	Header,
 	Deck,
 	Currsection,
-	Notification
+	Notification,
 }
+
+const loader = document.querySelector('.loader__wrapper')!;
+
+// if you want to show the loader when React loads data again
+export const showLoader = () => {
+	loader.classList.remove('loader__wrapper--hide')
+	document.body.style.overflowY = "hidden"
+};
+
+export const hideLoader = () => {
+	loader.classList.add('loader__wrapper--hide')
+	document.body.style.overflowY = "scroll"
+}
+
 
 export default Components

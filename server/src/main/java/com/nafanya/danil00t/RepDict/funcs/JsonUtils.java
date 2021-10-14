@@ -16,6 +16,8 @@ public class JsonUtils {
     public static JSONObject getDeckJson(Deck deck, User user){
         JSONObject object = getDeckJson(deck);
         object.put("liked", deck.getLikesList().contains(user));
+        object.put("subscribed", deck.getSubscribers().contains(user));
+        object.put("is_owner", deck.getOwner().equals(user));
         return object;
     }
 
@@ -57,13 +59,14 @@ public class JsonUtils {
         users.forEach(user -> {
             JSONObject userObject = new JSONObject();
             userObject.put("login", user.getLogin());
-            userObject.put("login", user.getLogin());
             userObject.put("id", user.getId());
             userObject.put("token", user.getToken());
             userObject.put("name", user.getName());
             userObject.put("balance", user.getBalance());
             userObject.put("refer", user.getRefer());
             userObject.put("is_checked", user.getIsChecked());
+            userObject.put("rating", user.getRating());
+            userObject.put("donat_balance", user.getDonatBalance());
             usersArray.add(userObject);
         });
         main.put("data", usersArray);
@@ -102,6 +105,7 @@ public class JsonUtils {
     public static JSONObject getCardInfo(Card card){
         JSONObject main = MainController.getSuccess();
         main.put("id", card.getId());
+        main.put("description", card.getDescription());
         main.put("main_word", card.getMainWord());
         main.put("answer", card.getAnswer());
         main.put("type", card.getType());
@@ -127,8 +131,10 @@ public class JsonUtils {
         object.put("token", user.getToken());
         object.put("name", user.getName());
         object.put("balance", user.getBalance());
+        object.put("donat_balance", user.getDonatBalance());
         object.put("refer", user.getRefer());
         object.put("is_checked", user.getIsChecked());
+        object.put("rating", user.getRating());
         return object;
     }
 

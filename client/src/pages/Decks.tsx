@@ -1,124 +1,237 @@
 import React, { MouseEvent } from 'react';
 
 import API from "../api"
+import { showLoader, hideLoader } from "../components"
 // Components and redux instances
-import { LANGS } from "../redux/types"
 import { 
 	Deck, 
 	DeckActive, 
 	DeckAdd,
+	IDeckDefault
 } from "../components/Deck"
 
 
 // App styles
 import "../styles/pages/Decks.scss"
 import { Notification } from '../components/Notification';
+import { ActionChange } from '../domains/entity/actions.entity';
+import { connect, ConnectedProps } from 'react-redux';
+import { Modal } from '../components/modals';
+import { notification } from '../redux/reducers/notification.reducer';
 
 interface IDecksProps {
 	init?: boolean
 	textHello?: string
 }
 
-class Decks extends React.Component<IDecksProps>{
-	public state: any = {
-		decks: [
-			// {
-			// 	id: 1,
-			// 	name: "Kitchen",
-			// 	countWords: 3,
-			// 	countRepetitions: 5,
-			// 	isPrivate: false,
-			// 	mainLang: LANGS.RUS,
-			// 	secondaryLang: LANGS.ENG,
-			// 	author: "daniil00t",
-			// 	authorLink: "/user/8",
-			// 	description: "This deck about kitchen and some subjects in there",
-			// }
-		],
+interface StateDecks{
+	decksSubscriptions: IDeckDefault[]
+	decksOwned: IDeckDefault[]
+	isNewDeck: boolean
+	isEdit: boolean
+	deckEdit: IDeckDefault | null
+}
+const mapStateToProps = (state: any) => ({
+	user: state.app.user
+})
+const connector = connect(mapStateToProps)
+
+type PropsFromRedux = IDecksProps & ConnectedProps<typeof connector>
+
+
+class Decks extends React.Component<PropsFromRedux, StateDecks>{
+	public state: StateDecks = {
+		decksSubscriptions: [],
+		decksOwned: [],
+
+		isNewDeck: false,
 		isEdit: false,
-		idEdit: -1
+		deckEdit: null
 	}
-	constructor(props: IDecksProps){
+	constructor(props: PropsFromRedux){
 		super(props)
+		showLoader()
 	}
 
 	addDeck(e: MouseEvent<any>){
 		this.setState({
-			isEdit: true
+			isNewDeck: true
 		})
 	}
 
-	saveDeck(e: MouseEvent<HTMLElement>, id: number, changes: any[]){
-		console.log('save');
-		this.setState({
-			isEdit: false
-		})
+	saveDeck(e: MouseEvent<HTMLElement>, id: number, changes: ActionChange[]){
+		API.applyChanges(id, changes)
+			.then(response => {
+				console.log(response)
+				this.setState({ isEdit: false })
+			})
+			.catch(err => console.log(err))
 	}
-	editDeck(e: MouseEvent<HTMLElement>, id: number){
+	editDeck(e: MouseEvent<HTMLElement>, index: number){
+		console.log("edit", index);
 		this.setState({
-			isEdit: true
+			isEdit: true,
+			deckEdit: this.state.decksOwned[index]
 		})
 	}
 	deleteDeck(e: MouseEvent<HTMLElement>, id: number){
-		console.log("delete", id)
+		Modal.confirm(
+			"Вы действительно хотите удалить дек?", 
+			"Если вы удалите дек, все карточки тоже удалятся, вы уверены, что хотите это сделать?",
+			() => {},
+			(accept) => {
+				if(accept){
+					API.deleteDeck(id)
+						.then(response => {
+							console.log(response);
+							if(!response.data.error){
+								// this.setState({ decksOwned: this.state.decksOwned.filter(deck => deck.id !== id) })
+								Notification.success("OK", "Дек успешно удален", 3000)
+							}
+						})
+						.catch(err => {
+							Notification.error("Ошбика", "Дек не успешно удален", 3000)
+						})
+				}
+					
+			})
+		// Notification.success("Hello!", "Content", 3000)
 	}
-	like(){
-		console.log("like");
+
+	like(e: any, id: number){
+		API.setLike(id)
+			.then(res => console.log(res))
+			.catch(err => console.log(err))
+		console.log("like", id);
 	}
-	changePrivate(e: any, valuePrivate: boolean){
-		console.log(valuePrivate);
+
+	changePrivate(e: any, id: number, valuePrivate: boolean){
+		API.applyChanges(id, [
+			{
+				type: "CHANGE_DECK",
+				payload: {
+					name: "isPrivate",
+					value: Number(valuePrivate)
+				}
+			}
+		])
+			.then(resp => console.log(resp))
+			.catch(err => console.log(err))
+	}
+
+	createNewDeck(e: any, data: any){
+		API.addDeck(data)
+			.then(response => {
+				console.log(response)
+				this.setState({ isNewDeck: false, decksOwned: [...this.state.decksOwned, {...data}] })
+			})
+			.catch(err => console.log(err))
 	}
 
 	componentDidMount(){
-		API.getDecks()
-			// .then(data => console.log(data))
-			.then(data => !data.error && this.setState({ decks: [...this.state.decks, ...data.data.decks] }))
-			.catch(err => Notification.error("Error", "Failed to load data", 3000))
+		console.log(this.state.decksOwned);
+		if(this.state.decksOwned.length === 0){
+			API.getDecks()
+				// .then(data => console.log(data))
+				.then(data => {
+					console.log(data);
+					!data.error && 
+					this.setState({
+						decksSubscriptions: [...this.state.decksSubscriptions, ...data.data.subscriptions],
+						decksOwned: [...this.state.decksOwned, ...data.data.owned],
+					})
+					hideLoader()
+				})
+				.catch(err => Notification.error("Error", "Failed to load data", 3000))
+		}
 	}
-
 	render(){
+
 		return(
 			<React.Fragment>
 				<section className="lesson_section">
 					<h2 className="cards_main_name">My Decks</h2>
 					<div className="cards">
-						{/* deck for edit and add */}
-
+						{/* deck for EDIT */}
 						{
-							this.state.isEdit && <DeckActive 
-								id={1}
-								name="New Deck" 
-								countWords={3} 
-								countRepetitions={4} 
-								isPrivate={true} 
-								mainLang={LANGS.RUS} 
-								secondaryLang={LANGS.ENG} 
-								words={[]}
+							this.state.isEdit && <DeckActive
+								index={-1}
+								id={this.state.deckEdit!.id}
+								name={this.state.deckEdit!.name} 
+								countWords={this.state.deckEdit!.countWords} 
+								countRepetitions={this.state.deckEdit!.countRepetitions} 
+								isPrivate={this.state.deckEdit!.isPrivate} 
+								mainLang={this.state.deckEdit!.mainLang} 
+								secondLang={this.state.deckEdit!.secondLang} 
+								cards={this.state.deckEdit!.cards}
+								author={this.state.deckEdit!.author}
+								owner={this.state.deckEdit!.owner}
+								description={this.state.deckEdit!.description}
+								countLikes={this.state.deckEdit!.countLikes || 0}
+								activeLike={this.state.deckEdit!.activeLike || false}
 
-
+								enableMethods={{
+									enableSave: true,
+									enableDelete: true
+								}}
 								save={this.saveDeck.bind(this)}
 								delete={this.deleteDeck}
 								/>
 						}
+						{/* New Deck */}
+						{
+							this.state.isNewDeck && <DeckActive
+								index={-1}
+								id={-1}
+								name={"New Deck"} 
+								countWords={0} 
+								countRepetitions={0} 
+								isPrivate={false} 
+								mainLang={"RU"} 
+								secondLang={"ENG"} 
+								cards={[]}
+								author={this.props.user.login}
+								owner={this.props.user.login}
+								description={""}
+								countLikes={0}
+								activeLike={false}
+
+								enableMethods={{
+									enableCreate: true
+								}}
+								create={this.createNewDeck.bind(this)}
+
+							/>
+						}
 
 						{/* Adding deck */}
 						<DeckAdd add={this.addDeck.bind(this)} />
-						
 						{
-							this.state.decks.map((deck: any) => {
+							this.state.decksOwned.length !== 0 && this.state.decksOwned.map((deck: IDeckDefault, index: number) => {
 								return <Deck
+									index={index}
 									id={deck.id}
 									name={deck.name}
-									countWords={deck.count_words || 0} 
-									author={deck.author_login}
-									owner={deck.owner_login}
+									countWords={deck.countWords || 0} 
+									author={deck.author}
+									owner={deck.owner}
 									description={deck.description}
-									countRepetitions={deck.count_repetitions || 0} 
-									isPrivate={deck.is_private} 
-									mainLang={deck.main_language.toUpperCase()} 
-									secondaryLang={deck.second_language.toUpperCase()}
-									countLikes={deck.likes || 0}
-									activeLike={deck.liked || false}
+									countRepetitions={deck.countRepetitions || 0} 
+									isPrivate={deck.isPrivate} 
+									mainLang={deck.mainLang.toUpperCase()} 
+									secondLang={deck.secondLang.toUpperCase()}
+									countLikes={deck.countLikes || 0}
+									activeLike={deck.activeLike || false}
+									cards={deck.cards}
+									key={`deck_${index}`}
+
+									// enables
+									enableMethods={{ 
+										enableChangePrivate: true, 
+										enableDelete: true, 
+										enableEdit:true,
+										enableLike: true
+									}}
 
 									// active methods
 									edit={this.editDeck.bind(this)}
@@ -128,9 +241,43 @@ class Decks extends React.Component<IDecksProps>{
 									/>
 							})
 						}
+					</div>
+				</section>
 
-						
-						
+				<section className="lesson_section">
+					<h2 className="cards_main_name">My Subscribed Decks</h2>
+					<div className="cards">
+					{
+							this.state.decksSubscriptions.length !== 0 && this.state.decksSubscriptions.map((deck: IDeckDefault, index: number) => {
+								return <Deck
+									index={index}
+									id={deck.id}
+									name={deck.name}
+									countWords={deck.countWords || 0} 
+									author={deck.author}
+									owner={deck.owner}
+									description={deck.description}
+									countRepetitions={deck.countRepetitions || 0} 
+									isPrivate={deck.isPrivate} 
+									mainLang={deck.mainLang.toUpperCase()} 
+									secondLang={deck.secondLang.toUpperCase()}
+									countLikes={deck.countLikes || 0}
+									activeLike={deck.activeLike || false}
+									cards={deck.cards}
+									key={`deck_${index}`}
+									subscribed={deck.subscribed}
+
+									// enables
+									enableMethods={{ 
+										enableLike: true,
+										enableSubscribe: true
+									}}
+
+									// active methods
+									like={this.like}
+									/>
+							})
+						}
 					</div>
 				</section>
 			</React.Fragment>
@@ -138,4 +285,4 @@ class Decks extends React.Component<IDecksProps>{
 	}
 }
 
-export default Decks;
+export default connector(Decks)

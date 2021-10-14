@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { showLoader, hideLoader } from "../components"
+
 import "../styles/pages/Main.scss"
 
 interface IMainProps{
@@ -8,6 +10,11 @@ interface IMainProps{
 class Main extends React.Component{
 	constructor(props: IMainProps){
 		super(props)
+		showLoader()
+	}
+
+	componentDidMount(){
+		hideLoader()
 	}
 
 	render(){
