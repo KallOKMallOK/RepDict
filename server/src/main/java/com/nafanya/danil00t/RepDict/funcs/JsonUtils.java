@@ -16,6 +16,8 @@ public class JsonUtils {
     public static JSONObject getDeckJson(Deck deck, User user){
         JSONObject object = getDeckJson(deck);
         object.put("liked", deck.getLikesList().contains(user));
+        object.put("subscribed", deck.getSubscribers().contains(user));
+        object.put("is_owner", deck.getOwner().equals(user));
         return object;
     }
 
@@ -103,6 +105,7 @@ public class JsonUtils {
     public static JSONObject getCardInfo(Card card){
         JSONObject main = MainController.getSuccess();
         main.put("id", card.getId());
+        main.put("description", card.getDescription());
         main.put("main_word", card.getMainWord());
         main.put("answer", card.getAnswer());
         main.put("type", card.getType());

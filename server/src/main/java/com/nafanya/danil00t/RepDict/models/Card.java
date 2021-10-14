@@ -36,6 +36,10 @@ public class Card {
         this(mainWord, answer, type);
         this.description = description;
     }
+
+    public Card(Card card){
+        this(card.getMainWord(), card.getAnswer(), card.getType(), card.getDescription());
+    }
     /*public Card(String name, User user, Integer cost){
         this.name = name;
         this.user = user;
@@ -60,7 +64,7 @@ public class Card {
 
     private Integer rating;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "decks_cards",
             joinColumns = {@JoinColumn(name = "id_card")},
             inverseJoinColumns = {@JoinColumn(name = "id_deck")})

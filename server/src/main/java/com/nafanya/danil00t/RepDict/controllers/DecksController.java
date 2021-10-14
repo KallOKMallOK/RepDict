@@ -88,11 +88,18 @@ public class DecksController {
         if(!LogRegController.MiddleWare(token, userRepository))
             return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
-        JSONArray array = new JSONArray();
-        user.getOwned(deckRepository).forEach(deck -> array.add(JsonUtils.getDeckJson(deck, user)));
+        JSONArray owned = new JSONArray();
+        JSONArray subscriptions = new JSONArray();
+        user.getOwned(deckRepository).forEach(deck -> {
+            owned.add(JsonUtils.getDeckJson(deck, user));
+        });
+        user.getSubscriptions().forEach(deck -> {
+            if(!deck.getOwner().equals(user)) subscriptions.add(JsonUtils.getDeckJson(deck, user));
+        });
         JSONObject object = new JSONObject();
         object.put("error", false);
-        object.put("decks", array);
+        object.put("owned", owned);
+        object.put("subscriptions", subscriptions);
         return object;
     }
 
@@ -187,6 +194,45 @@ public class DecksController {
         cardRepository.deleteAll(deck.getCards());
         deckRepository.delete(deck);
         return getDecks(request.getToken());
+    }
+
+    @PostMapping("/subscribe")
+    public JSONObject subscribe(
+            @RequestBody LikeRequest request
+    ) throws IOException{
+        if(!LogRegController.MiddleWare(request.getToken(), userRepository))
+            return MainController.getError();
+        JSONObject object = MainController.getSuccess();
+        User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()));
+        Deck deck = deckRepository.getById(request.getDeckId());
+        if(deck.getOwner().equals(user))
+            return MainController.getError();
+        if(!user.getSubscriptions().contains(deck)){
+            user.getSubscriptions().add(deck);
+            userRepository.save(user);
+            object.put("status", true);
+            return object;
+        }
+        user.getSubscriptions().remove(deck);
+        userRepository.save(user);
+        object.put("status", false);
+        return object;
+    }
+
+    @PostMapping("/copy_deck")
+    public JSONObject copy(
+        @RequestBody LikeRequest request
+    ) throws IOException{
+        if(!LogRegController.MiddleWare(request.getToken(), userRepository))
+            return MainController.getError();
+        User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()));
+        Deck original = deckRepository.getById(request.getDeckId());
+        Deck clone = new Deck(original, user);
+        cardRepository.saveAll(clone.getCards());
+        deckRepository.save(clone);
+        JSONObject object = MainController.getSuccess();
+        object.put("cloneId", clone.getId());
+        return object;
     }
 
     private void changeCardSwitch(JSONObject payload, Deck deck){
