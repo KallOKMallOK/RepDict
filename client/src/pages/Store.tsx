@@ -1,11 +1,13 @@
 import React from 'react';
 
-import "../styles/pages/Decks.scss"
 import { Notification } from '../components/Notification';
+import { showLoader, hideLoader } from "../components"
 import { Deck, IDeckDefault } from '../components/Deck';
 import { IDeck } from "../domains/entity/deсk.entity"
 import API from '../api';
 import { connect, ConnectedProps } from 'react-redux';
+
+import "../styles/pages/Decks.scss"
 
 interface StateStore{
 	decks: IDeck[]
@@ -26,6 +28,7 @@ class Store extends React.Component<PropsFromRedux>{
 	}
 	constructor(props: PropsFromRedux){
 		super(props)
+		showLoader()
 	}
 
 	// Methods
@@ -39,11 +42,15 @@ class Store extends React.Component<PropsFromRedux>{
 
 	componentDidMount(){
 		API.getAllDecks()
-			.then(res => this.setState({ decks: res.data.decks }))
+			.then(res => {
+				this.setState({ decks: res.data.decks })
+				hideLoader()
+			})
 			.catch(err => console.log(err))
 	}
 
 	render(){
+		console.log(this.state.decks);
 		return(
 			<div className="Store" style={{color: "white"}}>
 				<section className="lesson_section">
@@ -62,11 +69,13 @@ class Store extends React.Component<PropsFromRedux>{
 									countRepetitions={deck.countRepetitions || 0} 
 									isPrivate={deck.isPrivate} 
 									mainLang={deck.mainLang.toUpperCase()} 
-									secondaryLang={deck.secondaryLang.toUpperCase()}
+									secondLang={deck.secondLang.toUpperCase()}
 									countLikes={deck.countLikes || 0}
 									activeLike={deck.activeLike || false}
 									cards={deck.cards}
 									key={`deck_${index}`}
+									subscribed={deck.subscribed}
+									
 
 									like={this.handleLike}
 

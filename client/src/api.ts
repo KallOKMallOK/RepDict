@@ -17,6 +17,8 @@ const API_URLS: any = {
 	SET_LIKE: 		CONFIG.HOST + CONFIG.URLS.SET_LIKE,
 	ADD_DECK: 		CONFIG.HOST + CONFIG.URLS.ADD_DECK,
 	CHANGE_DECK: 	CONFIG.HOST + CONFIG.URLS.CHANGE_DECK,
+	SUBSCRIBE_DECK: 	CONFIG.HOST + CONFIG.URLS.SUBSCRIBE_DECK,
+	DELETE_DECK: 	CONFIG.HOST + CONFIG.URLS.DELETE_DECK,
 }
 
 const FAKE_DATA = (url: string) => {
@@ -142,34 +144,41 @@ class API {
 	// ***GET DATA***
 
 	// get decks for certain user (with token)
-	private static transormArrayOfDeck(response: any): IDeck[]{
-		return [...response.data.decks.map((deck: any) => ({
+	private static transormArrayOfDeck(deck: any): IDeck{
+		return {
 			id: deck.id,
 			name: deck.name,
 			isPrivate: deck.is_private,
 			countWords: deck.count_words,
 			countRepetitions: deck.count_repetitions,
 			mainLang: deck.main_language,
-			secondaryLang: deck.second_language,
+			secondLang: deck.second_language,
 			author: deck.author_login,
 			owner: deck.owner_login,
 			description: deck.description,
 			countLikes: deck.likes,
 			activeLike: deck.liked,
-			cards: deck.cards
-		}))]
+			cards: deck.cards,
+			subscribed: deck.subscribed
+		}
 	}
 
 	public static getDecks(): Promise<any>{
 		return new Promise<any> ((resolve, reject) => {
 			this.GET(API_URLS.GET_DECKS, {}, { token: true })
 				.then(response => {
-					const data: IDeck[] = this.transormArrayOfDeck(response)
+					const data = {
+						subscriptions: response.data.subscriptions.map((deck: any) => this.transormArrayOfDeck(deck)),
+						owned: response.data.owned.map((deck: any) => this.transormArrayOfDeck(deck))
+					}
+					console.log({
+						...response.data,
+						...data
+					})
 					resolve({
-						...response,
 						data: {
 							...response.data,
-							decks: data
+							...data
 						}
 					})
 				})
@@ -181,7 +190,7 @@ class API {
 		return new Promise<any> ((resolve, reject) => {
 			this.GET(API_URLS.GET_ALL_DECKS, (localStorage.getItem("token")?.length !== undefined ? { token: localStorage.getItem("token") }: {}))
 				.then(response => {
-					const data: IDeck[] = this.transormArrayOfDeck(response)
+					const data: IDeck = response.data.decks.map((deck: any) => this.transormArrayOfDeck(deck))
 					resolve({
 						...response,
 						data: {
@@ -198,6 +207,9 @@ class API {
 	public static addDeck(data: any): Promise<any>{
 		return this.POST(API_URLS.ADD_DECK, data, { token: true })
 	}
+	public static deleteDeck(deckId: number): Promise<any>{
+		return this.POST(API_URLS.DELETE_DECK, { deckId }, { token: true })
+	}
 
 	// ***CHANGE DATA***
 	public static applyChanges(idDeck: number, changes: ActionChange[]){
@@ -206,6 +218,10 @@ class API {
 	// specific methods
 	public static setLike(deckId: number): Promise<any>{
 		return this.POST(API_URLS.SET_LIKE, { deckId }, { token: true })
+	}
+
+	public static subscribe(deckId: number): Promise<any>{
+		return this.POST(API_URLS.SUBSCRIBE_DECK, { deckId }, { token: true })
 	}
 }
 
