@@ -89,13 +89,9 @@ public class DecksController {
             return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
         JSONArray owned = new JSONArray();
-        JSONArray authored = new JSONArray();
         JSONArray subscriptions = new JSONArray();
         user.getOwned(deckRepository).forEach(deck -> {
-            if (!user.equals(deck.getAuthor())) owned.add(JsonUtils.getDeckJson(deck, user));
-        });
-        user.getAuthored(deckRepository).forEach(deck -> {
-            authored.add(JsonUtils.getDeckJson(deck, user));
+            owned.add(JsonUtils.getDeckJson(deck, user));
         });
         user.getSubscriptions().forEach(deck -> {
             if(!deck.getOwner().equals(user)) subscriptions.add(JsonUtils.getDeckJson(deck, user));
@@ -103,7 +99,6 @@ public class DecksController {
         JSONObject object = new JSONObject();
         object.put("error", false);
         object.put("owned", owned);
-        object.put("authored", authored);
         object.put("subscriptions", subscriptions);
         return object;
     }
