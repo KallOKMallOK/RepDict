@@ -20,7 +20,9 @@ section.lesson_section{
 		}
 	}
 }
-
+.lesson_section.noactive{
+	display: none;
+}
 
 
 // -----------------------------------------------------------------------------
@@ -132,7 +134,7 @@ header.main_header {
 	position: fixed;
 	bottom: 25px;
 	right: 15px;
-	padding: 10px 15px;
+	padding: 10px 25px;
 	border-radius: 3px;
 	@include bs(13px, 2px, rgba(73, 73, 73, 0.349));
 	.Notification_wrapper_content{
@@ -140,7 +142,7 @@ header.main_header {
 		.close{
 			position: absolute;
 			top: -5px;
-			right: -5px;
+			right: -20px;
 			color: white;
 			cursor: pointer;
 		}
