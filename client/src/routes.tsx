@@ -42,11 +42,11 @@ export const routes: IRoute[] = [
 		icon: FaHome
 	},
 	{
-		isNavBar: true,
+		isNavBar: false,
 		isLogin: true,
 		isExact: true,
 		isPrivate: true,
-		path: '/play',
+		path: '/play/:id',
 		name: 'Play',
 		component: Pages.Play,
 		icon: FaPlay

@@ -40,6 +40,14 @@ public class BalanceController {
             deltaRating += getBalls(result);
         user.setBalance(user.getBalance() + deltaRating);
         user.setRating(user.getRating() + deltaRating);
+        if(user.getWalkthroughs().equals(0)) {
+            user.setAverageRating(deltaRating * 1d);
+            user.setWalkthroughs(1);
+        }
+        else{
+            user.setAverageRating((user.getAverageRating() * user.getWalkthroughs() + deltaRating) / (user.getWalkthroughs() + 1));
+            user.setWalkthroughs(user.getWalkthroughs() + 1);
+        }
         userRepository.save(user);
         JSONObject object = MainController.getSuccess();
         object.put("score", deltaRating);

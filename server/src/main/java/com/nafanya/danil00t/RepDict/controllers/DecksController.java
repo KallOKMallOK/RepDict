@@ -134,6 +134,33 @@ public class DecksController {
         return object;
     }
 
+    //TODO: Добавить в readme.md
+    @GetMapping("/get_deck")
+    public JSONObject getDeck(
+            @RequestParam(required = false) String token,
+            @RequestParam Integer id
+    ) throws IOException{
+        if(token != null)
+            if(!LogRegController.MiddleWare(token, userRepository))
+                return MainController.getError();
+        Deck deck = deckRepository.getById(id);
+        JSONObject object = MainController.getSuccess();
+        if(token == null) {
+            if (deck.getIsPrivate().equals(0)) {
+                object.put("deck", JsonUtils.getDeckJson(deck));
+                return object;
+            }
+            else
+                return MainController.getError();
+        }
+        User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
+        if(deck.getIsPrivate().equals(0) || deck.getOwner().equals(user)){
+            object.put("deck", JsonUtils.getDeckJson(deck, user));
+            return object;
+        }
+        return MainController.getError();
+    }
+
     @PostMapping("/like")
     public JSONObject like(
             @RequestBody LikeRequest request

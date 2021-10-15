@@ -29,6 +29,8 @@ public class User {
         this.refer = null;
         this.rating = 0;
         this.donatBalance = 0;
+        this.averageRating = 0d;
+        this.walkthroughs = 0;
         this.name = "окси";
     }
 
@@ -68,6 +70,11 @@ public class User {
     private Date regDate;
 
     private String refer;
+
+    @Column(name = "average_rating")
+    private Double averageRating;
+
+    private Integer walkthroughs;
 
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "decks",
