@@ -15,12 +15,12 @@ const loader = document.querySelector('.loader__wrapper')!;
 // if you want to show the loader when React loads data again
 export const showLoader = () => {
 	loader.classList.remove('loader__wrapper--hide')
-	document.body.style.overflowY = "hidden"
+	// document.body.style.overflowY = "hidden"
 };
 
 export const hideLoader = () => {
 	loader.classList.add('loader__wrapper--hide')
-	document.body.style.overflowY = "scroll"
+	// document.body.style.overflowY = "scroll"
 }
 
 
