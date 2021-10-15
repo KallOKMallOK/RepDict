@@ -6,11 +6,11 @@ import {
 	FaEllipsisV,
 	FaHeart
 } from "react-icons/fa"
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import API from '../api'
-import { ActionChange } from '../domains/entity/actions.entity'
-import { ICard } from '../domains/entity/card.entity'
-import { IDeck } from '../domains/entity/deсk.entity'
+import { ActionChange } from '../domains/entities/actions.entity'
+import { ICard } from '../domains/entities/card.entity'
+import { IDeck } from '../domains/entities/deсk.entity'
 import useOutsideClick from '../hoc/OutsideClicker'
 
 import { LANGS } from "../redux/types"
@@ -49,6 +49,7 @@ export interface IDeckDefault extends IDeck{
 
 export const Deck: React.FC<IDeckDefault> = props => {
 
+	const history = useHistory()
 	// Component states
 	const [dropdownVisible, openDropdown] = useState(false)
 	const [activedLike, activeLike] = useState(props.activeLike || false)
@@ -88,8 +89,14 @@ export const Deck: React.FC<IDeckDefault> = props => {
 		openDropdown(false)
 		props.edit!(e, props.index)
 	}
-	const handleChangeSubscribed = () => {
+	const handleChangeSubscribed = (e: any) => {
+		props.subscribe !== undefined && props.subscribe(e, props.id)
 		API.subscribe(props.id)
+			.then(resp => {
+				console.log(resp);
+				Notification.success("Ok", "All okey")
+			})
+			.catch(err => console.log(err))
 		changeSubscribed(!subscribed)
 	}
 
@@ -101,7 +108,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 				<div className="control">
 					<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
 					<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
-						<li className="dropdown_item" onClick={e => console.log(e)}>Play</li>
+						<li className="dropdown_item" onClick={e => history.push(`/play/${props.id}`)}>Play</li>
 						<li className="dropdown_item" onClick={e => handleEdit(e, props.index)}>Edit</li>
 						<li className="dropdown_item" onClick={e => props.delete!(e, props.id)}>Delete</li>
 					</ul>
@@ -146,7 +153,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 		<div className="footer">
 			{
 				props.enableMethods?.enableSubscribe ?
-					<button className={`btn btn-${!subscribed? "primary": "danger"}`} onClick={e => handleChangeSubscribed()}>{subscribed? "Unsubscribe": "Subscribe"}</button>:
+					<button className={`btn btn-${!subscribed? "primary": "danger"}`} onClick={e => handleChangeSubscribed(e)}>{subscribed? "Unsubscribe": "Subscribe"}</button>:
 					<div></div>
 			}
 			<span className="likes" onClick={e => likeUser(e)}>

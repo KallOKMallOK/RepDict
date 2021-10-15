@@ -1,7 +1,7 @@
 import axios from "axios"
 import * as CONFIG from "./config.json"
-import { ActionChange } from "./domains/entity/actions.entity"
-import { IDeck } from "./domains/entity/deсk.entity"
+import { ActionChange } from "./domains/entities/actions.entity"
+import { IDeck } from "./domains/entities/deсk.entity"
 
 interface OptionsRequest{
 	token?: boolean
@@ -9,63 +9,73 @@ interface OptionsRequest{
 }
 
 const API_URLS: any = {
-	REGISTRATION: 	CONFIG.HOST + CONFIG.URLS.REGISTRATION,
-	LOGIN: 			CONFIG.HOST + CONFIG.URLS.LOGIN,
-	AUTH: 			CONFIG.HOST + CONFIG.URLS.AUTH,
-	GET_DECKS: 		CONFIG.HOST + CONFIG.URLS.GET_DECKS,
-	GET_ALL_DECKS: CONFIG.HOST + CONFIG.URLS.GET_ALL_DECKS,
-	SET_LIKE: 		CONFIG.HOST + CONFIG.URLS.SET_LIKE,
-	ADD_DECK: 		CONFIG.HOST + CONFIG.URLS.ADD_DECK,
-	CHANGE_DECK: 	CONFIG.HOST + CONFIG.URLS.CHANGE_DECK,
+	REGISTRATION: 		CONFIG.HOST + CONFIG.URLS.REGISTRATION,
+	LOGIN: 				CONFIG.HOST + CONFIG.URLS.LOGIN,
+	AUTH: 				CONFIG.HOST + CONFIG.URLS.AUTH,
+	GET_DECKS: 			CONFIG.HOST + CONFIG.URLS.GET_DECKS,
+	GET_DECK: 			CONFIG.HOST + CONFIG.URLS.GET_DECK,
+	GET_ALL_DECKS: 	CONFIG.HOST + CONFIG.URLS.GET_ALL_DECKS,
+	SET_LIKE: 			CONFIG.HOST + CONFIG.URLS.SET_LIKE,
+	ADD_DECK: 			CONFIG.HOST + CONFIG.URLS.ADD_DECK,
+	CHANGE_DECK: 		CONFIG.HOST + CONFIG.URLS.CHANGE_DECK,
 	SUBSCRIBE_DECK: 	CONFIG.HOST + CONFIG.URLS.SUBSCRIBE_DECK,
-	DELETE_DECK: 	CONFIG.HOST + CONFIG.URLS.DELETE_DECK,
+	DELETE_DECK: 		CONFIG.HOST + CONFIG.URLS.DELETE_DECK,
 }
 
 const FAKE_DATA = (url: string) => {
 	switch(url){
-		case API_URLS.GET_DECKS:
-			return {
-				decks: [
+		case API_URLS.GET_DECK:
+			return JSON.parse(`
 				{
-					is_private: 0,
-					author_login: "admin",
-					cards: [
-						{
-							answer: "реп",
-							description: null,
-							id: 1,
-							main_word: "rap",
-							type: "default"
-						},
-						{
-							answer: "мелодия",
-							description: null,
-							id: 2,
-							main_word: "loop",
-							type: "default"
-						},
-						{
-							answer: "техника",
-							description: null,
-							id: 3,
-							main_word: "flow",
-							type: "default"
-						}
-					],
-					owner_login: "admin",
-					description: "тут чисто про снюс",
-					count_repetitions: 0,
-					main_language: "eng",
-					second_language: "rus",
-					price: 0,
-					count_words: 0,
-					name: "Rap",
-					id: 1,
-					likes: 0
+					"deck": {
+						"is_private": 0,
+						"author_login": "admin",
+						"cards": [
+							{
+								"answer": "реп",
+								"description": null,
+								"id": 1,
+								"main_word": "rap",
+								"type": "default"
+							},
+							{
+								"answer": "техника",
+								"description": null,
+								"id": 3,
+								"main_word": "flow",
+								"type": "default"
+							},
+							{
+								"answer": "богатство",
+								"description": null,
+								"id": 22,
+								"main_word": "guap",
+								"type": "default"
+							},
+							{
+								"answer": "богатство",
+								"description": null,
+								"id": 32,
+								"main_word": "guap",
+								"type": "default"
+							}
+						],
+						"is_owner": false,
+						"owner_login": "admin",
+						"description": "тут чисто про реп",
+						"count_repetitions": 0,
+						"liked": true,
+						"subscribed": true,
+						"main_language": "eng",
+						"second_language": "rus",
+						"price": 0,
+						"count_words": 4,
+						"name": "rap",
+						"id": 1,
+						"likes": 2
 					}
-				],
-				error: false
-			}
+				}
+			`)
 		default:
 			return {
 				error: true
@@ -185,6 +195,19 @@ class API {
 		})
 		
 	}
+
+	public static getDeck(id: number): Promise<any>{
+		return new Promise<any> ((resolve, reject) => {
+			this.GETFake(API_URLS.GET_DECK, { id }, { token: true })
+				.then(response => {
+					console.log(response)
+					const data: IDeck = this.transormArrayOfDeck(response.data.deck)
+					resolve({
+						deck: data
+					})
+				})
+		})
+	}
 	
 	public static getAllDecks(): Promise<any>{
 		return new Promise<any> ((resolve, reject) => {
@@ -215,6 +238,7 @@ class API {
 	public static applyChanges(idDeck: number, changes: ActionChange[]){
 		return this.POST(API_URLS.CHANGE_DECK, { idDeck, changes}, { token: true })
 	}
+	
 	// specific methods
 	public static setLike(deckId: number): Promise<any>{
 		return this.POST(API_URLS.SET_LIKE, { deckId }, { token: true })

@@ -3,7 +3,7 @@ import React from 'react';
 import { Notification } from '../components/Notification';
 import { showLoader, hideLoader } from "../components"
 import { Deck, IDeckDefault } from '../components/Deck';
-import { IDeck } from "../domains/entity/deсk.entity"
+import { IDeck } from "../domains/entities/deсk.entity"
 import API from '../api';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -15,7 +15,8 @@ interface StateStore{
 
 const mapStateToProps = (state: any) => ({
 	auth: state.app.auth,
-	notify: state.notification
+	notify: state.notification,
+	user: state.app.user
 })
 const connector = connect(mapStateToProps)
 
@@ -81,7 +82,7 @@ class Store extends React.Component<PropsFromRedux>{
 
 									enableMethods={{
 										enableLike: this.props.auth,
-										enableSubscribe: true
+										enableSubscribe: deck.author !== this.props.user.login
 									}}
 									/>
 							})

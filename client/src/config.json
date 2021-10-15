@@ -1,5 +1,5 @@
 {
-	"HOST": "",
+	"HOST": "http://repdict.live",
 	"URLS": {
 		"MAIN": "/",
 
@@ -9,6 +9,7 @@
 		"AUTH": "/auth",
 
 		"GET_DECKS": "/get_decks",
+		"GET_DECK": "/get_deck",
 		"GET_ALL_DECKS": "/get_all_decks",
 		"SET_LIKE": "/like",
 		"ADD_DECK": "/new_deck",
