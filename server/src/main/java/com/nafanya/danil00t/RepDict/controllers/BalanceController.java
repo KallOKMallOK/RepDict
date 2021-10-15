@@ -2,6 +2,7 @@ package com.nafanya.danil00t.RepDict.controllers;
 
 import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
 import com.nafanya.danil00t.RepDict.models.Card;
+import com.nafanya.danil00t.RepDict.models.Deck;
 import com.nafanya.danil00t.RepDict.models.User;
 import com.nafanya.danil00t.RepDict.repository.CardRepository;
 import com.nafanya.danil00t.RepDict.repository.DeckRepository;
@@ -35,11 +36,22 @@ public class BalanceController {
         if(!LogRegController.MiddleWare(request.getToken(), userRepository))
             return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()));
+        Deck deck = deckRepository.getById(request.getDeckId());
         Integer deltaRating = 0;
         for(CardResult result : request.getResults())
             deltaRating += getBalls(result);
         user.setBalance(user.getBalance() + deltaRating);
         user.setRating(user.getRating() + deltaRating);
+        if(user.getWalkthroughs().equals(0)) {
+            user.setAverageRating(deltaRating * 1d);
+            user.setWalkthroughs(1);
+        }
+        else{
+            user.setAverageRating((user.getAverageRating() * user.getWalkthroughs() + deltaRating) / (user.getWalkthroughs() + 1));
+            user.setWalkthroughs(user.getWalkthroughs() + 1);
+        }
+        deck.setCountRepetitions(deck.getCountRepetitions() + 1);
+        deckRepository.save(deck);
         userRepository.save(user);
         JSONObject object = MainController.getSuccess();
         object.put("score", deltaRating);
@@ -62,6 +74,7 @@ public class BalanceController {
 @Getter
 @Setter
 class StatisticRequest extends BanalRequest{
+    private Integer deckId;
     private List<CardResult> results; //success/all answers
 }
 
