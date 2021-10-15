@@ -205,10 +205,11 @@
     "error": false
 }
 ```
-/statistic
+>/statistic
 ### Input:
 ```sh
     {
+    "deckId":1,
 	"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImFkbWluIiwibG9naW4iOiJhZG1pbiJ9.0A_h5-_WN0OeoT1eWQoeIWZR2_wACsfxmWSRu_WBOGo",
 	"results":[
 		{
