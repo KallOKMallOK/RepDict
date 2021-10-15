@@ -15,6 +15,8 @@
 		"ADD_DECK": "/new_deck",
 		"CHANGE_DECK": "/change_deck",
 		"SUBSCRIBE_DECK": "/subscribe",
-		"DELETE_DECK": "/delete_deck"
+		"DELETE_DECK": "/delete_deck",
+		"GET_SCORES": "/statistic",
+		"GET_STATISTIC": "/statistic"
 	}
 }

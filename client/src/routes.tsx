@@ -45,7 +45,7 @@ export const routes: IRoute[] = [
 		isNavBar: false,
 		isLogin: true,
 		isExact: true,
-		isPrivate: true,
+		isPrivate: false,
 		path: '/play/:id',
 		name: 'Play',
 		component: Pages.Play,

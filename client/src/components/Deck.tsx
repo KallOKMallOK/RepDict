@@ -103,18 +103,22 @@ export const Deck: React.FC<IDeckDefault> = props => {
   	return (
 	<div className="card_item card_item_noactive">
 		{/* control items */}
-		{
-			(props.enableMethods !== undefined && props.enableMethods.enableDelete && props.enableMethods.enableEdit) &&
-				<div className="control">
-					<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
-					<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
-						<li className="dropdown_item" onClick={e => history.push(`/play/${props.id}`)}>Play</li>
-						<li className="dropdown_item" onClick={e => handleEdit(e, props.index)}>Edit</li>
+			<div className="control">
+				<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
+				<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
+					<li className="dropdown_item" onClick={e => history.push(`/play/${props.id}`)}>Play</li>
+					{
+						props.enableMethods?.enableEdit && 
+							<li className="dropdown_item" onClick={e => handleEdit(e, props.index)}>Edit</li>
+					}
+					{
+						props.enableMethods?.enableDelete && 
 						<li className="dropdown_item" onClick={e => props.delete!(e, props.id)}>Delete</li>
-					</ul>
-				</div>
-		}
-		
+					}
+					
+					
+				</ul>
+			</div>
 
 		{/* HEAD OF DECK */}
 		<p className="card_item_head">

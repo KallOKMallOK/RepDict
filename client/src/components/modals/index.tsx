@@ -93,7 +93,6 @@ class ModalContainer extends React.PureComponent<PropsPopup, StatePopup>{
 				,
 				document.getElementById("root-modals")!
 			)
-			
 		)
 	}
 }

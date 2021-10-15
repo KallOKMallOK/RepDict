@@ -64,6 +64,43 @@
 		}
 	
 	}
+	&__card.ended{
+		display: none;
+	}
+
+	.section_congratulations{
+		display: none;
+
+	}
+	.section_congratulations.ended{
+		display: flex;
+		padding: 20px 40px;
+		.congratulations{
+			width: 100%;
+			border: 5px solid $color-main;
+			border-radius: 20px;
+			@include bs(15px, 0px, $color-main);
+			text-align: center;
+			padding: 40px 0;
+			height: calc(100vh - 200px);
+			min-height: 350px;
+			max-height: 450px;
+			display: flex;
+			justify-content: space-between;
+			flex-direction: column;
+			h2{
+				margin-bottom: 20px;
+				font: 2em RobotoBold;
+			}
+			h3{ font: 1.5em RobotoRegular }
+			h1{ font: 2.5em RobotoBlack }
+			.control_buttons{
+				display: flex;
+				gap: 20px;
+				justify-content: center;
+			}
+		}
+	}
 }
 
 .lesson_card{

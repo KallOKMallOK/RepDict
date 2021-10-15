@@ -20,6 +20,7 @@ const API_URLS: any = {
 	CHANGE_DECK: 		CONFIG.HOST + CONFIG.URLS.CHANGE_DECK,
 	SUBSCRIBE_DECK: 	CONFIG.HOST + CONFIG.URLS.SUBSCRIBE_DECK,
 	DELETE_DECK: 		CONFIG.HOST + CONFIG.URLS.DELETE_DECK,
+	GET_SCORES: 		CONFIG.HOST + CONFIG.URLS.GET_SCORES,
 }
 
 const FAKE_DATA = (url: string) => {
@@ -198,7 +199,7 @@ class API {
 
 	public static getDeck(id: number): Promise<any>{
 		return new Promise<any> ((resolve, reject) => {
-			this.GETFake(API_URLS.GET_DECK, { id }, { token: true })
+			this.GET(API_URLS.GET_DECK, (localStorage.getItem("token")?.length !== undefined ? { token: localStorage.getItem("token"), id }: { id }))
 				.then(response => {
 					console.log(response)
 					const data: IDeck = this.transormArrayOfDeck(response.data.deck)
@@ -232,6 +233,9 @@ class API {
 	}
 	public static deleteDeck(deckId: number): Promise<any>{
 		return this.POST(API_URLS.DELETE_DECK, { deckId }, { token: true })
+	}
+	public static getScoresAfterEndPlay(data: any, deckId: number): Promise<any>{
+		return this.POST(API_URLS.GET_SCORES, { ...data, deckId }, {token: true })
 	}
 
 	// ***CHANGE DATA***

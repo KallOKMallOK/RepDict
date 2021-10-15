@@ -9,18 +9,26 @@ import { IDeck } from '../domains/entities/deсk.entity';
 import { FaArrowRight } from "react-icons/fa"
 import "../styles/pages/Play.scss"
 import { Notification } from '../components/Notification';
+import { Link } from 'react-router-dom';
 
 
 interface IPlayProps extends RouteComponentProps{
 }
+interface resultEndPlay{
+	idCard: number
+	time: number
+	answer: boolean
+}
+
 interface StatePlay{
 	deck: IDeck | null
 	cards: ICard[]
 	currentCard: number
 	currentLang: string
-	successed: number
+	successed: resultEndPlay[]
 	valueInputAnswer: string
 	ended: boolean
+	scores: number
 }
 
 class Play extends React.Component<IPlayProps, StatePlay>{
@@ -34,13 +42,14 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 			cards: [],
 			currentLang: "ENG",
 			currentCard: 0,
-			successed: 0,
+			successed: [],
 			valueInputAnswer: "",
-			ended: false
+			ended: false,
+			scores: 0
 		}
 
 	}
-	shuffleDecks(array: ICard[]) {
+	shuffleCards(array: ICard[]) {
 		for (let i = array.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
 			[array[i], array[j]] = [array[j], array[i]];
@@ -49,35 +58,60 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 		return array;
 	}
 
+	nextCard(successed: boolean){
+		if(this.state.currentCard + 1 < this.state.cards.length)
+			this.setState({ 
+				currentCard: this.state.currentCard + 1,
+				successed: [
+					...this.state.successed, 
+					{ 
+						idCard: this.state.cards[this.state.currentCard].id, 
+						time: 20,
+						answer: successed
+					}
+				]
+			})
+		else{
+			this.setState({ ended: true, successed: [
+				...this.state.successed, 
+				{ 
+					idCard: this.state.cards[this.state.currentCard].id, 
+					time: 20,
+					answer: successed
+				}
+				]
+			}, () => {
+				API.getScoresAfterEndPlay({
+					results: this.state.successed
+				}, this.state.deck!.id)
+					.then(res => {
+						console.log(res);
+						this.setState({ scores: res.data.score || 0 })
+					})
+					.catch(err => console.log(err))
+			})
+
+		}
+	}
+
 	checkCard(card: ICard, value: string, lang?: string): boolean{
 		return card.answer === value
 	}
 
 	handleNextCard(){
 		const valueAnswer = this.state.valueInputAnswer
-		if(this.state.currentCard + 1 < this.state.cards.length){
-			if(this.checkCard(this.state.cards[this.state.currentCard], valueAnswer)){
-				this.setState({ currentCard: this.state.currentCard + 1, successed: this.state.successed + 1 })
-			}
-			else{
-
-			}
-		}
-		else{
-			this.setState({ ended: true })
-		}
+		if(this.checkCard(this.state.cards[this.state.currentCard], valueAnswer))
+			this.nextCard(true)
+		// else input outline: red
 	}
 	
 	handleSkipCard(){
-		if(this.state.currentCard + 1 < this.state.cards.length)
-			this.setState({ currentCard: this.state.currentCard + 1 })
-		else{
-			this.setState({ ended: true })
-		}
+		this.nextCard(false)
 	}
 	handleChangeInputAnswer(e: React.FormEvent<HTMLInputElement>){
 		if(this.checkCard(this.state.cards[this.state.currentCard], e.currentTarget.value)){
-			this.setState({ valueInputAnswer: "", currentCard: this.state.currentCard + 1 })
+			this.setState({ valueInputAnswer: ""})
+			this.nextCard(true)
 		}else{
 			this.setState({ valueInputAnswer: e.currentTarget.value })
 		}
@@ -88,7 +122,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 		const id = Number(params.id)
 		if(Boolean(id)){
 			API.getDeck(id)
-				.then(resp => this.setState({ deck: resp.deck, cards: this.shuffleDecks(resp.deck.cards) }))
+				.then(resp => this.setState({ deck: resp.deck, cards: this.shuffleCards(resp.deck.cards) }))
 				.catch(err => console.log(err))
 		}
 		else{
@@ -104,7 +138,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					<Currsection 
 						info = {{ 
 							name: this.state.deck?.name,
-							description: this.state.deck?.description,
+							description: this.state.deck?.description || "no description",
 							"current card": `${this.state.currentCard + 1} / ${this.state.deck?.cards.length}`
 						}}
 						/>
@@ -112,8 +146,6 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 						<div className="lesson_card">
 							<span className="lesson_card_lang">{this.state.deck?.mainLang.toUpperCase()}</span>
 							<button className="lesson_card_hint">?</button>
-							{/* <span className="lesson_card_num">{props.currentWord}/{props.countWords}</span>
-							*/}
 							<span className="lesson_card_word">{this.state.cards[this.state.currentCard]?.main_word}</span> 
 						</div>
 					</section>
@@ -127,7 +159,25 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				
 
 				<div className={`section_congratulations ${this.state.ended? "ended": ""}`}>
-
+					<div className="congratulations">
+						<div className="welc">
+							<h2>Congratulations!</h2>
+							<h3>You have passed the "{this.state.deck?.name}" deck once again.</h3>
+						</div>
+						<h1>Your scores: {this.state.scores}</h1>
+						<div className="control_buttons">
+							<button 
+								className="btn btn-primary" 
+								onClick={e => this.setState({ 
+									ended: false, 
+									currentCard: 0, 
+									cards: this.shuffleCards(this.state.cards),
+									successed: []
+								})}
+							>Once again</button>
+							<Link to="/decks" className="btn btn-success">To Decks</Link>
+						</div>
+					</div>
 				</div>
 			</div>
 		)
