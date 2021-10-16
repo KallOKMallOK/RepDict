@@ -21,6 +21,7 @@ const API_URLS: any = {
 	SUBSCRIBE_DECK: 	CONFIG.HOST + CONFIG.URLS.SUBSCRIBE_DECK,
 	DELETE_DECK: 		CONFIG.HOST + CONFIG.URLS.DELETE_DECK,
 	GET_SCORES: 		CONFIG.HOST + CONFIG.URLS.GET_SCORES,
+	CLONE_DECK: 		CONFIG.HOST + CONFIG.URLS.CLONE_DECK,
 }
 
 const FAKE_DATA = (url: string) => {
@@ -231,11 +232,17 @@ class API {
 	public static addDeck(data: any): Promise<any>{
 		return this.POST(API_URLS.ADD_DECK, data, { token: true })
 	}
+
 	public static deleteDeck(deckId: number): Promise<any>{
 		return this.POST(API_URLS.DELETE_DECK, { deckId }, { token: true })
 	}
+
 	public static getScoresAfterEndPlay(data: any, deckId: number): Promise<any>{
 		return this.POST(API_URLS.GET_SCORES, { ...data, deckId }, {token: true })
+	}
+
+	public static cloneDeck(deckId: number): Promise<any>{
+		return this.POST(API_URLS.CLONE_DECK, { deckId }, { token: true })
 	}
 
 	// ***CHANGE DATA***

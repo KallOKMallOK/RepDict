@@ -32,6 +32,7 @@ interface enableMethodsOptions{
 	enableSubscribe?: boolean
 	enableSave?: boolean
 	enableCreate?: boolean
+	enableClone?: boolean
 }
 
 export interface IDeckDefault extends IDeck{
@@ -43,6 +44,7 @@ export interface IDeckDefault extends IDeck{
 	like?: actionClick
 	changePrivate?: actionClick
 	subscribe?: actionClick
+	clone?: actionClick
 }
 
 
@@ -115,6 +117,10 @@ export const Deck: React.FC<IDeckDefault> = props => {
 						props.enableMethods?.enableDelete && 
 						<li className="dropdown_item" onClick={e => props.delete!(e, props.id)}>Delete</li>
 					}
+					{
+						props.enableMethods?.enableClone && 
+							<li className="dropdown_item" onClick={e => props.clone!(e, props.id)}>Clone</li>
+					}
 					
 					
 				</ul>
@@ -136,7 +142,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 			<span className="card_item_head_name">{props.name}</span>
 			{
 				// props.author !== props.owner && 
-				<Link to={`/users/${props.author}`} className="author">(by {props.author})</Link> 
+				<Link to={`/user/${props.author}`} className="author">(by {props.author} {props.author !== props.owner? `edited ${props.owner}`: ""})</Link> 
 			}
 		</p>
 

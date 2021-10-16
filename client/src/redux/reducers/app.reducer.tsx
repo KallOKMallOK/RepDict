@@ -5,7 +5,8 @@ const initialState = {
    auth: false,
    user: {
       name: "",
-      login: ""
+      login: "",
+      balance: 0
    }
 }
 
@@ -18,7 +19,8 @@ export const app = (state: Object = initialState, action: PayloadAction<any>) =>
             auth: true,
             user: {
                name: action.payload.name,
-               login: action.payload.login
+               login: action.payload.login,
+               balance: action.payload.balance
             }
          }
       case APP.LOGOUT:
@@ -28,7 +30,8 @@ export const app = (state: Object = initialState, action: PayloadAction<any>) =>
             auth: false,
             user: {
                name: "",
-               login: ""
+               login: "",
+               balance: 0
             }
          }
       default:
