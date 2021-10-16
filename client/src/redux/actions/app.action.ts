@@ -5,6 +5,7 @@ enum ERefer {NOT, GOOGLE, VK, FACEBOOK}
 export interface IPerson{
 	login: string,
 	name: string
+	balance: number
 }
 
 export const login = (person: IPerson) => {

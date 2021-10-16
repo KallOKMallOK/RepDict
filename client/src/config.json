@@ -17,6 +17,7 @@
 		"SUBSCRIBE_DECK": "/subscribe",
 		"DELETE_DECK": "/delete_deck",
 		"GET_SCORES": "/statistic",
-		"GET_STATISTIC": "/statistic"
+		"GET_STATISTIC": "/statistic",
+		"CLONE_DECK": "/copy_deck"
 	}
 }

@@ -34,6 +34,7 @@ interface StatePlay{
 class Play extends React.Component<IPlayProps, StatePlay>{
 	// private answerRef = React.createRef<HTMLInputElement>()
 
+	private TIME_CARD = 0
 	constructor(props: IPlayProps){
 		super(props)
 
@@ -47,7 +48,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 			ended: false,
 			scores: 0
 		}
-
+		
 	}
 	shuffleCards(array: ICard[]) {
 		for (let i = array.length - 1; i > 0; i--) {
@@ -59,28 +60,31 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	}
 
 	nextCard(successed: boolean){
-		if(this.state.currentCard + 1 < this.state.cards.length)
+		if(this.state.currentCard + 1 < this.state.cards.length){		
 			this.setState({ 
 				currentCard: this.state.currentCard + 1,
 				successed: [
 					...this.state.successed, 
 					{ 
 						idCard: this.state.cards[this.state.currentCard].id, 
-						time: 20,
+						time: this.getTimeDeck("end"),
 						answer: successed
 					}
 				]
-			})
+			}, () => this.getTimeDeck("start"))
+		}
 		else{
+			
 			this.setState({ ended: true, successed: [
 				...this.state.successed, 
 				{ 
 					idCard: this.state.cards[this.state.currentCard].id, 
-					time: 20,
+					time: this.getTimeDeck("end"),
 					answer: successed
 				}
 				]
 			}, () => {
+				this.getTimeDeck("start")
 				API.getScoresAfterEndPlay({
 					results: this.state.successed
 				}, this.state.deck!.id)
@@ -94,15 +98,31 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 		}
 	}
 
+	getTimeDeck(state: "start" | "end"): number{
+		if(state === "start"){
+			this.TIME_CARD = new Date().getTime()
+		}
+		else if(state === "end"){
+			const time_card = this.TIME_CARD
+			this.TIME_CARD = 0
+			return Math.ceil((new Date().getTime() - time_card) / 1000)
+		}
+		return 0
+	}
+
 	checkCard(card: ICard, value: string, lang?: string): boolean{
-		return card.answer === value
+		return card.answer.toLowerCase() === value.toLowerCase()
 	}
 
 	handleNextCard(){
 		const valueAnswer = this.state.valueInputAnswer
 		if(this.checkCard(this.state.cards[this.state.currentCard], valueAnswer))
 			this.nextCard(true)
-		// else input outline: red
+		else{
+			this.nextCard(false)
+			this.setState({ valueInputAnswer: "" })
+			// else input outline: red
+		}
 	}
 	
 	handleSkipCard(){
@@ -113,7 +133,12 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 			this.setState({ valueInputAnswer: ""})
 			this.nextCard(true)
 		}else{
-			this.setState({ valueInputAnswer: e.currentTarget.value })
+			if(e.currentTarget.value === "-"){
+				this.nextCard(false)
+				this.setState({ valueInputAnswer: "" })
+			}
+			else
+				this.setState({ valueInputAnswer: e.currentTarget.value })
 		}
 	}
 
@@ -122,7 +147,10 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 		const id = Number(params.id)
 		if(Boolean(id)){
 			API.getDeck(id)
-				.then(resp => this.setState({ deck: resp.deck, cards: this.shuffleCards(resp.deck.cards) }))
+				.then(resp => {
+					this.getTimeDeck("start")
+					this.setState({ deck: resp.deck, cards: this.shuffleCards(resp.deck.cards) })
+				})
 				.catch(err => console.log(err))
 		}
 		else{
@@ -153,7 +181,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					<section className="lesson_section answer">
 						<div onClick={this.handleSkipCard.bind(this)} className="answer_button_skip_word">Skip</div>
 						<input value={this.state.valueInputAnswer} onChange={this.handleChangeInputAnswer.bind(this)} type="text" className="answer_input" placeholder={`translate on ${this.state.deck?.secondLang.toUpperCase()}...`} autoFocus/>
-						<div onClick={this.handleNextCard.bind(this)} className="answer_button_next_word"><FaArrowRight /></div>
+						<div onClick={e => this.handleNextCard()} className="answer_button_next_word"><FaArrowRight /></div>
 					</section>
 				</div>	
 				

@@ -39,6 +39,11 @@ class Store extends React.Component<PropsFromRedux>{
 			.then(response => console.log(response))
 			.catch(err => console.log(err))
 	}
+	handleClone(e: any, id: number){
+		API.cloneDeck(id)
+			.then(res => console.log(res))
+			.catch(err => console.log(err))
+	}
 
 
 	componentDidMount(){
@@ -76,13 +81,14 @@ class Store extends React.Component<PropsFromRedux>{
 									cards={deck.cards}
 									key={`deck_${index}`}
 									subscribed={deck.subscribed}
-									
+									clone={this.handleClone}
 
 									like={this.handleLike}
 
 									enableMethods={{
 										enableLike: this.props.auth,
-										enableSubscribe: deck.author !== this.props.user.login
+										enableSubscribe: deck.author !== this.props.user.login && this.props.auth,
+										enableClone: this.props.auth
 									}}
 									/>
 							})

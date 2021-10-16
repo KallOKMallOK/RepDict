@@ -89,6 +89,13 @@ class App extends React.PureComponent<PropsFromRedux, StateApp>{
 
 	constructor(props: PropsFromRedux){
 		super(props)
+		console.log(`
+	 ____  __________  ____  ________________   _________            __
+	/ __ \/ ____/ __ \/ __ \/  _/ ____/_  __/  / ____/ (_)__  ____  / /_
+  / /_/ / __/ / /_/ / / / // // /     / /    / /   / / / _ \/ __ \/ __/
+ / _, _/ /___/ ____/ /_/ // // /___  / /    / /___/ / /  __/ / / / /_
+/_/ |_/_____/_/   /_____/___/\____/ /_/     \____/_/_/\___/_/ /_/\__/
+		`);
 	}
 
 	componentDidMount(){
