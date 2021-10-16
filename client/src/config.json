@@ -1,5 +1,5 @@
 {
-	"HOST": "",
+	"HOST": "http://repdict.live",
 	"URLS": {
 		"MAIN": "/",
 
