@@ -1,2 +1,5 @@
 server/.idea
 ./server/client
+server/src/main/resources/application.properties
+server/src/main/resources/cer.cer
+server/src/main/resources/keystore.p12

@@ -1,13 +1,10 @@
 package com.nafanya.danil00t.RepDict.models;
 
-import com.nafanya.danil00t.RepDict.controllers.CardsController;
 //import com.nafanya.danil00t.RepDict.repository.WordRepository;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 

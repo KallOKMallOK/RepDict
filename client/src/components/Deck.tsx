@@ -6,11 +6,11 @@ import {
 	FaEllipsisV,
 	FaHeart
 } from "react-icons/fa"
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import API from '../api'
-import { ActionChange } from '../domains/entity/actions.entity'
-import { ICard } from '../domains/entity/card.entity'
-import { IDeck } from '../domains/entity/deсk.entity'
+import { ActionChange } from '../domains/entities/actions.entity'
+import { ICard } from '../domains/entities/card.entity'
+import { IDeck } from '../domains/entities/deсk.entity'
 import useOutsideClick from '../hoc/OutsideClicker'
 
 import { LANGS } from "../redux/types"
@@ -32,6 +32,7 @@ interface enableMethodsOptions{
 	enableSubscribe?: boolean
 	enableSave?: boolean
 	enableCreate?: boolean
+	enableClone?: boolean
 }
 
 export interface IDeckDefault extends IDeck{
@@ -43,12 +44,14 @@ export interface IDeckDefault extends IDeck{
 	like?: actionClick
 	changePrivate?: actionClick
 	subscribe?: actionClick
+	clone?: actionClick
 }
 
 
 
 export const Deck: React.FC<IDeckDefault> = props => {
 
+	const history = useHistory()
 	// Component states
 	const [dropdownVisible, openDropdown] = useState(false)
 	const [activedLike, activeLike] = useState(props.activeLike || false)
@@ -88,26 +91,40 @@ export const Deck: React.FC<IDeckDefault> = props => {
 		openDropdown(false)
 		props.edit!(e, props.index)
 	}
-	const handleChangeSubscribed = () => {
+	const handleChangeSubscribed = (e: any) => {
+		props.subscribe !== undefined && props.subscribe(e, props.id)
 		API.subscribe(props.id)
+			.then(resp => {
+				console.log(resp);
+				Notification.success("Ok", "All okey")
+			})
+			.catch(err => console.log(err))
 		changeSubscribed(!subscribed)
 	}
 
   	return (
 	<div className="card_item card_item_noactive">
 		{/* control items */}
-		{
-			(props.enableMethods !== undefined && props.enableMethods.enableDelete && props.enableMethods.enableEdit) &&
-				<div className="control">
-					<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
-					<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
-						<li className="dropdown_item" onClick={e => console.log(e)}>Play</li>
-						<li className="dropdown_item" onClick={e => handleEdit(e, props.index)}>Edit</li>
+			<div className="control">
+				<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
+				<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
+					<li className="dropdown_item" onClick={e => history.push(`/play/${props.id}`)}>Play</li>
+					{
+						props.enableMethods?.enableEdit && 
+							<li className="dropdown_item" onClick={e => handleEdit(e, props.index)}>Edit</li>
+					}
+					{
+						props.enableMethods?.enableDelete && 
 						<li className="dropdown_item" onClick={e => props.delete!(e, props.id)}>Delete</li>
-					</ul>
-				</div>
-		}
-		
+					}
+					{
+						props.enableMethods?.enableClone && 
+							<li className="dropdown_item" onClick={e => props.clone!(e, props.id)}>Clone</li>
+					}
+					
+					
+				</ul>
+			</div>
 
 		{/* HEAD OF DECK */}
 		<p className="card_item_head">
@@ -125,7 +142,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 			<span className="card_item_head_name">{props.name}</span>
 			{
 				// props.author !== props.owner && 
-				<Link to={`/users/${props.author}`} className="author">(by {props.author})</Link> 
+				<Link to={`/user/${props.author}`} className="author">(by {props.author} {props.author !== props.owner? `edited ${props.owner}`: ""})</Link> 
 			}
 		</p>
 
@@ -146,7 +163,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 		<div className="footer">
 			{
 				props.enableMethods?.enableSubscribe ?
-					<button className={`btn btn-${!subscribed? "primary": "danger"}`} onClick={e => handleChangeSubscribed()}>{subscribed? "Unsubscribe": "Subscribe"}</button>:
+					<button className={`btn btn-${!subscribed? "primary": "danger"}`} onClick={e => handleChangeSubscribed(e)}>{subscribed? "Unsubscribe": "Subscribe"}</button>:
 					<div></div>
 			}
 			<span className="likes" onClick={e => likeUser(e)}>

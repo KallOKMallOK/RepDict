@@ -3,7 +3,7 @@ import React from 'react';
 import { Notification } from '../components/Notification';
 import { showLoader, hideLoader } from "../components"
 import { Deck, IDeckDefault } from '../components/Deck';
-import { IDeck } from "../domains/entity/deсk.entity"
+import { IDeck } from "../domains/entities/deсk.entity"
 import API from '../api';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -15,7 +15,8 @@ interface StateStore{
 
 const mapStateToProps = (state: any) => ({
 	auth: state.app.auth,
-	notify: state.notification
+	notify: state.notification,
+	user: state.app.user
 })
 const connector = connect(mapStateToProps)
 
@@ -36,6 +37,11 @@ class Store extends React.Component<PropsFromRedux>{
 		console.log("like", id);
 		API.setLike(id)
 			.then(response => console.log(response))
+			.catch(err => console.log(err))
+	}
+	handleClone(e: any, id: number){
+		API.cloneDeck(id)
+			.then(res => console.log(res))
 			.catch(err => console.log(err))
 	}
 
@@ -75,13 +81,14 @@ class Store extends React.Component<PropsFromRedux>{
 									cards={deck.cards}
 									key={`deck_${index}`}
 									subscribed={deck.subscribed}
-									
+									clone={this.handleClone}
 
 									like={this.handleLike}
 
 									enableMethods={{
 										enableLike: this.props.auth,
-										enableSubscribe: true
+										enableSubscribe: deck.author !== this.props.user.login && this.props.auth,
+										enableClone: this.props.auth
 									}}
 									/>
 							})

@@ -14,7 +14,7 @@ import {
 // App styles
 import "../styles/pages/Decks.scss"
 import { Notification } from '../components/Notification';
-import { ActionChange } from '../domains/entity/actions.entity';
+import { ActionChange } from '../domains/entities/actions.entity';
 import { connect, ConnectedProps } from 'react-redux';
 import { Modal } from '../components/modals';
 import { notification } from '../redux/reducers/notification.reducer';
@@ -128,6 +128,10 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			.catch(err => console.log(err))
 	}
 
+	handleUnsibscribe(e: any, id: number){
+		this.setState({ decksSubscriptions: this.state.decksSubscriptions.filter(deck => deck.id !== id) })
+	}
+
 	componentDidMount(){
 		console.log(this.state.decksOwned);
 		if(this.state.decksOwned.length === 0){
@@ -137,8 +141,8 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 					console.log(data);
 					!data.error && 
 					this.setState({
-						decksSubscriptions: [...this.state.decksSubscriptions, ...data.data.subscriptions],
-						decksOwned: [...this.state.decksOwned, ...data.data.owned],
+						decksSubscriptions: [...this.state.decksSubscriptions, ...data.data.subscriptions.reverse()],
+						decksOwned: [...this.state.decksOwned, ...data.data.owned.reverse()],
 					})
 					hideLoader()
 				})
@@ -244,7 +248,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 					</div>
 				</section>
 
-				<section className="lesson_section">
+				<section className={`lesson_section ${this.state.decksSubscriptions.length === 0? "noactive": "active"}`}>
 					<h2 className="cards_main_name">My Subscribed Decks</h2>
 					<div className="cards">
 					{
@@ -266,6 +270,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 									cards={deck.cards}
 									key={`deck_${index}`}
 									subscribed={deck.subscribed}
+									subscribe={this.handleUnsibscribe.bind(this)}
 
 									// enables
 									enableMethods={{ 

@@ -1,2 +1,131 @@
 @import "../vars";
 @import "../fonts";
+
+
+.Play{
+	&__card{
+		&_section{
+			// background-color: red;
+			display: flex;
+			justify-content: center;
+			.lesson_card{
+				width: 30%;
+				min-width: 300px;
+				height: 20%;
+				min-height: 200px;
+				background-color: $color-bg-ligth;
+				box-shadow: 0 0 15px $color-main_;
+				border: 4px solid $color-main;
+				border-radius: 20px;
+				position: relative;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				&_lang{
+					position: absolute;
+					top: 20px;
+					left: 20px;
+				}
+				&_hint{
+					position: absolute;
+					top: 20px;
+					right: 20px;
+					text-decoration: none;
+					background-color: transparent;
+					border: none;
+					cursor: pointer;
+				}
+			}
+		}
+		.answer{
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 10px;
+			&_input{
+				width: 360px;
+				height: 42px;
+				outline: none;
+				background-color: $color-bg-ligth;
+				border: 2px solid $color-bg-grey;
+				box-shadow: 0 0 10px rgba(47, 47, 47, 0.568);
+				border-radius: 25px;
+				padding: 0 20px;
+				color: white;
+				font-family: RobotoBold;
+			}
+			&_button_next_word, &_button_skip_word {
+				width: 30px;
+				height: 30px;
+				color: #fff;
+				cursor: pointer;
+
+			}
+		}
+	
+	}
+	&__card.ended{
+		display: none;
+	}
+
+	.section_congratulations{
+		display: none;
+
+	}
+	.section_congratulations.ended{
+		display: flex;
+		padding: 20px 40px;
+		.congratulations{
+			width: 100%;
+			border: 5px solid $color-main;
+			border-radius: 20px;
+			@include bs(15px, 0px, $color-main);
+			text-align: center;
+			padding: 40px 0;
+			height: calc(100vh - 200px);
+			min-height: 350px;
+			max-height: 450px;
+			display: flex;
+			justify-content: space-between;
+			flex-direction: column;
+			h2{
+				margin-bottom: 20px;
+				font: 2em RobotoBold;
+			}
+			h3{ font: 1.5em RobotoRegular }
+			h1{ font: 2.5em RobotoBlack }
+			.control_buttons{
+				display: flex;
+				gap: 20px;
+				justify-content: center;
+			}
+		}
+	}
+}
+
+.lesson_card{
+	&_wrap{
+		display: flex;
+		justify-content: center;
+		margin-bottom: 20px;
+		.lesson_card{
+			width: 450px;
+			height: 250px;
+			
+		}
+	}
+	&_num, &_word, &_hint{
+		font-family: RobotoBold;
+		color: white;
+	}
+	&_word{
+		font-size: 2em;
+	}
+	&_num{
+		position: absolute;
+		top: 20px;
+		left: 20px;
+	}
+
+}
+

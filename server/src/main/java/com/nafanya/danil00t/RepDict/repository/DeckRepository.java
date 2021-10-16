@@ -10,6 +10,10 @@ public interface DeckRepository extends JpaRepository<Deck, Integer> {
 
     List<Deck> findAllByOwner(User owner);
 
+    List<Deck> findAllByOrderByIdDesc();
+
+    List<Deck> findAllByOwnerOrderByIdDesc(User owner);
+
     List<Deck> findAllByAuthor(User author);
 
 }
