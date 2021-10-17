@@ -3,6 +3,49 @@
 @import "~animate.css/source/animate.css";
 
 // -----------------------------------------------------------------------------
+// ---------------------------- Small UI components ------------------------------------
+// -----------------------------------------------------------------------------
+
+// Button
+.__btn{
+	height: 44px;
+	width: 120px;
+	background-color: transparent;
+	color: white;
+	font: 1.1em RobotoBold;
+	border: 3px solid $color-main;
+	border-radius: 40px;
+	@include trs();
+	&:hover{
+		border: 3px solid darken($color-main, 5);
+	}
+}
+
+// Editing text
+.edit_text{
+	margin-left: -5px;
+	span{
+		display: block;
+		width: 200px;
+		color: white;
+		line-height: 35px;
+		padding-left: 5px;
+		cursor: pointer;
+	}
+	input{
+		width: 200px;
+		height: 35px;
+		padding-left: 5px;
+		margin-left: -2px;
+		border-radius: 3px;
+		outline: none;
+		border: 2px solid $color-bg-dark;
+		background-color: $color-bg-dark;
+		color: white;
+	}
+}
+
+// -----------------------------------------------------------------------------
 // ---------------------------- Currsection ------------------------------------
 // -----------------------------------------------------------------------------
 
@@ -128,6 +171,11 @@ header.main_header {
 	}
 }
 
+.user__balance{
+	padding: 5px 7px;
+	background-color: $color-accent;
+	border-radius: 30px;
+}
 // Notification
 
 .Notification{

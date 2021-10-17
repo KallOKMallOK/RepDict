@@ -38,7 +38,7 @@ export const EditText: React.FC<EditTextProps> = props => {
 		<div className="edit_text" ref={editTextRef}>
 			{
 				editing ?
-				<input type={props.typeInput} defaultValue={text} onKeyPress={e => handlePressKeyInput(e)}/>:
+				<input type={props.typeInput} defaultValue={text} onKeyPress={e => handlePressKeyInput(e)} autoFocus/>:
 				<span className="edit_text_content" onClick={e => handleChangeEditing(true)}>{text}</span>
 			}
 		</div>
