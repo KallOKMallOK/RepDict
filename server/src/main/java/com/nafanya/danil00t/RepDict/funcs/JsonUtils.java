@@ -158,10 +158,10 @@ public class JsonUtils {
         JSONObject object = getUserRatingJson(user);
         Integer pages;
         if(!user.equals(guest))
-             pages = (((int) user.getOwned(deckRepository).
-                     stream().
-                     filter(deck -> deck.getIsPrivate().
-                             equals(0)).count() / UserController.getUSERS_ON_PAGE())) + 1;
+            pages = (((int) user.getOwned(deckRepository).
+                    stream().
+                    filter(deck -> deck.getIsPrivate().
+                            equals(0)).count() / UserController.getUSERS_ON_PAGE())) + 1;
         else
             pages = ((int) (user.getOwned(deckRepository).size() / UserController.getUSERS_ON_PAGE())) + 1;
         if(page > pages)

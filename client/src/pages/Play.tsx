@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import { RouteComponentProps } from 'react-router'
 
 import API from '../api';
@@ -10,9 +10,21 @@ import { FaArrowRight } from "react-icons/fa"
 import "../styles/pages/Play.scss"
 import { Notification } from '../components/Notification';
 import { Link } from 'react-router-dom';
+import { connect, ConnectedProps } from 'react-redux';
+import Action from "../redux/actions"
 
 
-interface IPlayProps extends RouteComponentProps{
+const mapDispatchToProps = (f: Function) => ({
+	addScores: (scores: number) => f(Action.app.addScores(scores))
+})
+
+const connector = connect(null, mapDispatchToProps)
+
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+
+
+interface IPlayProps extends RouteComponentProps, PropsFromRedux{
 }
 interface resultEndPlay{
 	idCard: number
@@ -89,8 +101,9 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					results: this.state.successed
 				}, this.state.deck!.id)
 					.then(res => {
-						console.log(res);
+						// console.log(res);
 						this.setState({ scores: res.data.score || 0 })
+						this.props.addScores(res.data.score || 0)
 					})
 					.catch(err => console.log(err))
 			})
@@ -213,4 +226,4 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 }
 
 
-export default Play;
+export default connector(Play)
