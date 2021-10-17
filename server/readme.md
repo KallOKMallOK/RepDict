@@ -3,7 +3,7 @@
 #
 > /new_deck
 ### Input:
-```sh
+```json
 {
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6Im9wdGltdXMiLCJsb2dpbiI6Im9wdGltdXMifQ.Kx-fai386FTdVzc2T2-ed8yDIlLO8H5r_rm3MsvIMUw",
     "name": "Lol Kek!!!",
@@ -32,12 +32,12 @@
 }
 ```
 ### Output:
-```sh
+```json
 { "error":false }
 ```
 > /change_deck
 ### Input:
-```sh
+```json
 {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImFkbWluIiwibG9naW4iOiJhZG1pbiJ9.0A_h5-_WN0OeoT1eWQoeIWZR2_wACsfxmWSRu_WBOGo",
     "idDeck":1,
@@ -83,19 +83,19 @@
 }
 ```
 ### Output:
-```sh
+```json
 { "error": false }
 ```
 > /like
 ### Input:
-```sh
+```json
 {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImFkbWluIiwibG9naW4iOiJhZG1pbiJ9.0A_h5-_WN0OeoT1eWQoeIWZR2_wACsfxmWSRu_WBOGo",
     "deckId":1
 }
 ```
 ### Output:
-```sh
+```json
 {
     "error": false,
     "status": true
@@ -103,7 +103,7 @@
 ```
 ### Input:
 > /registration
-```sh
+```json
 {
     "name":"nafanya",
     "login":"nafanya",
@@ -111,7 +111,7 @@
 }
 ```
 ### Output:
-```sh
+```json
 {
     "balance": 0,
     "refer": null,
@@ -125,14 +125,14 @@
 ```
 >/login
 ### Input:
-```sh
+```json
 {
 	"login":"nafanya",
 	"password":"nafanyushka"
 }
 ```
 ### Output:
-```sh
+```json
 {
     "balance": 0,
     "refer": null,
@@ -146,14 +146,14 @@
 ```
 >/delete_deck
 ### Input:
-```sh
+```json
 {
 	"deckId":4,
 	"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImFkbWluIiwibG9naW4iOiJhZG1pbiJ9.0A_h5-_WN0OeoT1eWQoeIWZR2_wACsfxmWSRu_WBOGo"
 }
 ```
 ### Output:
-```sh
+```json
 {
     "decks": [
         {
@@ -207,7 +207,7 @@
 ```
 >/statistic
 ### Input:
-```sh
+```json
     {
     "deckId":1,
 	"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImFkbWluIiwibG9naW4iOiJhZG1pbiJ9.0A_h5-_WN0OeoT1eWQoeIWZR2_wACsfxmWSRu_WBOGo",
@@ -245,14 +245,14 @@
 
 >/subscribe
 ### Inout:
-```sh
+```json
 {
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ",
     "deckId":1
 }
 ```
 ### Output:
-```sh
+```json
 {
     "error":false,
     "status":true
@@ -261,14 +261,14 @@
 
 >/copy_deck
 ### Input:
-```sh
+```json
 { 
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ",
     "deckId":1
 }
 ```
 ### Output:
-```sh
+```json
 {
     "error":false,
     "cloneId":15
@@ -278,14 +278,14 @@
 ## GET.
 >/get_deck
 ### Input:
-```sh
+```json
 {
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImFkbWluIiwibG9naW4iOiJhZG1pbiJ9.0A_h5-_WN0OeoT1eWQoeIWZR2_wACsfxmWSRu_WBOGo",
     "id":1
 }
 ```
 ### Output:
-```sh
+```json
 {
     "deck": {
         "is_private": 0,
@@ -340,13 +340,13 @@
 
 >/get_decks
 ### Input:
-```sh
+```json
 {
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
 }
 ```
 ### Output:
-```sh
+```json
 {
     "subscriptions": [
         {
@@ -496,13 +496,13 @@
 
 >/auth
 ### Input:
-```sh
+```json
 { 
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
 }
 ```
 ### Output:
-```sh
+```json
 {
     "data": {
         "balance": 0,
@@ -521,11 +521,11 @@
 
 >/get_all_decks
 ### Input:
-```sh
-    empty OR token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
+```json
+    empty OR token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ"
 ```
 ### Output
-```sh
+```json
 {
     "decks": [
         {
@@ -668,5 +668,84 @@
         }
     ],
     "error": false
+}
+```
+>/user
+### Input:
+```json
+{
+    (not required) "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImpycnRqcnJ0anJydGpycnRqcnJ0anJydGpycnRqcnJ0anJydCIsImxvZ2luIjoibmFmYW55YSJ9.uJKb3CKjVVpURmoEsYhBT06KfXLhmTL1VZD_k4whLNQ",
+    "page" : 2,
+    "login":"admin"
+}
+```
+### Output:
+```json
+{
+    "pages": 2,
+    "name": "admin",
+    "rating": 780,
+    "is_checked": false,
+    "walkthroughs": 0,
+    "average_rating": 0,
+    "decks": [
+        {
+            "is_private": 0,
+            "author_login": "admin",
+            "cards": [],
+            "is_owner": false, (only if have token)
+            "owner_login": "admin",
+            "description": "тут чисто про реп",
+            "count_repetitions": 0,
+            "liked": false, (only if have token)
+            "subscribed": false, (only if have token)
+            "main_language": "eng",
+            "second_language": "rus",
+            "price": 0,
+            "count_words": 0,
+            "name": "Lol Kek!!!",
+            "id": 16,
+            "likes": 0
+        },
+        ...
+        ],
+    "id": 1,
+    "error": false,
+    "login": "admin"
+}
+```
+
+>/rating
+### Input:
+```json
+{
+    "page": 1,
+}
+```
+### Output:
+```json
+{
+    "pages": 1,
+    "error": false,
+    "users": [
+        {
+            "name": "admin",
+            "rating": 780,
+            "walkthroughs": 0,
+            "average_rating": 0,
+            "id": 1,
+            "error": false,
+            "login": "admin"
+        },
+        {
+            "name": "nafanya",
+            "rating": 0,
+            "walkthroughs": 0,
+            "average_rating": 0,
+            "id": 2,
+            "error": false,
+            "login": "nafanya"
+        }
+    ]
 }
 ```

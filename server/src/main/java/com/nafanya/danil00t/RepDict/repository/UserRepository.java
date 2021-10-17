@@ -15,4 +15,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     boolean existsByLogin(String login);
 
+    List<User> findAllByOrderByRatingDesc();
+
 }
