@@ -198,7 +198,7 @@ public class DecksController {
             return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(body.getToken()));
         Deck deck = deckRepository.getById(body.getIdDeck());
-        if(!deck.getAuthor().getLogin().equals(user.getLogin()))
+        if(!deck.getOwner().getLogin().equals(user.getLogin()))
             return MainController.getError();
         body.getChanges().forEach(change -> {
             Card card;
