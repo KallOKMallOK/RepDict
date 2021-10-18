@@ -247,7 +247,7 @@ public class DecksController {
         if(!LogRegController.MiddleWare(request.getToken(), userRepository))
             return MainController.getError();
         Deck deck = deckRepository.getById(request.getDeckId());
-        if(!deck.getAuthor().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
+        if(!deck.getOwner().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
             return MainController.getError();
         cardRepository.deleteAll(deck.getCards());
         deckRepository.delete(deck);
