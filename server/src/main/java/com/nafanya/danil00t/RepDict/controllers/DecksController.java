@@ -105,7 +105,7 @@ public class DecksController {
         JSONObject object = new JSONObject();
 
         List<Deck> ownedList = deckRepository.findAllByOwnerOrderByIdDesc(user);
-        int ownedPages = (int) (ownedList.size() / decksOnOnePage) + 1;
+        int ownedPages = (int) (ownedList.size() / 10) + 1;
         if(ownedPage > ownedPages)
             return MainController.getError();
         object.put("owned_pages", ownedPages);
@@ -119,7 +119,7 @@ public class DecksController {
 
         JSONArray subscriptions = new JSONArray();
         List<Deck> subscriptionsList = user.getSubscriptions();
-        int subscriptionPages = (int) (subscriptionsList.size() / decksOnOnePage) + 1;
+        int subscriptionPages = (int) (subscriptionsList.size() / 10) + 1;
         if(subscribedPage > subscriptionPages)
             return MainController.getError();
         object.put("subscription_pages", subscriptionPages);
@@ -198,7 +198,7 @@ public class DecksController {
             return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(body.getToken()));
         Deck deck = deckRepository.getById(body.getIdDeck());
-        if(!deck.getAuthor().getLogin().equals(user.getLogin()))
+        if(!deck.getOwner().getLogin().equals(user.getLogin()))
             return MainController.getError();
         body.getChanges().forEach(change -> {
             Card card;
@@ -247,7 +247,7 @@ public class DecksController {
         if(!LogRegController.MiddleWare(request.getToken(), userRepository))
             return MainController.getError();
         Deck deck = deckRepository.getById(request.getDeckId());
-        if(!deck.getAuthor().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
+        if(!deck.getOwner().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
             return MainController.getError();
         cardRepository.deleteAll(deck.getCards());
         deckRepository.delete(deck);
