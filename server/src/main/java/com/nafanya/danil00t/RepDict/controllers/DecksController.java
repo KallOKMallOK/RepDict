@@ -105,7 +105,7 @@ public class DecksController {
         JSONObject object = new JSONObject();
 
         List<Deck> ownedList = deckRepository.findAllByOwnerOrderByIdDesc(user);
-        int ownedPages = (int) (ownedList.size() / decksOnOnePage) + 1;
+        int ownedPages = (int) (ownedList.size() / 10) + 1;
         if(ownedPage > ownedPages)
             return MainController.getError();
         object.put("owned_pages", ownedPages);
@@ -119,7 +119,7 @@ public class DecksController {
 
         JSONArray subscriptions = new JSONArray();
         List<Deck> subscriptionsList = user.getSubscriptions();
-        int subscriptionPages = (int) (subscriptionsList.size() / decksOnOnePage) + 1;
+        int subscriptionPages = (int) (subscriptionsList.size() / 10) + 1;
         if(subscribedPage > subscriptionPages)
             return MainController.getError();
         object.put("subscription_pages", subscriptionPages);
