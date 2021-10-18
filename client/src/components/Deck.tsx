@@ -24,7 +24,7 @@ import { Notification } from './Notification'
 // -------------------------------- Deck ---------------------------------------
 // -----------------------------------------------------------------------------
 
-type actionClick = (e: MouseEvent<any>, ...more: any[]) => void
+type actionClick = (e: React.FormEvent<any>, ...more: any[]) => void
 
 interface enableMethodsOptions{
 	enableDelete?: boolean
@@ -184,6 +184,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 
 
 export interface IDeckActive extends IDeckDefault{
+	close: actionClick
 	save?: actionClick
 	create?: actionClick
 }
@@ -286,9 +287,11 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		props.create!(e, dataNewDeck)
 	}
 
+	
+
 	return (
 		<div className="card_item card_item_active">
-			<div className="close">
+			<div className="close" onClick={props.close}>
 				<FaTimes />
 			</div>
 
