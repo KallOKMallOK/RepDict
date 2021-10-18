@@ -93,7 +93,6 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 							Notification.error("Ошбика", "Дек не успешно удален", 3000)
 						})
 				}
-					
 			})
 		// Notification.success("Hello!", "Content", 3000)
 	}

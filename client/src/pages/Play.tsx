@@ -124,7 +124,11 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	}
 
 	checkCard(card: ICard, value: string, lang?: string): boolean{
-		return card.answer.toLowerCase() === value.toLowerCase()
+		const answers = card.answer
+			.split("|")
+			.map(ans => ans.replace(/ /g, "").toLowerCase())
+			
+		return answers.includes(value.toLowerCase())
 	}
 
 	handleNextCard(){
