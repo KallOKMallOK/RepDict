@@ -62,7 +62,8 @@ public class Parser {
                             select("span").
                             first().
                             text().
-                            replaceAll(", ", "|"),
+                            replaceAll(", |; ", "|").
+                            replaceAll(" *\\(.*\\) *", ""),
                     "default",
                     element.
                             select("td").
