@@ -24,7 +24,7 @@ import { Notification } from './Notification'
 // -------------------------------- Deck ---------------------------------------
 // -----------------------------------------------------------------------------
 
-type actionClick = (e: MouseEvent<any>, ...more: any[]) => void
+type actionClick = (e: React.FormEvent<any>, ...more: any[]) => void
 
 interface enableMethodsOptions{
 	enableDelete?: boolean
@@ -184,6 +184,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 
 
 export interface IDeckActive extends IDeckDefault{
+	close: actionClick
 	save?: actionClick
 	create?: actionClick
 }
@@ -272,6 +273,12 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		changeSecondLang(e.currentTarget.value)
 	}
 
+	const handleSwapLangs = () => {
+		const __mainLang = mainLang
+		changeMainLang(secondLang)
+		changeSecondLang(__mainLang)
+	}
+
 	// For creating
 	const handleCreateDeck = (e: any) => {
 		const dataNewDeck = {
@@ -286,9 +293,50 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		props.create!(e, dataNewDeck)
 	}
 
+	// -----------------------------------------------------------------------------
+	// ---------------------------- Export JSON -----------------------------------
+	// -----------------------------------------------------------------------------
+
+	const handleExportFileAsJSON = (e: React.FormEvent<HTMLInputElement>) => {
+		const files = e.currentTarget.files!
+		const file = files[0]
+		const reader = new FileReader()
+
+		reader.onload = function() {
+			var data = JSON.parse(reader.result as string)
+			uploadJSONToCards(data.decks)
+		}
+
+		reader.readAsText(file);
+	}
+
+	const uploadJSONToCards = (cards: ICard[]) => {
+		cards.map((card, index) => {
+			if(index >= 20 && index < 40){
+				const newCard: ICard = {
+					id: card.id,
+					main_word: card.main_word,
+					answer: card.answer,
+					type: "default",
+					description: ""
+				}
+				addCard(oldCards => [...oldCards, newCard])
+				incCountCards(countCardsOld => countCardsOld + 1)
+				addChange(oldChanges => {
+					return [...oldChanges, {
+						type: "NEW_CARD",
+						payload: newCard
+					}]
+				})
+			}
+		})
+		
+	}
+	
+
 	return (
 		<div className="card_item card_item_active">
-			<div className="close">
+			<div className="close" onClick={props.close}>
 				<FaTimes />
 			</div>
 
@@ -303,7 +351,9 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 							})
 						}
 					</select>
-					<span className="card_item_panel_toggler"><FaArrowsAltH /></span>
+
+
+					<span className="card_item_panel_toggler" onClick={handleSwapLangs}><FaArrowsAltH /></span>
 
 					<select onChange={handleChangeSecondLang} className="form-select" aria-label="Default select example">
 						{
@@ -312,6 +362,8 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 							})
 						}
 					</select>
+
+					{/* <input type="file" onChange={handleExportFileAsJSON}/> */}
 				</div>
 				{/* PLUG for jcsb */}
 				<div></div>
