@@ -31,6 +31,7 @@ public class User {
         this.donatBalance = 0;
         this.averageRating = 0d;
         this.walkthroughs = 0;
+        avatar = null;
         this.name = "окси";
     }
 
@@ -75,6 +76,8 @@ public class User {
     private Double averageRating;
 
     private Integer walkthroughs;
+
+    private String avatar;
 
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "decks",
