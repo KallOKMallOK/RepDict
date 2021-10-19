@@ -48,3 +48,17 @@ $color-bg-mark_: #993636;
 @mixin fadeInDown($time){
 	animation: $time ease-in-out 0s alternate fadeInDown;
 }
+
+$columns: 10;
+
+@mixin mr($m) {
+	margin-right: 5px * $m;
+}
+
+@mixin mr-x {
+  @for $i from 1 through $columns {
+      .mr-#{$i} { @include mr($i); }
+  }
+}
+
+@include mr-x;
