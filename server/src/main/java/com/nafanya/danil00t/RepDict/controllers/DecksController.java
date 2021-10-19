@@ -2,6 +2,7 @@ package com.nafanya.danil00t.RepDict.controllers;
 
 import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
 import com.nafanya.danil00t.RepDict.funcs.JsonUtils;
+import com.nafanya.danil00t.RepDict.funcs.Parser;
 import com.nafanya.danil00t.RepDict.models.Card;
 import com.nafanya.danil00t.RepDict.models.Deck;
 import com.nafanya.danil00t.RepDict.models.User;
@@ -13,10 +14,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 @Getter
@@ -291,6 +296,27 @@ public class DecksController {
         JSONObject object = MainController.getSuccess();
         object.put("cloneId", clone.getId());
         return object;
+    }
+
+    @PostMapping("/parser")
+    public void parser(@RequestBody BanalRequest request) throws IOException{
+        if(!LogRegController.MiddleWareIsAdmin(request.getToken(), userRepository))
+            return;
+        Document document = Jsoup.parse(
+                new URL(Parser.getENGLISH_LIBRARY_URL() + "anglijskie-slova-po-temam/"),
+                10000);
+        Elements routes = document.select("tbody").first().select("a");
+        routes.forEach(route -> {
+            try {
+                Parser.parseUrl(route.attr("href"),
+                        userRepository,
+                        deckRepository,
+                        cardRepository);
+            } catch (IOException ignore) {
+
+            }
+                }
+        );
     }
 
     private void changeCardSwitch(JSONObject payload, Deck deck){
