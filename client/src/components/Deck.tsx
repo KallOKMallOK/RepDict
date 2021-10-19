@@ -1,4 +1,5 @@
 import React, { MouseEvent, useCallback, useRef, useState } from 'react'
+import ReactDOM from 'react-dom'
 import { 
 	FaPlus,
 	FaLock,
@@ -7,7 +8,9 @@ import {
 	FaHeart,
 	FaTimes,
 	FaLongArrowAltRight,
-	FaArrowsAltH
+	FaArrowsAltH,
+	FaCaretRight,
+	FaCaretUp
 } from "react-icons/fa"
 import { Link, useHistory } from 'react-router-dom'
 import API from '../api'
@@ -47,6 +50,7 @@ export interface IDeckDefault extends IDeck{
 	changePrivate?: actionClick
 	subscribe?: actionClick
 	clone?: actionClick
+	watch?: actionClick
 }
 
 
@@ -110,6 +114,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 			<div className="control">
 				<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
 				<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
+					<li className="dropdown_item" onClick={e => console.log("watch")}>Watch</li>
 					<li className="dropdown_item" onClick={e => history.push(`/play/${props.id}`)}>Play</li>
 					{
 						props.enableMethods?.enableEdit && 
@@ -182,6 +187,53 @@ export const Deck: React.FC<IDeckDefault> = props => {
 // ----------------------------- Active Deck -----------------------------------
 // -----------------------------------------------------------------------------
 
+interface EditedCardProps extends ICard{
+	visible: boolean
+	positionElement: {x: number, y: number}
+	close: (e: React.FormEvent<any> | null) => void
+	save: (changes: ActionChange[], idCard: number) => void
+}
+
+const EditedCard: React.FC<EditedCardProps> = props => {
+	const [changes, changeChanges] = useState([] as ActionChange[])
+	const [main_word, changeMain_word] = useState(props.main_word)
+	const [answer, changeAnswer] = useState(props.answer)
+	const [description, changeDescription] = useState(props.description)
+
+	const thisRef = useRef<any>(null)
+
+	useOutsideClick(thisRef, () => {
+		if(props.visible) props.close(null)
+	})
+
+	console.log("render EditedCard", props.description);
+	return (
+		ReactDOM.createPortal(
+			<div ref={thisRef} className="editedCardWatch" style={{display: props.visible? "block": "none", top: props.positionElement.y + 240, left: props.positionElement.x + 20}}>
+				<div className="wrapper">
+					<div className="beforeTringle">
+						<FaCaretUp />
+					</div>
+					<div className="closeEditedCard" onClick={e => props.close(e)}>
+						<FaTimes />
+					</div>
+
+					<div className="control-top">
+						<input type="text" className="__input __input_default" value={props.main_word}/>
+						<FaLongArrowAltRight />
+						<input type="text" className="__input __input_default" value={props.answer}/>
+					</div>
+
+					<textarea name="description" className="__input __input_default" id="" cols={10} rows={2} value={props.description}></textarea>
+					<button className="__btn" onClick={e => props.save(changes, props.id)}>save</button>
+				</div>
+			</div>,
+			document.getElementById("root")!
+		)
+	)
+}
+
+
 
 export interface IDeckActive extends IDeckDefault{
 	close: actionClick
@@ -191,13 +243,18 @@ export interface IDeckActive extends IDeckDefault{
 
 
 export const DeckActive: React.FC<IDeckActive> = props => {
-	const [cards, addCard] = useState(props.cards)
+	const [cards, changeCards] = useState(props.cards)
 	const [countCards, incCountCards] = useState(props.countWords)
 	const [changes, addChange] = useState([] as ActionChange[])
 	const [name, changeName] = useState(props.name)
 	const [mainWordValue, changeMainWordValue] = useState("")
 	const [secondWordValue, changeSecondWordValue] = useState("")
 	const [indexCard, changeIndexCard] = useState(1)
+
+	// Edited card menu
+	const [currentCardOpened, changeCurrentCardOpened] = useState(cards[0])
+	const [visibleCardWatch, changeVisibleCardWatch] = useState(false)
+	const [positionCard, changePositionCard] = useState({x: 0, y: 0})
 
 	const [mainLang, changeMainLang] = useState("RU")
 	const [secondLang, changeSecondLang] = useState("ENG")
@@ -242,7 +299,7 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 			type: "default",
 			description: descriptionCardRef.current?.value!
 		}
-		addCard(oldCards => [...oldCards, newCard])
+		changeCards(oldCards => [...oldCards, newCard])
 		incCountCards(countCardsOld => countCardsOld + 1)
 		addChange(oldChanges => {
 			return [...oldChanges, {
@@ -295,6 +352,27 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 			Notification.warning("Предупреждение!", "Вы не добавили ни одной карточки!", 2500)
 	}
 
+	const handleDeleteCard = (e: MouseEvent<any>, index: number) => {
+		e.stopPropagation()
+		changeVisibleCardWatch(false)
+		changeCards(oldCards => oldCards.filter((_, _index: number) => _index !== index))
+		addChange(changes => [...changes, {
+			type: "DELETE_CARD",
+			payload: {
+				id: cards[index].id
+			}
+		}])
+	}
+	
+	const handleOpenCardForWatch = (e: MouseEvent<HTMLLIElement>, index: number) => {
+		changePositionCard({x: e.currentTarget.offsetLeft, y: e.currentTarget.offsetTop})
+		changeCurrentCardOpened(cards[index])
+		changeVisibleCardWatch(true)
+	}
+
+	const handleChangeCard = (changesCard: ActionChange[], indexCard: number) => {
+		console.log(changesCard, indexCard);
+	} 
 	// -----------------------------------------------------------------------------
 	// ---------------------------- Export JSON -----------------------------------
 	// -----------------------------------------------------------------------------
@@ -322,7 +400,7 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 					type: "default",
 					description: ""
 				}
-				addCard(oldCards => [...oldCards, newCard])
+				changeCards(oldCards => [...oldCards, newCard])
 				incCountCards(countCardsOld => countCardsOld + 1)
 				addChange(oldChanges => {
 					return [...oldChanges, {
@@ -412,16 +490,31 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 
 			</div>
 			
+			{
+				visibleCardWatch && <EditedCard 
+					visible={visibleCardWatch}
+					id={currentCardOpened!.id}
+					main_word={currentCardOpened!.main_word}
+					answer={currentCardOpened!.answer}
+					description={currentCardOpened!.description}
+					type="default"
+					positionElement={positionCard}
+
+					close={e => changeVisibleCardWatch(false)}
+					save={handleChangeCard}
+				/>
+			}
+
 			<div className="card_item_panel_item_words">
 				<ul className="card_item_panel_item_words_ul">
 					{
 						cards.map((card: ICard, index: number) => {
-							return <li className="item">
+							return <li className="item" onClick={e => handleOpenCardForWatch(e, index)}>
 								<span className="index">#{index + 1}. </span>
 								<span className="main_word">{card.main_word}</span>
 								-
 								<span className="second_word">{card.answer}</span>
-								<div className="close_deck"><FaTimes/></div>
+								<div className="close_deck" onClick={e => handleDeleteCard(e, index)}><FaTimes/></div>
 							</li>
 						})
 					}
@@ -437,11 +530,11 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 				}
 				{
 					props.enableMethods?.enableSave && 
-						<button className="button_manipulate" onClick={e => props.save!(e, props.id, changes)}>save</button>
+						<button className="__btn __button-default button-save mr-5" onClick={e => props.save!(e, props.id, changes)}>save</button>
 				}
 				{
 					props.enableMethods?.enableDelete &&
-						<button className="button_manipulate" onClick={e => props.delete!(e, props.id)}>delete</button>
+						<button className="__btn __button-default button-delete" onClick={e => props.delete!(e, props.id)}>delete</button>
 				}
 			</div>
 		</div>

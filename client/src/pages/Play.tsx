@@ -1,18 +1,18 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router'
+import { connect, ConnectedProps } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { FaArrowRight } from "react-icons/fa"
 
 import API from '../api';
 import Currsection from '../components/Currsection';
 import { ICard } from '../domains/entities/card.entity';
 import { IDeck } from '../domains/entities/deсk.entity';
 
-import { FaArrowRight } from "react-icons/fa"
-import "../styles/pages/Play.scss"
 import { Notification } from '../components/Notification';
-import { Link } from 'react-router-dom';
-import { connect, ConnectedProps } from 'react-redux';
 import Action from "../redux/actions"
 
+import "../styles/pages/Play.scss"
 
 const mapDispatchToProps = (f: Function) => ({
 	addScores: (scores: number) => f(Action.app.addScores(scores))

@@ -22,6 +22,18 @@
 	}
 }
 
+// INPUT
+
+.__input.__input_default{
+	border: 2px solid $color-bg-ligth;
+	border-radius: 3px;
+	background-color: $color-bg-dark;
+	color: white;
+	font: 1em RobotoLight;
+	padding: 7px 5px;
+	outline: none;
+}
+
 // Editing text
 .edit_text{
 	margin-left: -5px;
