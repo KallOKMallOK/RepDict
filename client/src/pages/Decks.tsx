@@ -146,8 +146,8 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 					console.log(data);
 					!data.error && 
 					this.setState({
-						decksSubscriptions: [...this.state.decksSubscriptions, ...data.data.subscriptions.reverse()],
-						decksOwned: [...this.state.decksOwned, ...data.data.owned.reverse()],
+						decksSubscriptions: [...this.state.decksSubscriptions, ...data.data.subscriptions],
+						decksOwned: [...this.state.decksOwned, ...data.data.owned],
 					})
 					hideLoader()
 				})

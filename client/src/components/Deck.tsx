@@ -144,7 +144,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 			<span className="card_item_head_name">{props.name}</span>
 			{
 				// props.author !== props.owner && 
-				<Link to={`/user/${props.author}`} className="author">(by {props.author} {props.author !== props.owner? `edited ${props.owner}`: ""})</Link> 
+				<Link to={`/user/${props.author}`} className="author">(by {props.author})</Link> 
 			}
 		</p>
 
@@ -290,7 +290,9 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 			price: 0,
 			cards: cards
 		}
-		props.create!(e, dataNewDeck)
+		cards.length !== 0 ? 
+			props.create!(e, dataNewDeck):
+			Notification.warning("Предупреждение!", "Вы не добавили ни одной карточки!", 2500)
 	}
 
 	// -----------------------------------------------------------------------------
@@ -388,14 +390,14 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 					<div className="main-answer-words">
 						<div className="input-wrapper form-floating">
 							<input onChange={handleChangeMainWord} value={mainWordValue} type="text" className="form-control" id="floatingInput" placeholder="type word..." ref={mainWordRef}/>
-							<label htmlFor="floatingInput">Main word</label>
+							<label htmlFor="floatingInput">Main word on {mainLang}</label>
 						</div>
 
 						<span className="card_item_panel_toggler"><FaLongArrowAltRight /></span>
 
 						<div className="input-wrapper form-floating">
 							<input onChange={handleChangeSecondWord} value={secondWordValue} type="text" className="form-control" id="floatingInput" placeholder="type word..." ref={secondWordRef}/>
-							<label htmlFor="floatingInput">Second word</label>
+							<label htmlFor="floatingInput">Second word {secondLang}</label>
 						</div>
 					</div>
 
