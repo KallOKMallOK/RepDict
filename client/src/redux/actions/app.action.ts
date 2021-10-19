@@ -19,3 +19,10 @@ export const logout = () => {
 		type: APP.LOGOUT,
 	}
 }
+
+export const addScores = (scores: number) => {
+	return {
+		type: APP.ADD_SCORES,
+		payload: scores
+	}
+}

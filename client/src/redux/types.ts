@@ -19,6 +19,7 @@ export enum EStatusNotification{
 export const APP = {
 	LOGIN: "APP/LOGIN",
 	LOGOUT: "APP/LOGOUT",
+	ADD_SCORES: "APP/ADD_SCORES",
 }
 
 export const NOTIFY = {

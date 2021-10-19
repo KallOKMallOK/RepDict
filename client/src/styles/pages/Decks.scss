@@ -200,33 +200,197 @@
 				}
 			}
 		}
+
+		// 
+		// 										ACTIVE DECK
+		// 
+		
 		&_item.card_item_active{
 			flex: 0 0 100%;
 			min-height: 300px;
 			height: auto;
-			.card_item_name{
-				span{
-					color: white;
+			position: relative;
+			padding: 30px 30px;
+			.close{
+				position: absolute;
+				top: 5px;
+				right: 10px;
+				color: white;
+				padding: 5px;
+				cursor: pointer;
+			}
+
+			.top-panel{
+				display: flex;
+				align-items: center;
+				// gap: 20px;
+				justify-content: center;
+				margin-top: -40px;
+				// .card_item_name{
+				// 	span{
+				// 		color: white;
+				// 	}
+				// }
+				.select_languages{
+					display: flex;
+					.form-select{
+						background-color: $color-bg-dark;
+						color: white;
+						border: 2px solid lighten($color-bg-dark, 5);
+					}
 				}
 			}
+			.description_deck__wrapper{
+				width: 100%;
+				display: flex;
+				justify-content: center;
+				textarea{
+					width: calc(80%);
+					height: 80px;
+					display: block;
+					outline: none;
+					border-radius: 3px;
+					background-color: $color-bg-dark;
+					border: 2px solid lighten($color-bg-dark, 5);
+					color: white;
+					padding: 10px;
+					font: 1em RobotoLight;
+				}
+			}
+			.card_item_panel_adding__wrapper{
+				width: 100%;
+				display: flex;
+				justify-content: center;
+				.card_item_panel_adding{
+					background-color: lighten($color-bg-ligth, 5);
+					padding: 40px 30px;
+					border-radius: 3px;
+					position: relative;
+					width: 80%;
+					.index_card{
+						color: white;
+						font: 0.9em RobotoBold;
+						background-color: $color-bg-dark;
+						padding: 12px;
+						border-radius: 50%;
+						position: absolute;
+						top: 20px;
+						left: 20px;
+					}
+					.main-answer-words{
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						gap: 10px;
+						margin-bottom: 20px;
+						.input-wrapper{
+							width: 40%;
+							input{
+								height: 50px;
+								font: 1em RobotoLight;
+								color: white;
+								background-color: $color-bg-dark;
+								border: 2px solid lighten($color-bg-ligth, 5);
+							}
+							label{
+								padding: 14px 10px;
+								font: 1em RobotoLight;
+								color: white;
+							}
+						}
+					}
+					.control_bottom__wrapper{
+						display: flex;
+						align-items: center;
+						flex-direction: column;
+						textarea{
+							width: calc(80% + 56px);
+							height: 80px;
+							display: block;
+							outline: none;
+							border-radius: 4px;
+							margin-bottom: 20px;
+							padding: 10px;
+							font: 1em RobotoLight;
+							background-color: $color-bg-dark;
+							border: 2px solid lighten($color-bg-ligth, 5);
+							color: white;
+						}
+						.card_item_panel_button_add{
+							@include trs;
+							font-family: RobotoBold;
+							width: 200px;
+							padding: 7px 20px;
+							text-decoration: none;
+							border: 3px solid $color-main;
+							border-radius: 20px;
+							background-color: transparent;
+							color: white;
+							cursor: pointer;
+							
+							&:hover{
+								background-color: darken($color-main, 7%);
+							}
+						}
+					}
+				}
+			}
+			.card_item_panel_item_words{
+				width: 100%;
+				display: flex;
+				justify-content: center;
+				ul{
+					margin: 0;
+					padding: 0;
+					width: 80%;
+					column-count: 3;
+					margin-top: 20px;
+					color: white;
+					font-family: RobotoLight;
+					li.item{
+						cursor: pointer;
+						margin-bottom: 15px;
+						width: 100%;
+						float: left;
+						page-break-inside: avoid;
+						break-inside: avoid;
+						background-color: lighten($color-bg-ligth, 5);
+						border: 2px solid lighten($color-bg-ligth, 10);
+						border-radius: 20px;
+						position: relative;
+						padding: 7px 20px 7px 15px;
+						display: block;
+						@include trs();
+						.close_deck{
+							position: absolute;
+							padding: 1px 5px 2px 5px;
+							border-radius: 50%;
+							right: 10px;
+							top: 5px;
+							cursor: pointer;
+							&:hover{
+								background-color: lighten($color-bg-ligth, 15);
+							}
+						}
+						&:hover{
+							border: 2px solid $color-main;
+						}
+					}
+				}
+			}
+			.buttons_group{
+				display: flex;
+				justify-content: center;
+				.button-create{
+					width: 300pxg;
+				}
+			}
+
+
 		}
 	}
 	
 	.card_item_panel{
-		&_item_words{
-			/* column-fill: auto; */
-			/* column-width: 30%; */
-			/* width: 100%; */
-			/* height: 100%; */
-			column-count: 4;
-			margin-top: 20px;
-			color: white;
-			font-family: RobotoLight;
-		}
-	
-		&_item_words ul li{
-			margin-bottom: 5px;
-		}
 		&_adding{
 			margin-top: 30px;
 			font-family: RobotoRegular;
@@ -261,22 +425,6 @@
 			color: white;
 			padding: 5px 10px;
 			cursor: pointer;
-		}
-		&_button_add{
-			@include trs;
-			font-family: RobotoBold;
-			padding: 7px 20px;
-			text-decoration: none;
-			border: 3px solid $color-main;
-			border-radius: 20px;
-			margin-left: 15px;
-			background-color: transparent;
-			color: white;
-			cursor: pointer;
-			
-			&:hover{
-				background-color: darken($color-main, 7%);
-			}
 		}
 	}
 }

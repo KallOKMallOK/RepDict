@@ -96,7 +96,7 @@ const Header: React.FC<AppProps> = props => {
 					{
 						// User panel
 						props.auth && <li style={{ color: "white" }} className="user_panel" onClick={e => openDropdownUser(!dropdownVisible)}>
-							<div className="user_panel_head"><FaUser />{props.user.name} <span>{props.user.balance}</span></div>
+							<div className="user_panel_head"><FaUser />{props.user.name} <span className="user__balance">{props.user.balance}</span></div>
 							<ul className={`dropdown ${dropdownVisible? "showedDB__fadeIn": "closed"}`} ref={dropdownRef}>
 								<li className="dropdown_item">
 									<Link to={`/users/${props.user.login}`} onClick={e => openMenuUser(false)}>Profile</Link>
