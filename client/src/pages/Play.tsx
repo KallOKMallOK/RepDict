@@ -41,6 +41,7 @@ interface StatePlay{
 	valueInputAnswer: string
 	ended: boolean
 	scores: number
+	visibleHint: boolean
 }
 
 class Play extends React.Component<IPlayProps, StatePlay>{
@@ -58,7 +59,8 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 			successed: [],
 			valueInputAnswer: "",
 			ended: false,
-			scores: 0
+			scores: 0,
+			visibleHint: false
 		}
 		
 	}
@@ -124,7 +126,11 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	}
 
 	checkCard(card: ICard, value: string, lang?: string): boolean{
-		return card.answer.toLowerCase() === value.toLowerCase()
+		const answers = card.answer
+			.split("|")
+			.map(ans => ans.trim().toLowerCase())
+			
+		return answers.includes(value.toLowerCase())
 	}
 
 	handleNextCard(){
@@ -153,6 +159,9 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 			else
 				this.setState({ valueInputAnswer: e.currentTarget.value })
 		}
+	}
+	handleHint(){
+		this.setState({ visibleHint: !this.state.visibleHint })
 	}
 
 	componentDidMount(){
@@ -186,14 +195,23 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					<section className="lesson_section Play__card_section">
 						<div className="lesson_card">
 							<span className="lesson_card_lang">{this.state.deck?.mainLang.toUpperCase()}</span>
-							<button className="lesson_card_hint">?</button>
+							<button className="lesson_card_hint" onClick={this.handleHint.bind(this)}>?</button>
+							<div className={`hint ${this.state.visibleHint? "active": "noactive"}`}>
+								{this.state.cards[this.state.currentCard]?.description}
+							</div>
 							<span className="lesson_card_word">{this.state.cards[this.state.currentCard]?.main_word}</span> 
 						</div>
 					</section>
 
 					<section className="lesson_section answer">
 						<div onClick={this.handleSkipCard.bind(this)} className="answer_button_skip_word">Skip</div>
-						<input value={this.state.valueInputAnswer} onChange={this.handleChangeInputAnswer.bind(this)} type="text" className="answer_input" placeholder={`translate on ${this.state.deck?.secondLang.toUpperCase()}...`} autoFocus/>
+						<input 
+							value={this.state.valueInputAnswer} 
+							onChange={this.handleChangeInputAnswer.bind(this)} 
+							type="text" className="answer_input" 
+							placeholder={`translate on ${this.state.deck?.secondLang.toUpperCase()}...`} 
+							autoFocus
+						/>
 						<div onClick={e => this.handleNextCard()} className="answer_button_next_word"><FaArrowRight /></div>
 					</section>
 				</div>	

@@ -53,13 +53,13 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		showLoader()
 	}
 
-	addDeck(e: MouseEvent<any>){
+	addDeck(e: React.FormEvent<any>){
 		this.setState({
 			isNewDeck: true
 		})
 	}
 
-	saveDeck(e: MouseEvent<HTMLElement>, id: number, changes: ActionChange[]){
+	saveDeck(e: React.FormEvent<any>, id: number, changes: ActionChange[]){
 		API.applyChanges(id, changes)
 			.then(response => {
 				console.log(response)
@@ -67,14 +67,14 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			})
 			.catch(err => console.log(err))
 	}
-	editDeck(e: MouseEvent<HTMLElement>, index: number){
+	editDeck(e: React.FormEvent<any>, index: number){
 		console.log("edit", index);
 		this.setState({
 			isEdit: true,
 			deckEdit: this.state.decksOwned[index]
 		})
 	}
-	deleteDeck(e: MouseEvent<HTMLElement>, id: number){
+	deleteDeck(e: React.FormEvent<any>, id: number){
 		Modal.confirm(
 			"Вы действительно хотите удалить дек?", 
 			"Если вы удалите дек, все карточки тоже удалятся, вы уверены, что хотите это сделать?",
@@ -85,7 +85,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 						.then(response => {
 							console.log(response);
 							if(!response.data.error){
-								// this.setState({ decksOwned: this.state.decksOwned.filter(deck => deck.id !== id) })
+								this.setState({ decksOwned: this.state.decksOwned.filter(deck => deck.id !== id) })
 								Notification.success("OK", "Дек успешно удален", 3000)
 							}
 						})
@@ -93,7 +93,6 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 							Notification.error("Ошбика", "Дек не успешно удален", 3000)
 						})
 				}
-					
 			})
 		// Notification.success("Hello!", "Content", 3000)
 	}
@@ -131,6 +130,12 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 	handleUnsibscribe(e: any, id: number){
 		this.setState({ decksSubscriptions: this.state.decksSubscriptions.filter(deck => deck.id !== id) })
 	}
+	handleCloseActiveAddingDeck(e: React.FormEvent<any>){
+		this.setState({ isNewDeck: false })
+	}
+	handleCloseActiveEditingDeck(e: React.FormEvent<any>){
+		this.setState({ isEdit: false })
+	}
 
 	componentDidMount(){
 		console.log(this.state.decksOwned);
@@ -141,8 +146,8 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 					console.log(data);
 					!data.error && 
 					this.setState({
-						decksSubscriptions: [...this.state.decksSubscriptions, ...data.data.subscriptions.reverse()],
-						decksOwned: [...this.state.decksOwned, ...data.data.owned.reverse()],
+						decksSubscriptions: [...this.state.decksSubscriptions, ...data.data.subscriptions],
+						decksOwned: [...this.state.decksOwned, ...data.data.owned],
 					})
 					hideLoader()
 				})
@@ -159,6 +164,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 						{/* deck for EDIT */}
 						{
 							this.state.isEdit && <DeckActive
+
 								index={-1}
 								id={this.state.deckEdit!.id}
 								name={this.state.deckEdit!.name} 
@@ -178,8 +184,9 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 									enableSave: true,
 									enableDelete: true
 								}}
+								close={this.handleCloseActiveEditingDeck.bind(this)}
 								save={this.saveDeck.bind(this)}
-								delete={this.deleteDeck}
+								delete={this.deleteDeck.bind(this)}
 								/>
 						}
 						{/* New Deck */}
@@ -203,6 +210,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 								enableMethods={{
 									enableCreate: true
 								}}
+								close={this.handleCloseActiveAddingDeck.bind(this)}
 								create={this.createNewDeck.bind(this)}
 
 							/>
@@ -239,7 +247,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 
 									// active methods
 									edit={this.editDeck.bind(this)}
-									delete={this.deleteDeck}
+									delete={this.deleteDeck.bind(this)}
 									like={this.like}
 									changePrivate={this.changePrivate.bind(this)}
 									/>

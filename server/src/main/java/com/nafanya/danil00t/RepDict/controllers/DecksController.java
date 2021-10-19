@@ -2,6 +2,7 @@ package com.nafanya.danil00t.RepDict.controllers;
 
 import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
 import com.nafanya.danil00t.RepDict.funcs.JsonUtils;
+import com.nafanya.danil00t.RepDict.funcs.Parser;
 import com.nafanya.danil00t.RepDict.models.Card;
 import com.nafanya.danil00t.RepDict.models.Deck;
 import com.nafanya.danil00t.RepDict.models.User;
@@ -13,10 +14,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 @Getter
@@ -113,7 +118,7 @@ public class DecksController {
         int fromIndex, toIndex;
         fromIndex = (ownedPage - 1) * decksOnOnePage;
         toIndex = ownedPage.equals(ownedPages) ? ownedList.size() : fromIndex + decksOnOnePage;
-        user.getOwned(deckRepository).subList(fromIndex, toIndex).forEach(deck -> {
+        ownedList.subList(fromIndex, toIndex).forEach(deck -> {
             owned.add(JsonUtils.getDeckJson(deck, user));
         });
 
@@ -125,7 +130,7 @@ public class DecksController {
         object.put("subscription_pages", subscriptionPages);
         fromIndex = (subscribedPage - 1) * decksOnOnePage;
         toIndex = subscribedPage.equals(subscriptionPages) ? subscriptionsList.size() : fromIndex + decksOnOnePage;
-        user.getSubscriptions().subList(fromIndex, toIndex).forEach(deck -> {
+        subscriptionsList.subList(fromIndex, toIndex).forEach(deck -> {
             if(!deck.getOwner().equals(user)) subscriptions.add(JsonUtils.getDeckJson(deck, user));
         });
         object.put("error", false);
@@ -198,7 +203,7 @@ public class DecksController {
             return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(body.getToken()));
         Deck deck = deckRepository.getById(body.getIdDeck());
-        if(!deck.getAuthor().getLogin().equals(user.getLogin()))
+        if(!deck.getOwner().getLogin().equals(user.getLogin()))
             return MainController.getError();
         body.getChanges().forEach(change -> {
             Card card;
@@ -247,7 +252,7 @@ public class DecksController {
         if(!LogRegController.MiddleWare(request.getToken(), userRepository))
             return MainController.getError();
         Deck deck = deckRepository.getById(request.getDeckId());
-        if(!deck.getAuthor().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
+        if(!deck.getOwner().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
             return MainController.getError();
         cardRepository.deleteAll(deck.getCards());
         deckRepository.delete(deck);
@@ -291,6 +296,28 @@ public class DecksController {
         JSONObject object = MainController.getSuccess();
         object.put("cloneId", clone.getId());
         return object;
+    }
+
+    @PostMapping("/parser")
+    public void parser(@RequestBody BanalRequest request) throws IOException{
+        if(!LogRegController.MiddleWareIsAdmin(request.getToken(), userRepository))
+            return;
+        Document document = Jsoup.parse(
+                new URL(Parser.getENGLISH_LIBRARY_URL() + "anglijskie-slova-po-temam/"),
+                10000);
+        Elements routes = document.select("tbody").first().select("a");
+        routes.forEach(route -> {
+            try {
+                Parser.parseUrl(route.attr("href"),
+                        userRepository,
+                        deckRepository,
+                        cardRepository,
+                        userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken())).getId());
+            } catch (IOException ignore) {
+
+            }
+                }
+        );
     }
 
     private void changeCardSwitch(JSONObject payload, Deck deck){
