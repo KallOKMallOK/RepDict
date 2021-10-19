@@ -198,7 +198,7 @@ public class DecksController {
             return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(body.getToken()));
         Deck deck = deckRepository.getById(body.getIdDeck());
-        if(!deck.getAuthor().getLogin().equals(user.getLogin()))
+        if(!deck.getOwner().getLogin().equals(user.getLogin()))
             return MainController.getError();
         body.getChanges().forEach(change -> {
             Card card;
@@ -247,7 +247,7 @@ public class DecksController {
         if(!LogRegController.MiddleWare(request.getToken(), userRepository))
             return MainController.getError();
         Deck deck = deckRepository.getById(request.getDeckId());
-        if(!deck.getAuthor().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
+        if(!deck.getOwner().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
             return MainController.getError();
         cardRepository.deleteAll(deck.getCards());
         deckRepository.delete(deck);

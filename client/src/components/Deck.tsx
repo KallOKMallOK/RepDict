@@ -1,10 +1,13 @@
-import React, { MouseEvent, useRef, useState } from 'react'
+import React, { MouseEvent, useCallback, useRef, useState } from 'react'
 import { 
 	FaPlus,
 	FaLock,
 	FaLockOpen,
 	FaEllipsisV,
-	FaHeart
+	FaHeart,
+	FaTimes,
+	FaLongArrowAltRight,
+	FaArrowsAltH
 } from "react-icons/fa"
 import { Link, useHistory } from 'react-router-dom'
 import API from '../api'
@@ -13,7 +16,6 @@ import { ICard } from '../domains/entities/card.entity'
 import { IDeck } from '../domains/entities/deсk.entity'
 import useOutsideClick from '../hoc/OutsideClicker'
 
-import { LANGS } from "../redux/types"
 import { EditText } from './EditText'
 import { Notification } from './Notification'
 
@@ -22,7 +24,7 @@ import { Notification } from './Notification'
 // -------------------------------- Deck ---------------------------------------
 // -----------------------------------------------------------------------------
 
-type actionClick = (e: MouseEvent<any>, ...more: any[]) => void
+type actionClick = (e: React.FormEvent<any>, ...more: any[]) => void
 
 interface enableMethodsOptions{
 	enableDelete?: boolean
@@ -182,6 +184,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 
 
 export interface IDeckActive extends IDeckDefault{
+	close: actionClick
 	save?: actionClick
 	create?: actionClick
 }
@@ -191,11 +194,31 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 	const [cards, addCard] = useState(props.cards)
 	const [countCards, incCountCards] = useState(props.countWords)
 	const [changes, addChange] = useState([] as ActionChange[])
-	const [name, changeName] = useState(props.name || "Deck name")
+	const [name, changeName] = useState(props.name)
+	const [mainWordValue, changeMainWordValue] = useState("")
+	const [secondWordValue, changeSecondWordValue] = useState("")
+	const [indexCard, changeIndexCard] = useState(1)
+
+	const [mainLang, changeMainLang] = useState("RU")
+	const [secondLang, changeSecondLang] = useState("ENG")
 	// const [isPrivate, changeName] = useState(props.name || "Deck name")
 
 	const mainWordRef = useRef<HTMLInputElement>(null)
 	const secondWordRef = useRef<HTMLInputElement>(null)
+	const descriptionDeckRef = useRef<HTMLTextAreaElement>(null)
+	const descriptionCardRef = useRef<HTMLTextAreaElement>(null)
+
+	const LANGS = [
+		"RUS",
+		"ENG",
+		"JPN",
+		"CHI",
+		"ITA",
+		"SPA",
+		"FRA",
+		"GER"
+	]
+
 
 	const handleChangeName = (newValue: string) => {
 		changeName(newValue)
@@ -211,13 +234,13 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		})
 	}
 
-	const handleAddCard = (e: any) => {
+	const handleAddCard = (e: React.FormEvent<HTMLButtonElement>) => {
 		const newCard: ICard = {
 			id: -1,
-			main_word: mainWordRef.current?.value!,
-			answer: secondWordRef.current?.value!,
+			main_word: mainWordValue,
+			answer: secondWordValue,
 			type: "default",
-			description: ""
+			description: descriptionCardRef.current?.value!
 		}
 		addCard(oldCards => [...oldCards, newCard])
 		incCountCards(countCardsOld => countCardsOld + 1)
@@ -227,7 +250,33 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 				payload: newCard
 			}]
 		})
+
+		changeMainWordValue("")
+		changeSecondWordValue("")
+		changeIndexCard(indexCard + 1)
 		// mainWordRef.current?.value = ""
+	}
+
+	const handleChangeMainWord = (e: React.FormEvent<HTMLInputElement>) => {
+		changeMainWordValue(e.currentTarget.value)
+	}
+
+	const handleChangeSecondWord = (e: React.FormEvent<HTMLInputElement>) => {
+		changeSecondWordValue(e.currentTarget.value)
+	}
+
+	const handleChangeMainLang = (e: React.FormEvent<HTMLSelectElement>) => {
+		changeMainLang(e.currentTarget.value)
+	}
+
+	const handleChangeSecondLang = (e: React.FormEvent<HTMLSelectElement>) => {
+		changeSecondLang(e.currentTarget.value)
+	}
+
+	const handleSwapLangs = () => {
+		const __mainLang = mainLang
+		changeMainLang(secondLang)
+		changeSecondLang(__mainLang)
 	}
 
 	// For creating
@@ -235,56 +284,154 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		const dataNewDeck = {
 			name,
 			isPrivate: false,
-			description: "",
-			mainLang: "RU",
-			secondLang: "ENG",
+			description: descriptionDeckRef.current?.value,
+			mainLang: mainLang,
+			secondLang: secondLang,
 			price: 0,
 			cards: cards
 		}
 		props.create!(e, dataNewDeck)
 	}
 
+	// -----------------------------------------------------------------------------
+	// ---------------------------- Export JSON -----------------------------------
+	// -----------------------------------------------------------------------------
+
+	const handleExportFileAsJSON = (e: React.FormEvent<HTMLInputElement>) => {
+		const files = e.currentTarget.files!
+		const file = files[0]
+		const reader = new FileReader()
+
+		reader.onload = function() {
+			var data = JSON.parse(reader.result as string)
+			uploadJSONToCards(data.decks)
+		}
+
+		reader.readAsText(file);
+	}
+
+	const uploadJSONToCards = (cards: ICard[]) => {
+		cards.map((card, index) => {
+			if(index >= 20 && index < 40){
+				const newCard: ICard = {
+					id: card.id,
+					main_word: card.main_word,
+					answer: card.answer,
+					type: "default",
+					description: ""
+				}
+				addCard(oldCards => [...oldCards, newCard])
+				incCountCards(countCardsOld => countCardsOld + 1)
+				addChange(oldChanges => {
+					return [...oldChanges, {
+						type: "NEW_CARD",
+						payload: newCard
+					}]
+				})
+			}
+		})
+		
+	}
+	
+
 	return (
 		<div className="card_item card_item_active">
+			<div className="close" onClick={props.close}>
+				<FaTimes />
+			</div>
+
+
 			<p className="card_item_name"><EditText text={name} typeInput="text" onChanged={(old, _new) => handleChangeName(_new as string)}/></p>
-			<span className="card_item_count_words">{countCards} words</span>
-			<p className="card_item_count_repetitions">{props.countRepetitions} repetitions</p>
-			<div className="card_item_panel_adding">
-
-				<div className="form-floating mb-3">
-					<input type="text" className="form-control" id="floatingInput" placeholder="type word..." ref={mainWordRef}/>
-					<label htmlFor="floatingInput">Main word</label>
-				</div>
-
-				<span className="card_item_panel_toggler">↔</span>
-
-				<div className="form-floating mb-3">
-					<input type="text" className="form-control" id="floatingInput" placeholder="type word..." ref={secondWordRef}/>
-					<label htmlFor="floatingInput">Second word</label>
-				</div>
-
-
-				<button  className="card_item_panel_button_add" onClick={handleAddCard}>add</button>
-
-
-				<div className="card_item_panel_item_words">
-					<ul className="card_item_panel_item_words_ul">
+			<div className="top-panel">
+				<div className="select_languages">
+					<select onChange={handleChangeMainLang} className="form-select" aria-label="Default select example">
 						{
-							cards.map((card: ICard) => {
-								return <li className="item">
-									<span className="main_word">{card.main_word}</span>
-									-
-									<span className="second_word">{card.answer}</span>
-								</li>
+							LANGS.map(lang => {
+								return <option selected={lang === mainLang}>{lang}</option>
 							})
 						}
-					</ul>
+					</select>
+
+
+					<span className="card_item_panel_toggler" onClick={handleSwapLangs}><FaArrowsAltH /></span>
+
+					<select onChange={handleChangeSecondLang} className="form-select" aria-label="Default select example">
+						{
+							LANGS.map(lang => {
+								return <option selected={lang === secondLang}>{lang}</option>
+							})
+						}
+					</select>
+
+					{/* <input type="file" onChange={handleExportFileAsJSON}/> */}
 				</div>
+				{/* PLUG for jcsb */}
+				<div></div>
 			</div>
+
+
+			<div className="info">
+				<span className="card_item_count_words">{countCards} words</span>
+				<p className="card_item_count_repetitions">{props.countRepetitions} repetitions</p>
+			</div>
+
+			<div className="description_deck__wrapper">
+				<textarea defaultValue={props.description || ""} ref={descriptionDeckRef} placeholder="Type description deck" name="" id="" cols={60} rows={10}></textarea>
+			</div>
+
+
+			<div className="card_item_panel_adding__wrapper">
+				<div className="card_item_panel_adding">
+					<span className="index_card">
+						#{indexCard}
+					</span>
+					<div className="main-answer-words">
+						<div className="input-wrapper form-floating">
+							<input onChange={handleChangeMainWord} value={mainWordValue} type="text" className="form-control" id="floatingInput" placeholder="type word..." ref={mainWordRef}/>
+							<label htmlFor="floatingInput">Main word</label>
+						</div>
+
+						<span className="card_item_panel_toggler"><FaLongArrowAltRight /></span>
+
+						<div className="input-wrapper form-floating">
+							<input onChange={handleChangeSecondWord} value={secondWordValue} type="text" className="form-control" id="floatingInput" placeholder="type word..." ref={secondWordRef}/>
+							<label htmlFor="floatingInput">Second word</label>
+						</div>
+					</div>
+
+					<div className="control_bottom__wrapper">
+						<textarea ref={descriptionCardRef} placeholder="Type description" name="" id="" cols={60} rows={10}></textarea>
+						<button  className="card_item_panel_button_add" onClick={handleAddCard}>add</button>
+					</div>
+
+
+
+				</div>
+
+			</div>
+			
+			<div className="card_item_panel_item_words">
+				<ul className="card_item_panel_item_words_ul">
+					{
+						cards.map((card: ICard, index: number) => {
+							return <li className="item">
+								<span className="index">#{index + 1}. </span>
+								<span className="main_word">{card.main_word}</span>
+								-
+								<span className="second_word">{card.answer}</span>
+								<div className="close_deck"><FaTimes/></div>
+							</li>
+						})
+					}
+				</ul>
+			</div>
+			
+
+
 			<div className="buttons_group">
 				{
 					props.enableMethods?.enableCreate && 
-					<button className="button_manipulate" onClick={handleCreateDeck}>create</button>
+					<button className="__btn __button-default button-create" onClick={handleCreateDeck}>create</button>
 				}
 				{
 					props.enableMethods?.enableSave && 
@@ -310,13 +457,9 @@ interface IDeckAdd{
 export const DeckAdd: React.FC<IDeckAdd> = props => {
 	return(
 		<div className="card_item card_item_noactive new_card">
-			<div className="svg_wrapper">
-				<FaPlus onClick={e => props.add(e)}/>
+			<div className="svg_wrapper" onClick={e => props.add(e)}>
+				<FaPlus />
 			</div>
 		</div>
 	)
 }
-
-
-
-

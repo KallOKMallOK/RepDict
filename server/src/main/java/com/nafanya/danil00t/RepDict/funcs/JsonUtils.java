@@ -1,15 +1,18 @@
 package com.nafanya.danil00t.RepDict.funcs;
 
 import com.nafanya.danil00t.RepDict.controllers.MainController;
+import com.nafanya.danil00t.RepDict.controllers.UserController;
 import com.nafanya.danil00t.RepDict.models.Card;
 import com.nafanya.danil00t.RepDict.models.Deck;
 import com.nafanya.danil00t.RepDict.models.User;
 //import com.nafanya.danil00t.RepDict.models.Word;
+import com.nafanya.danil00t.RepDict.repository.DeckRepository;
 import org.jboss.jandex.Main;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JsonUtils {
 
@@ -135,6 +138,77 @@ public class JsonUtils {
         object.put("refer", user.getRefer());
         object.put("is_checked", user.getIsChecked());
         object.put("rating", user.getRating());
+        object.put("walkthroughs", user.getWalkthroughs());
+        object.put("average_rating", user.getAverageRating());
+        return object;
+    }
+
+    public static JSONObject getUserRatingJson(User user){
+        JSONObject object = MainController.getSuccess();
+        object.put("login", user.getLogin());
+        object.put("name", user.getName());
+        object.put("id", user.getId());
+        object.put("rating", user.getRating());
+        object.put("walkthroughs", user.getWalkthroughs());
+        object.put("average_rating", user.getAverageRating());
+        return object;
+    }
+
+    public static JSONObject getUserPublicJson(User user, Integer page, DeckRepository deckRepository, User guest){
+        JSONObject object = getUserRatingJson(user);
+        Integer pages;
+        if(!user.equals(guest))
+            pages = (((int) user.getOwned(deckRepository).
+                    stream().
+                    filter(deck -> deck.getIsPrivate().
+                            equals(0)).count() / UserController.getUSERS_ON_PAGE())) + 1;
+        else
+            pages = ((int) (user.getOwned(deckRepository).size() / UserController.getUSERS_ON_PAGE())) + 1;
+        if(page > pages)
+            return null;
+        object.put("pages", pages);
+        List<Deck> owned;
+        if(!user.equals(guest))
+            owned = ListUtils.getPageListDeck(
+                    user.getOwned(deckRepository).
+                            stream().
+                            filter(deck -> deck.getIsPrivate().equals(0)).
+                            collect(Collectors.toList()),
+                    UserController.getUSERS_ON_PAGE(),
+                    page
+            );
+        else
+            owned = ListUtils.getPageListDeck(
+                    user.getOwned(deckRepository),
+                    UserController.getUSERS_ON_PAGE(),
+                    page
+            );
+        JSONArray array = new JSONArray();
+        owned.forEach(deck -> {
+            array.add(JsonUtils.getDeckJson(deck, guest));
+        });
+        object.put("decks", array);
+        object.put("is_checked", user.getIsChecked());
+        return object;
+    }
+
+    public static JSONObject getUserPublicJson(User user, Integer page, DeckRepository deckRepository){
+        JSONObject object = getUserRatingJson(user);
+        Integer pages = ((int) (user.getOwned(deckRepository).size() / UserController.getUSERS_ON_PAGE())) + 1;
+        if(page > pages)
+            return null;
+        object.put("pages", pages);
+        List<Deck> owned = ListUtils.getPageListDeck(
+                user.getOwned(deckRepository),
+                UserController.getUSERS_ON_PAGE(),
+                page
+        );
+        JSONArray array = new JSONArray();
+        owned.forEach(deck -> {
+            array.add(JsonUtils.getDeckJson(deck));
+        });
+        object.put("decks", array);
+        object.put("is_checked", user.getIsChecked());
         return object;
     }
 

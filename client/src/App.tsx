@@ -80,7 +80,7 @@ class Switcher extends React.PureComponent<StateApp>{
 // -----------------------------------------------------------------------------
 
 
-class App extends React.PureComponent<PropsFromRedux, StateApp>{
+class App extends React.Component<PropsFromRedux, StateApp>{
 	public state: StateApp = {
 		auth: true
 	}
@@ -90,19 +90,17 @@ class App extends React.PureComponent<PropsFromRedux, StateApp>{
 	constructor(props: PropsFromRedux){
 		super(props)
 		console.log(`
-	 ____  __________  ____  ________________   _________            __
-	/ __ \/ ____/ __ \/ __ \/  _/ ____/_  __/  / ____/ (_)__  ____  / /_
-  / /_/ / __/ / /_/ / / / // // /     / /    / /   / / / _ \/ __ \/ __/
+    ____  __________  ____  ________________   _________            __
+   / __ \\/ ____/ __ \\/ __ \\/  _/ ____/_  __/  / ____/ (_)__  ____  / /_
+  / /_/ / __/ / /_/ / / / // // /     / /    / /   / / / _ \\/ __ \\/ __/
  / _, _/ /___/ ____/ /_/ // // /___  / /    / /___/ / /  __/ / / / /_
-/_/ |_/_____/_/   /_____/___/\____/ /_/     \____/_/_/\___/_/ /_/\__/
+/_/ |_/_____/_/   /_____/___/\\____/ /_/     \\____/_/_/\\___/_/ /_/\\__/
 		`);
 	}
-
 	componentDidMount(){
 		if(localStorage.getItem("token")?.length !== undefined && localStorage.getItem("token") !== "undefined"){
 			API.auth()
 				.then(res => {
-					console.log(res)
 					if(!res.data.error){
 						this.setState({ auth: true })
 						this.props.login(res.data.data)
@@ -114,6 +112,7 @@ class App extends React.PureComponent<PropsFromRedux, StateApp>{
 		}
 		else{
 			this.setState({ auth: false })
+			localStorage.removeItem("token")
 		}
 		hideLoader()
 	}
@@ -123,7 +122,7 @@ class App extends React.PureComponent<PropsFromRedux, StateApp>{
 			<Router>
 			<React.Fragment>
 				<Components.Header routes={routes.filter(route => route.isNavBar)}/>
-				<Switcher auth={this.state.auth}/>
+				<Switcher auth={this.state.auth || this.props.auth}/>
 				<Components.Notification {...this.props.notify}/>
 				<ModalContainer {...this.props.popupProps}/>
 			</React.Fragment>
