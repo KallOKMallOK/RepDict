@@ -311,7 +311,8 @@ public class DecksController {
                 Parser.parseUrl(route.attr("href"),
                         userRepository,
                         deckRepository,
-                        cardRepository);
+                        cardRepository,
+                        userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken())).getId());
             } catch (IOException ignore) {
 
             }

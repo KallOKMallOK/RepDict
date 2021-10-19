@@ -27,7 +27,8 @@ public class Parser {
     public static JSONObject parseUrl(String route,
                                       UserRepository userRepository,
                                       DeckRepository deckRepository,
-                                      CardRepository cardRepository) throws IOException {
+                                      CardRepository cardRepository,
+                                      Integer userId) throws IOException {
         Document document = Jsoup.parse(new URL(route), 100000);
         Element name = document.select("div[class=text__main]").select("h1").first();
         Pattern pattern = Pattern.compile("«.*»");
@@ -40,7 +41,7 @@ public class Parser {
         Elements table = document.select("tbody").select("tr");
         Deck deck = new Deck(deckName,
                 false,
-                1,
+                userId,
                 "Взято с " + route,
                 "ENG",
                 "RUS",
