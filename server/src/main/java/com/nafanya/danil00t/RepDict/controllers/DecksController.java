@@ -123,7 +123,7 @@ public class DecksController {
         });
 
         JSONArray subscriptions = new JSONArray();
-        List<Deck> subscriptionsList = user.getSubscriptionDecks();
+        List<Deck> subscriptionsList = user.getSubscriptions();
         int subscriptionPages = (int) (subscriptionsList.size() / 10) + 1;
         if(subscribedPage > subscriptionPages)
             return MainController.getError();
@@ -270,13 +270,13 @@ public class DecksController {
         Deck deck = deckRepository.getById(request.getDeckId());
         if(deck.getOwner().equals(user))
             return MainController.getError();
-        if(!user.getSubscriptionDecks().contains(deck)){
-            user.getSubscriptionDecks().add(deck);
+        if(!user.getSubscriptions().contains(deck)){
+            user.getSubscriptions().add(deck);
             userRepository.save(user);
             object.put("status", true);
             return object;
         }
-        user.getSubscriptionDecks().remove(deck);
+        user.getSubscriptions().remove(deck);
         userRepository.save(user);
         object.put("status", false);
         return object;
