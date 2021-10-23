@@ -20,6 +20,7 @@ import './styles/responsive.scss'
 import 'react-notifications/lib/notifications.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { POPUP_TYPES } from './redux/types'
+import Footer from './components/Footer';
 
 // -----------------------------------------------------------------------------
 // ---------------------- Connect to redux emmiter -----------------------------
@@ -120,13 +121,14 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 	render(){
 		return(
 			<Router>
-			<React.Fragment>
-				<Components.Header routes={routes.filter(route => route.isNavBar)}/>
-				<Switcher auth={this.state.auth || this.props.auth}/>
-				<Components.Notification {...this.props.notify}/>
-				<ModalContainer {...this.props.popupProps}/>
-			</React.Fragment>
-		</Router>
+				<React.Fragment>
+					<Components.Header routes={routes.filter(route => route.isNavBar)}/>
+					<Switcher auth={this.state.auth || this.props.auth}/>
+					<Components.Notification {...this.props.notify}/>
+					<ModalContainer {...this.props.popupProps}/>
+					<Footer />
+				</React.Fragment>
+			</Router>
 		)
 	}
 }

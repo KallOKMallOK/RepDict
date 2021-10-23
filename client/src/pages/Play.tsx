@@ -1,18 +1,18 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router'
+import { connect, ConnectedProps } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { FaArrowRight } from "react-icons/fa"
 
 import API from '../api';
 import Currsection from '../components/Currsection';
 import { ICard } from '../domains/entities/card.entity';
 import { IDeck } from '../domains/entities/deсk.entity';
 
-import { FaArrowRight } from "react-icons/fa"
-import "../styles/pages/Play.scss"
 import { Notification } from '../components/Notification';
-import { Link } from 'react-router-dom';
-import { connect, ConnectedProps } from 'react-redux';
 import Action from "../redux/actions"
 
+import "../styles/pages/Play.scss"
 
 const mapDispatchToProps = (f: Function) => ({
 	addScores: (scores: number) => f(Action.app.addScores(scores))
@@ -26,10 +26,17 @@ type PropsFromRedux = ConnectedProps<typeof connector>
 
 interface IPlayProps extends RouteComponentProps, PropsFromRedux{
 }
-interface resultEndPlay{
+interface ResultEndPlayToServer{
 	idCard: number
 	time: number
 	answer: boolean
+}
+
+interface Results{
+	main_word: string
+	answer: string
+	successed: boolean
+	time: number
 }
 
 interface StatePlay{
@@ -37,15 +44,15 @@ interface StatePlay{
 	cards: ICard[]
 	currentCard: number
 	currentLang: string
-	successed: resultEndPlay[]
+	successed: ResultEndPlayToServer[]
 	valueInputAnswer: string
 	ended: boolean
+	showResults: boolean
 	scores: number
+	visibleHint: boolean
 }
 
 class Play extends React.Component<IPlayProps, StatePlay>{
-	// private answerRef = React.createRef<HTMLInputElement>()
-
 	private TIME_CARD = 0
 	constructor(props: IPlayProps){
 		super(props)
@@ -58,7 +65,9 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 			successed: [],
 			valueInputAnswer: "",
 			ended: false,
-			scores: 0
+			showResults: false,
+			scores: 0,
+			visibleHint: false
 		}
 		
 	}
@@ -70,7 +79,14 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 
 		return array;
 	}
+	where(array: any[], field: string){
 
+	}
+
+
+	// 
+	// 
+	// 
 	nextCard(successed: boolean){
 		if(this.state.currentCard + 1 < this.state.cards.length){		
 			this.setState({ 
@@ -126,7 +142,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	checkCard(card: ICard, value: string, lang?: string): boolean{
 		const answers = card.answer
 			.split("|")
-			.map(ans => ans.replace(/ /g, "").toLowerCase())
+			.map(ans => ans.trim().toLowerCase())
 			
 		return answers.includes(value.toLowerCase())
 	}
@@ -157,6 +173,21 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 			else
 				this.setState({ valueInputAnswer: e.currentTarget.value })
 		}
+	}
+	handleHint(){
+		this.setState({ visibleHint: !this.state.visibleHint })
+	}
+
+	getResults(): Results[]{
+		return this.state.successed.map(suc => {
+			const __card = this.state.cards.filter(card => card.id === suc.idCard)[0]
+			return {
+				main_word: __card.main_word,
+				answer: __card.answer,
+				successed: suc.answer,
+				time: suc.time
+			}
+		})
 	}
 
 	componentDidMount(){
@@ -190,20 +221,29 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					<section className="lesson_section Play__card_section">
 						<div className="lesson_card">
 							<span className="lesson_card_lang">{this.state.deck?.mainLang.toUpperCase()}</span>
-							<button className="lesson_card_hint">?</button>
+							<button className="lesson_card_hint" onClick={this.handleHint.bind(this)}>?</button>
+							<div className={`hint ${this.state.visibleHint? "active": "noactive"}`}>
+								{this.state.cards[this.state.currentCard]?.description}
+							</div>
 							<span className="lesson_card_word">{this.state.cards[this.state.currentCard]?.main_word}</span> 
 						</div>
 					</section>
 
 					<section className="lesson_section answer">
 						<div onClick={this.handleSkipCard.bind(this)} className="answer_button_skip_word">Skip</div>
-						<input value={this.state.valueInputAnswer} onChange={this.handleChangeInputAnswer.bind(this)} type="text" className="answer_input" placeholder={`translate on ${this.state.deck?.secondLang.toUpperCase()}...`} autoFocus/>
+						<input 
+							value={this.state.valueInputAnswer} 
+							onChange={this.handleChangeInputAnswer.bind(this)} 
+							type="text" className="answer_input" 
+							placeholder={`translate on ${this.state.deck?.secondLang.toUpperCase()}...`} 
+							autoFocus
+						/>
 						<div onClick={e => this.handleNextCard()} className="answer_button_next_word"><FaArrowRight /></div>
 					</section>
 				</div>	
 				
 
-				<div className={`section_congratulations ${this.state.ended? "ended": ""}`}>
+				<div className={`section_congratulations ${this.state.ended && !this.state.showResults? "ended": ""}`}>
 					<div className="congratulations">
 						<div className="welc">
 							<h2>Congratulations!</h2>
@@ -220,9 +260,21 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 									successed: []
 								})}
 							>Once again</button>
-							<Link to="/decks" className="btn btn-success">To Decks</Link>
+							<button className="btn btn-success" onClick={e => this.setState({ showResults: true })}>results</button>
+							<Link to="/decks" className="btn btn-danger">To Decks</Link>
 						</div>
 					</div>
+				</div>
+
+				<div className={`section_results ${this.state.showResults? "showed": "hided"}`}>
+					<ul>
+						{
+							this.getResults().map(result => {
+								return <li>{result.main_word} - {result.answer}: {result.successed? "Yes!": "no!"} on {result.time}</li>
+							})
+						}
+					</ul>
+					<button className="btn btn-primary" onClick={e => this.setState({ showResults: false })}>back</button>
 				</div>
 			</div>
 		)

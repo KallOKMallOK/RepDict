@@ -22,6 +22,7 @@ const API_URLS: any = {
 	DELETE_DECK: 		CONFIG.HOST + CONFIG.URLS.DELETE_DECK,
 	GET_SCORES: 		CONFIG.HOST + CONFIG.URLS.GET_SCORES,
 	CLONE_DECK: 		CONFIG.HOST + CONFIG.URLS.CLONE_DECK,
+	GET_RATING: 		CONFIG.HOST + CONFIG.URLS.GET_RATING,
 }
 
 const FAKE_DATA = (url: string) => {
@@ -257,6 +258,14 @@ class API {
 
 	public static subscribe(deckId: number): Promise<any>{
 		return this.POST(API_URLS.SUBSCRIBE_DECK, { deckId }, { token: true })
+	}
+
+	// -----------------------------------------------------------------------------
+	// ------------------------------- Rating --------------------------------------
+	// -----------------------------------------------------------------------------
+
+	public static getRating(page?: number): Promise<any>{
+		return this.GET(API_URLS.GET_RATING, {  }, { token: false })
 	}
 }
 

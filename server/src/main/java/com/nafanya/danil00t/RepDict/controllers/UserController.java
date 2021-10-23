@@ -11,11 +11,11 @@ import lombok.Getter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +34,30 @@ public class UserController {
 
     @Autowired
     DeckRepository deckRepository;
+
+    @Value("${upload.path}")
+    private String uploadAvatarPath;
+
+    @PostMapping("/avatar")
+    public JSONObject uploadAvatar(
+            @RequestParam String token,
+            @RequestParam("file") MultipartFile file
+            ) throws IOException{
+        if(file == null || !LogRegController.MiddleWare(token, userRepository))
+            return MainController.getError();
+        File uploadDir = new File(uploadAvatarPath);
+        if(!uploadDir.exists())
+            uploadDir.mkdir();
+        User user = userRepository.getByLogin(
+//                "admin"
+                JWTokenUtils.getLoginFromJWToken(token)
+        );
+        String avatarName = user.getLogin();
+        file.transferTo(new File(uploadAvatarPath + "/" + avatarName));
+        user.setAvatar(avatarName);
+        userRepository.save(user);
+        return MainController.getSuccess();
+    }
 
     @GetMapping("/rating")
     public JSONObject rating(

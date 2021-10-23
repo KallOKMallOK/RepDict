@@ -6,7 +6,6 @@ interface ActionChangeCardPayload{
 	id: number
 	name: string
 	value: string | number
-
 }
 interface ActionNewCardPayload{
 	main_word: string
@@ -14,8 +13,11 @@ interface ActionNewCardPayload{
 	type: "default" | "choose"
 	description: string | null
 }
+interface ActionDeleteCardPayload{
+	id: number
+}
 
 export interface ActionChange{
 	type: "CHANGE_DECK" | "CHANGE_CARD" | "NEW_CARD" | "DELETE_CARD",
-	payload: ActionChangeDeckPayload | ActionChangeCardPayload | ActionNewCardPayload
+	payload: ActionChangeDeckPayload | ActionChangeCardPayload | ActionNewCardPayload | ActionDeleteCardPayload
 }

@@ -17,8 +17,21 @@
 	border-radius: 40px;
 	@include trs();
 	&:hover{
-		border: 3px solid darken($color-main, 5);
+		border: 3px solid lighten($color-main, 10);
+		background-color: darken($color-main, 5);
 	}
+}
+
+// INPUT
+
+.__input.__input_default{
+	border: 2px solid $color-bg-ligth;
+	border-radius: 3px;
+	background-color: $color-bg-dark;
+	color: white;
+	font: 1em RobotoLight;
+	padding: 7px 5px;
+	outline: none;
 }
 
 // Editing text
@@ -152,9 +165,10 @@ header.main_header {
 					// animation: 0.2s ease-in-out 0s alternate fadeIn;
 					@include bs(15px, 0px, rgb(15, 15, 15));
 					&_item{
-						text-align: center;
+						// text-align: center;
 						padding: 5px 0px;
 						a{
+							width: 100%;
 							text-decoration: none;
 							font-family: RobotoLight;
 							padding: 5px 40px;
@@ -180,6 +194,7 @@ header.main_header {
 
 .Notification{
 	position: fixed;
+	z-index: 999;
 	bottom: 25px;
 	right: 15px;
 	padding: 10px 25px;
@@ -294,8 +309,8 @@ header.main_header {
 		left: calc(50% - 2.5em);
 		width: 2.5em;
 		height: 2.5em;
-		border: 0.4em solid rgb(88, 88, 88);
-		border-left: 0.4em solid rgb(0, 2, 139);
+		border: 0.25em solid $color-accent;
+		border-left: 0.2em solid $color-bg-dark;
 		border-radius: 50%;
 		animation: load8 0.7s infinite linear;
 		transition: opacity 0.3s;
@@ -310,8 +325,69 @@ header.main_header {
 		0% {
 			transform: rotate(0deg);
 		}
+		// 25%{
+		// 	transform: rotate(110deg)
+		// }
+		50%{
+			transform: rotate(190deg)
+		}
+		// 75%{
+		// 	transform: rotate(300deg)
+		// }
 		100% {
 			transform: rotate(360deg);
+		}
+	}
+}
+
+
+.hint{
+	position: absolute;
+	top: 50px;
+	right: 10px;
+	background-color: lighten($color-bg-dark, 0);
+	padding: 5px 7px;
+}
+
+.hint.noactive{
+	display: none;
+}
+.hint.active{
+	display: block;
+}
+
+#root{
+	position: relative;
+	padding-bottom: 50px;
+	min-height: 100vh;
+}
+
+footer{
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	// margin-top: 20px;
+	.wrap_content{
+		color: white;
+		display: flex;
+		justify-content: space-around;
+		background-color: $color-bg-ligth;
+		font: 1em RobotoLight;
+		padding: 20px 0;
+		.center{
+			font-family: RobotoBold;
+		}
+		.front, .back{
+			color: rgb(112, 112, 112);
+			a{
+				color: rgb(112, 112, 112);
+				text-decoration: none;
+				@include trs();
+				&:hover{
+					text-decoration: underline;
+					color: rgb(144, 144, 144);
+				}
+			}
 		}
 	}
 }

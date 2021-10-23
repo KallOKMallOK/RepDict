@@ -3,18 +3,30 @@ import { Link, RouteComponentProps } from 'react-router-dom'
 
 
 
-interface IStatisticsProps extends RouteComponentProps {
-  init?: boolean
-  textHello?: string
+interface StatisticsProps extends RouteComponentProps {
+
 }
 
-
-const Statistics: React.FC<IStatisticsProps> = props => {
-  return (
-    <div className="page_statistics">
-		Statistics
-	 </div>
-  );
+interface StatisticsState{
+  
 }
+
+class Statistics extends React.Component<StatisticsProps>{
+  constructor(props: StatisticsProps){
+    super(props)
+  }
+
+  componentDidMount(){
+
+  }
+  render(){
+    return(
+      <div className="page_statistics">
+		    Statistics
+	    </div>
+    )
+  }
+}
+
 
 export default Statistics;
