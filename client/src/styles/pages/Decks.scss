@@ -480,3 +480,105 @@
 		}
 	}
 }
+
+// Watched constainer for seeing cards
+
+.watch_container{
+	position: fixed;
+	z-index: 999;
+	width: calc(100vw - 20px);
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.719);
+	display: flex;
+	// align-items: center;
+	justify-content: center;
+	top: 0;
+	padding: 100px 0;
+	.watcher{
+		overflow-y: scroll;
+		background-color: $color-bg-ligth;
+		color: white;
+		border-radius: 3px;
+		width: 70%;
+		padding: 10px 0 30px 0;
+		// overflow: hidden;
+		position: relative;
+		.name_card{
+			font: 1.4em RobotoBold;
+			text-align: center;
+			padding-top: 20px;
+		}
+		.author{
+			font: 1em RobotoLight;
+			color: rgb(107, 107, 107);
+			text-align: center;
+			a{
+				text-decoration: none;
+				color: rgb(107, 107, 107);
+				@include trs();
+				&:hover{
+					color: rgb(131, 131, 131);
+				}
+			}
+		}
+		.close{
+			position: absolute;
+			top: 10px;
+			right: 15px;
+			padding: 5px;
+			cursor: pointer;
+			@include trs();
+			&:hover{
+				color: rgb(226, 226, 226);
+			}
+		}
+		.btn_wrapper{
+			display: flex;
+			justify-content: center;
+			button{
+				width: 300px;
+			}
+		}
+		ul{
+			margin: 0;
+			// width: 80%;
+			column-count: 3;
+			margin-top: 20px;
+			color: white;
+			font-family: RobotoLight;
+			padding: 20px 30px;
+			li.item{
+				cursor: pointer;
+				margin-bottom: 15px;
+				width: 100%;
+				float: left;
+				page-break-inside: avoid;
+				break-inside: avoid;
+				background-color: lighten($color-bg-ligth, 5);
+				border: 2px solid lighten($color-bg-ligth, 10);
+				border-radius: 20px;
+				position: relative;
+				padding: 7px 20px 7px 15px;
+				display: block;
+				@include trs();
+				.close_deck{
+					position: absolute;
+					padding: 1px 5px 2px 5px;
+					border-radius: 50%;
+					right: 10px;
+					top: 5px;
+					cursor: pointer;
+					&:hover{
+						background-color: lighten($color-bg-ligth, 15);
+					}
+				}
+				&:hover{
+					border: 2px solid $color-main;
+				}
+			}
+		}
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+}

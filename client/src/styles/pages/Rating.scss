@@ -1,2 +1,23 @@
 @import "../vars";
 @import "../fonts";
+
+.Rating{
+	.main_list{
+		&_item{
+			width: 100%;
+			// background-color: red;
+			border: 2px solid $color-main;
+			@include bs(5px, 0px, $color-main);
+			border-radius: 3px;
+			display: flex;
+			justify-content: flex-start;
+			margin-bottom: 7px;
+			padding: 7px 10px;
+			span.login, span.rating{
+
+				width: 50%;
+				display: block;
+			}
+		}
+	}
+}
