@@ -79,6 +79,10 @@ public class User {
 
     private String avatar;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "subscriptions", joinColumns = {@JoinColumn(name="id_user")})
+    private List<Subscription> subscriptions;
+
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "decks",
 //            joinColumns = {@JoinColumn(name = "id_owner")},
@@ -98,11 +102,11 @@ public class User {
     inverseJoinColumns = {@JoinColumn(name="id_deck")})
     private List<Deck> likesList;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "subscriptions",
-    joinColumns = {@JoinColumn(name="id_user")},
-    inverseJoinColumns = {@JoinColumn(name="id_deck")})
-    private List<Deck> subscriptions;
+//    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+//    @JoinTable(name = "subscriptions",
+//    joinColumns = {@JoinColumn(name="id_user")},
+//    inverseJoinColumns = {@JoinColumn(name="id_deck")})
+//    private List<Deck> subscriptionDecks;
 
     public List<Deck> getOwned(DeckRepository deckRepository){
         return deckRepository.findAllByOwner(this);
