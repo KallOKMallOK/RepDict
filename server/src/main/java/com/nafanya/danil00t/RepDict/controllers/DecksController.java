@@ -3,15 +3,15 @@ package com.nafanya.danil00t.RepDict.controllers;
 import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
 import com.nafanya.danil00t.RepDict.funcs.JsonUtils;
 import com.nafanya.danil00t.RepDict.funcs.Parser;
-import com.nafanya.danil00t.RepDict.models.Card;
-import com.nafanya.danil00t.RepDict.models.Deck;
-import com.nafanya.danil00t.RepDict.models.User;
+import com.nafanya.danil00t.RepDict.models.*;
 import com.nafanya.danil00t.RepDict.repository.CardRepository;
 import com.nafanya.danil00t.RepDict.repository.DeckRepository;
+import com.nafanya.danil00t.RepDict.repository.SubscriptionRepository;
 import com.nafanya.danil00t.RepDict.repository.UserRepository;
 import com.sun.tools.javac.Main;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.mapping.Subclass;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
@@ -31,6 +31,9 @@ import java.util.List;
 public class DecksController {
 
     private final Integer decksOnOnePage = 10;
+
+    @Autowired
+    SubscriptionRepository subscriptionRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -123,7 +126,7 @@ public class DecksController {
         });
 
         JSONArray subscriptions = new JSONArray();
-        List<Deck> subscriptionsList = user.getSubscriptions();
+        List<Deck> subscriptionsList = user.getSubscriptionDecks();
         int subscriptionPages = (int) (subscriptionsList.size() / 10) + 1;
         if(subscribedPage > subscriptionPages)
             return MainController.getError();
@@ -270,14 +273,12 @@ public class DecksController {
         Deck deck = deckRepository.getById(request.getDeckId());
         if(deck.getOwner().equals(user))
             return MainController.getError();
-        if(!user.getSubscriptions().contains(deck)){
-            user.getSubscriptions().add(deck);
-            userRepository.save(user);
+        if(!user.getSubscriptionDecks().contains(deck)){
+            subscriptionRepository.save(new Subscription(user, deck));
             object.put("status", true);
             return object;
         }
-        user.getSubscriptions().remove(deck);
-        userRepository.save(user);
+        subscriptionRepository.delete(subscriptionRepository.getById(new SubscriptionKey(user, deck)));
         object.put("status", false);
         return object;
     }

@@ -2,6 +2,7 @@ package com.nafanya.danil00t.RepDict.models;
 
 import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
 import com.nafanya.danil00t.RepDict.repository.DeckRepository;
+import com.nafanya.danil00t.RepDict.repository.SubscriptionRepository;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -102,7 +103,7 @@ public class User {
     @JoinTable(name = "subscriptions",
     joinColumns = {@JoinColumn(name="id_user")},
     inverseJoinColumns = {@JoinColumn(name="id_deck")})
-    private List<Deck> subscriptions;
+    private List<Deck> subscriptionDecks;
 
     public List<Deck> getOwned(DeckRepository deckRepository){
         return deckRepository.findAllByOwner(this);
@@ -112,6 +113,9 @@ public class User {
         return deckRepository.findAllByAuthor(this);
     }
 
+    public List<Subscription> getSubscriptions(SubscriptionRepository subscriptionRepository){
+        return subscriptionRepository.findAllByIdSubscriber(id);
+    }
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "subscriptions",
 //            joinColumns = {@JoinColumn(name = "user_id")},
