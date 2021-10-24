@@ -53,6 +53,56 @@ export interface IDeckDefault extends IDeck{
 	watch?: actionClick
 }
 
+// interface ResultPlayDecks{
+// 	main_word: string
+// 	answer: string
+// 	time: number
+// 	successed: boolean
+// }
+
+interface WatchContainerProps {
+	nameCard: string
+	id: number
+	author: string
+	cards: ICard[]
+	visible: boolean
+	close: (e: React.FormEvent<HTMLDivElement>) => void
+}
+
+const WatchContainer: React.FC<WatchContainerProps> = props => {
+	const history = useHistory()
+
+	if(props.visible) return(
+		<div className={`watch_container`}>
+			<div className="watcher">
+				<div className="name_card">{props.nameCard}</div>
+				<div className="author">by <Link to={`/user/${props.author}`}>{props.author}</Link></div>
+				<div className="close" onClick={e => props.close(e)}>
+					<FaTimes />
+				</div>
+				<div className="card_item_panel_item_words">
+					<ul className="card_item_panel_item_words_ul">
+						{
+							props.cards.map((card: ICard, index: number) => {
+								return <li className="item">
+									<span className="index">#{index + 1}. </span>
+									<span className="main_word">{card.main_word}</span>
+									-
+									<span className="second_word">{card.answer}</span>
+								</li>
+							})
+						}
+					</ul>
+				</div>
+				<div className="btn_wrapper">
+					<button className="__btn btn_play" onClick={e => history.push(`/play/${props.id}`)}>play</button>
+				</div>
+			</div>
+
+		</div>
+	)
+	else return null
+}
 
 
 export const Deck: React.FC<IDeckDefault> = props => {
@@ -62,6 +112,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 	const [dropdownVisible, openDropdown] = useState(false)
 	const [activedLike, activeLike] = useState(props.activeLike || false)
 	const [subscribed, changeSubscribed] = useState(props.subscribed || false)
+	const [watched, changeWatched] = useState(false)
 
 	// Data states
 	const [countLikes, changeCountLikes] = useState(props.countLikes || 0)
@@ -110,11 +161,24 @@ export const Deck: React.FC<IDeckDefault> = props => {
 
   	return (
 	<div className="card_item card_item_noactive">
+		{
+			ReactDOM.createPortal(
+				<WatchContainer
+					id={props.id}
+					author={props.author!}
+					nameCard={props.name}
+					close={e => changeWatched(false)} 
+					visible={watched} 
+					cards={props.cards}
+				/>,
+				document.getElementById("root-modals")!
+			)
+		}
 		{/* control items */}
 			<div className="control">
 				<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
 				<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
-					<li className="dropdown_item" onClick={e => console.log("watch")}>Watch</li>
+					<li className="dropdown_item" onClick={e => changeWatched(true)}>Watch</li>
 					<li className="dropdown_item" onClick={e => history.push(`/play/${props.id}`)}>Play</li>
 					{
 						props.enableMethods?.enableEdit && 

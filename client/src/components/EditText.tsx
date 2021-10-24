@@ -12,7 +12,11 @@ interface EditTextProps{
 export const EditText: React.FC<EditTextProps> = props => {
 	const [text, changeText] = useState(props.text)
 	const [editing, changeEditing] = useState(false)
-	const editTextRef = useRef(null)
+	const editTextRef = useRef<HTMLInputElement>(null)
+	const editTextInputRef = useRef<HTMLInputElement>(null)
+
+
+
 
 	const handleChangeEditing = (open: boolean, newValue?: string | number) => {
 		if(open)
@@ -23,22 +27,29 @@ export const EditText: React.FC<EditTextProps> = props => {
 		}
 	}
 
-	const handlePressKeyInput = (e: any) => {
+	const handleChangeInput = (e: React.FormEvent<HTMLInputElement>) => {
+		changeText(e.currentTarget.value)
+	}
+
+	const handlePressKeyInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if(e.key === "Enter"){
-			handleChangeEditing(false, e.target.value)
-			changeText(e.target.value)
+			handleChangeEditing(false, editTextInputRef.current!.value)
+			changeEditing(false)
 		}
 	}
 
 	useOutsideClick(editTextRef, () => {
-		if(editing) changeEditing(false)
+		if(editing) {
+			handleChangeEditing(false, editTextInputRef.current!.value)
+			changeEditing(false)
+		}
 	})
 
 	return(
 		<div className="edit_text" ref={editTextRef}>
 			{
 				editing ?
-				<input type={props.typeInput} defaultValue={text} onKeyPress={e => handlePressKeyInput(e)} autoFocus/>:
+				<input ref={editTextInputRef} type={props.typeInput} value={text} onChange={handleChangeInput} onKeyPress={handlePressKeyInput} autoFocus/>:
 				<span className="edit_text_content" onClick={e => handleChangeEditing(true)}>{text}</span>
 			}
 		</div>
