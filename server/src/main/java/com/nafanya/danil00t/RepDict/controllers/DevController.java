@@ -1,4 +1,4 @@
-/*
+
 package com.nafanya.danil00t.RepDict.controllers;
 
 import com.nafanya.danil00t.RepDict.models.Card;
@@ -42,5 +42,10 @@ public class DevController {
         return "success";
     }
 
+    @GetMapping("/22")
+    public String get22(){
+        System.out.println(cardRepository.getById(22).getDecks().size());
+        cardRepository.delete(cardRepository.getById(22));
+        return "sex";
+    }
 }
-*/

@@ -6,10 +6,7 @@ import com.nafanya.danil00t.RepDict.funcs.ListUtils;
 import com.nafanya.danil00t.RepDict.models.Deck;
 import com.nafanya.danil00t.RepDict.models.SubscriptionKey;
 import com.nafanya.danil00t.RepDict.models.User;
-import com.nafanya.danil00t.RepDict.repository.CardRepository;
-import com.nafanya.danil00t.RepDict.repository.DeckRepository;
-import com.nafanya.danil00t.RepDict.repository.SubscriptionRepository;
-import com.nafanya.danil00t.RepDict.repository.UserRepository;
+import com.nafanya.danil00t.RepDict.repository.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONArray;
@@ -27,7 +24,7 @@ import java.util.*;
 @CrossOrigin
 public class UserController {
     @Getter
-    private static final Integer USERS_ON_PAGE = 10;
+    private static final Integer USERS_ON_PAGE = 9;
 
     @Autowired
     SubscriptionRepository subscriptionRepository;
@@ -40,6 +37,9 @@ public class UserController {
 
     @Autowired
     DeckRepository deckRepository;
+
+    @Autowired
+    CardRatingRepository cardRatingRepository;
 
     @Value("${upload.path}")
     private String uploadAvatarPath;
@@ -122,7 +122,7 @@ public class UserController {
 
             public DeckWorstWalkthroughs(Deck deck, Double averageRating){
                 this.deck = deck;
-                percent = averageRating/BalanceController.getMaximumRating(deck, cardRepository);
+                percent = averageRating/BalanceController.getMaximumRating(deck);
             }
         }
         Comparator<DeckWorstWalkthroughs> comparator = (o1, o2) -> o1.percent.compareTo(o2.percent);

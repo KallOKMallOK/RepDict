@@ -66,6 +66,9 @@ public class User {
 
     private String name;
 
+    @Column(name = "last_worst_deck_creation")
+    private Date lastWorstDeckCreation;
+
     private Integer rating;
 
     @Column(name = "reg_date")
