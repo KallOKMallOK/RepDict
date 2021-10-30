@@ -38,6 +38,7 @@ public class JsonUtils {
         object.put("main_language", deck.getMainLanguage());
         object.put("second_language", deck.getSecondLanguage());
         object.put("price", deck.getPrice());
+        object.put("subscribers", deck.getSubscribers().size());
         JSONArray array = new JSONArray();
         deck.getCards().forEach(card -> {
             array.add(getCardJson(card));

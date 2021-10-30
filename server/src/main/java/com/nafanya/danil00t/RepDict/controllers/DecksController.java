@@ -3,13 +3,8 @@ package com.nafanya.danil00t.RepDict.controllers;
 import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
 import com.nafanya.danil00t.RepDict.funcs.JsonUtils;
 import com.nafanya.danil00t.RepDict.funcs.Parser;
-import com.nafanya.danil00t.RepDict.models.Card;
-import com.nafanya.danil00t.RepDict.models.Deck;
-import com.nafanya.danil00t.RepDict.models.User;
-import com.nafanya.danil00t.RepDict.repository.CardRepository;
-import com.nafanya.danil00t.RepDict.repository.DeckRepository;
-import com.nafanya.danil00t.RepDict.repository.UserRepository;
-import com.sun.tools.javac.Main;
+import com.nafanya.danil00t.RepDict.models.*;
+import com.nafanya.danil00t.RepDict.repository.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONArray;
@@ -22,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -30,7 +26,12 @@ import java.util.List;
 @RestController
 public class DecksController {
 
+    private static final Integer worstDeckSize = 20;
+
     private final Integer decksOnOnePage = 10;
+
+    @Autowired
+    SubscriptionRepository subscriptionRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -40,6 +41,9 @@ public class DecksController {
 
     @Autowired
     CardRepository cardRepository;
+
+    @Autowired
+    CardRatingRepository cardRatingRepository;
 
     @PostMapping("/new_deck")
     public JSONObject newDeck(
@@ -123,7 +127,7 @@ public class DecksController {
         });
 
         JSONArray subscriptions = new JSONArray();
-        List<Deck> subscriptionsList = user.getSubscriptions();
+        List<Deck> subscriptionsList = user.getSubscriptionDecks();
         int subscriptionPages = (int) (subscriptionsList.size() / 10) + 1;
         if(subscribedPage > subscriptionPages)
             return MainController.getError();
@@ -233,7 +237,9 @@ public class DecksController {
                             deck.getCards().remove(c);
                             card.getDecks().remove(deck);
                             deckRepository.save(deck);
-                            cardRepository.delete(card);
+                            cardRatingRepository.deleteAll(cardRatingRepository.findAllByIdCard(card.getId()));
+                            if(card.getDecks().size() == 0)
+                                cardRepository.delete(card);
                             break;
                         }
                     }
@@ -252,7 +258,8 @@ public class DecksController {
         if(!LogRegController.MiddleWare(request.getToken(), userRepository))
             return MainController.getError();
         Deck deck = deckRepository.getById(request.getDeckId());
-        if(!deck.getOwner().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()))))
+        if(!deck.getOwner().equals(userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken())))
+        || deck.getIsWorst().equals(true))
             return MainController.getError();
         cardRepository.deleteAll(deck.getCards());
         deckRepository.delete(deck);
@@ -270,14 +277,12 @@ public class DecksController {
         Deck deck = deckRepository.getById(request.getDeckId());
         if(deck.getOwner().equals(user))
             return MainController.getError();
-        if(!user.getSubscriptions().contains(deck)){
-            user.getSubscriptions().add(deck);
-            userRepository.save(user);
+        if(!user.getSubscriptionDecks().contains(deck)){
+            subscriptionRepository.save(new Subscription(user, deck));
             object.put("status", true);
             return object;
         }
-        user.getSubscriptions().remove(deck);
-        userRepository.save(user);
+        subscriptionRepository.delete(subscriptionRepository.getById(new SubscriptionKey(user, deck)));
         object.put("status", false);
         return object;
     }
@@ -372,6 +377,58 @@ public class DecksController {
             default:
                 break;
         }
+    }
+
+    public static void createWorstDeck(
+            String token,
+            CardRatingRepository cardRatingRepository,
+            DeckRepository deckRepository,
+            UserRepository userRepository,
+            CardRepository cardRepository) throws IOException{
+        User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
+        if(user == null)
+            return;
+        Deck worstDeck = deckRepository.getDeckByAuthorAndIsWorst(user, true);
+        if(worstDeck != null){
+            ArrayList<Card> toDelete = new ArrayList<>();
+            for(Card card : worstDeck.getCards()){
+                System.out.println(card.getDecks().size());
+                if(card.getDecks().size() == 1) {
+                    toDelete.add(card);
+                }
+            }
+            worstDeck.getCards().removeAll(toDelete);
+            deckRepository.save(worstDeck);
+            cardRepository.deleteAll(toDelete);
+            worstDeck.setCards(new ArrayList<Card>());
+            worstDeck.setCountRepetitions(0);
+            worstDeck.setLikes(0);
+            worstDeck.setLikesList(new ArrayList<User>());
+            worstDeck.setSubscribers(new ArrayList<User>());
+            deckRepository.save(worstDeck);
+        }
+        else {
+            worstDeck = new Deck(
+                    "Deck with worst cards",
+                    true,
+                    user.getId(),
+                    "This deck contains your worst cards",
+                    "ENG",
+                    "RUS",
+                    0,
+                    userRepository);
+            worstDeck.setIsWorst(true);
+        }
+        List<CardRating> cardRatings = cardRatingRepository.findAllByIdSubscriberOrderByAnswerRatingAsc(user.getId());
+        if(cardRatings.size() > 0) {
+            cardRatings = cardRatings.subList(0, Math.min(worstDeckSize, cardRatings.size()));
+            for (CardRating cardRating : cardRatings) {
+                worstDeck.getCards().add(cardRepository.getById(cardRating.getIdCard()));
+            }
+        }
+        worstDeck.setCountWords(worstDeck.getCards().size());
+        deckRepository.save(worstDeck);
+        cardRatingRepository.deleteAll(cardRatings);
     }
 }
 

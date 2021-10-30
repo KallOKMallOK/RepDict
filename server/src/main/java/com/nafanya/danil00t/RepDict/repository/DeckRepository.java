@@ -16,4 +16,6 @@ public interface DeckRepository extends JpaRepository<Deck, Integer> {
 
     List<Deck> findAllByAuthor(User author);
 
+    Deck getDeckByAuthorAndIsWorst(User author, Boolean isWorst);
+
 }

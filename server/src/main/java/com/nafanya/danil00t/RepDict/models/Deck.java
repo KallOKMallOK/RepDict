@@ -95,6 +95,9 @@ public class Deck {
 
     private Integer price;
 
+    @Column(name = "is_worst", columnDefinition = "bool default false")
+    private Boolean isWorst;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "decks_cards",
             joinColumns = {@JoinColumn(name = "id_deck")},
