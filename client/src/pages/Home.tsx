@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link, RouteComponentProps, Router } from '@reach/router'
 
 // Components
 
@@ -7,13 +6,8 @@ import { Link, RouteComponentProps, Router } from '@reach/router'
 import "../styles/reset.scss"
 import '../styles/main.scss';
 
-interface IHomeProps extends RouteComponentProps {
-  init?: boolean
-  textHello?: string
-}
 
-
-const Home: React.FC<IHomeProps> = props => {
+const Home: React.FC = props => {
   return (
     <div className="home">
       {/* <Currsection info={{Hello: 20, "dflmdf fdf": "310/31"}} />

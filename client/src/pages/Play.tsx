@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 import { FaArrowRight } from "react-icons/fa"
 
 import API from '../api';
-import Currsection from '../components/Currsection';
 import { ICard } from '../domains/entities/card.entity';
 import { IDeck } from '../domains/entities/deсk.entity';
 
+import Currsection from '../components/Currsection';
 import { Notification } from '../components/Notification';
 import Action from "../redux/actions"
 
@@ -23,9 +23,9 @@ const connector = connect(null, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 
-
 interface IPlayProps extends RouteComponentProps, PropsFromRedux{
 }
+
 interface ResultEndPlayToServer{
 	idCard: number
 	time: number
@@ -79,14 +79,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 
 		return array;
 	}
-	where(array: any[], field: string){
 
-	}
-
-
-	// 
-	// 
-	// 
 	nextCard(successed: boolean){
 		if(this.state.currentCard + 1 < this.state.cards.length){		
 			this.setState({ 
@@ -161,6 +154,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	handleSkipCard(){
 		this.nextCard(false)
 	}
+
 	handleChangeInputAnswer(e: React.FormEvent<HTMLInputElement>){
 		if(this.checkCard(this.state.cards[this.state.currentCard], e.currentTarget.value)){
 			this.setState({ valueInputAnswer: ""})
@@ -174,6 +168,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				this.setState({ valueInputAnswer: e.currentTarget.value })
 		}
 	}
+
 	handleHint(){
 		this.setState({ visibleHint: !this.state.visibleHint })
 	}
@@ -260,7 +255,10 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 									successed: []
 								})}
 							>Once again</button>
-							<button className="btn btn-success" onClick={e => this.setState({ showResults: true })}>results</button>
+							<button 
+								className="btn btn-success" 
+								onClick={e => this.setState({ showResults: true })}
+							>results</button>
 							<Link to="/decks" className="btn btn-danger">To Decks</Link>
 						</div>
 					</div>
@@ -270,7 +268,9 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					<ul>
 						{
 							this.getResults().map(result => {
-								return <li>{result.main_word} - {result.answer}: {result.successed? "Yes!": "no!"} on {result.time}</li>
+								return <li>
+									{result.main_word} - {result.answer}: {result.successed? "Yes!": "no!"} on {result.time}
+								</li>
 							})
 						}
 					</ul>

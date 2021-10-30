@@ -2,6 +2,8 @@ import React, { MouseEvent } from 'react';
 
 import API from "../api"
 import { showLoader, hideLoader } from "../components"
+
+
 // Components and redux instances
 import { 
 	Deck, 
@@ -9,15 +11,14 @@ import {
 	DeckAdd,
 	IDeckDefault
 } from "../components/Deck"
+import { Notification } from '../components/Notification';
+import { Modal } from '../components/modals';
+import { connect, ConnectedProps } from 'react-redux';
 
+import { ActionChange } from '../domains/entities/actions.entity';
 
 // App styles
 import "../styles/pages/Decks.scss"
-import { Notification } from '../components/Notification';
-import { ActionChange } from '../domains/entities/actions.entity';
-import { connect, ConnectedProps } from 'react-redux';
-import { Modal } from '../components/modals';
-import { notification } from '../redux/reducers/notification.reducer';
 
 interface IDecksProps {
 	init?: boolean
@@ -48,6 +49,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		isEdit: false,
 		deckEdit: null
 	}
+
 	constructor(props: PropsFromRedux){
 		super(props)
 		showLoader()
@@ -67,6 +69,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			})
 			.catch(err => console.log(err))
 	}
+
 	editDeck(e: React.FormEvent<any>, index: number){
 		console.log("edit", index);
 		this.setState({
@@ -74,6 +77,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			deckEdit: this.state.decksOwned[index]
 		})
 	}
+
 	deleteDeck(e: React.FormEvent<any>, id: number){
 		Modal.confirm(
 			"Вы действительно хотите удалить дек?", 
@@ -130,9 +134,11 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 	handleUnsibscribe(e: any, id: number){
 		this.setState({ decksSubscriptions: this.state.decksSubscriptions.filter(deck => deck.id !== id) })
 	}
+
 	handleCloseActiveAddingDeck(e: React.FormEvent<any>){
 		this.setState({ isNewDeck: false })
 	}
+
 	handleCloseActiveEditingDeck(e: React.FormEvent<any>){
 		this.setState({ isEdit: false })
 	}
@@ -154,6 +160,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 				.catch(err => Notification.error("Error", "Failed to load data", 3000))
 		}
 	}
+
 	render(){
 
 		return(
@@ -260,36 +267,37 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 					<h2 className="cards_main_name">My Subscribed Decks</h2>
 					<div className="cards">
 					{
-							this.state.decksSubscriptions.length !== 0 && this.state.decksSubscriptions.map((deck: IDeckDefault, index: number) => {
-								return <Deck
-									index={index}
-									id={deck.id}
-									name={deck.name}
-									countWords={deck.countWords || 0} 
-									author={deck.author}
-									owner={deck.owner}
-									description={deck.description}
-									countRepetitions={deck.countRepetitions || 0} 
-									isPrivate={deck.isPrivate} 
-									mainLang={deck.mainLang.toUpperCase()} 
-									secondLang={deck.secondLang.toUpperCase()}
-									countLikes={deck.countLikes || 0}
-									activeLike={deck.activeLike || false}
-									cards={deck.cards}
-									key={`deck_${index}`}
-									subscribed={deck.subscribed}
-									subscribe={this.handleUnsibscribe.bind(this)}
+							this.state.decksSubscriptions.length !== 0 && 
+								this.state.decksSubscriptions.map((deck: IDeckDefault, index: number) => {
+									return <Deck
+										index={index}
+										id={deck.id}
+										name={deck.name}
+										countWords={deck.countWords || 0} 
+										author={deck.author}
+										owner={deck.owner}
+										description={deck.description}
+										countRepetitions={deck.countRepetitions || 0} 
+										isPrivate={deck.isPrivate} 
+										mainLang={deck.mainLang.toUpperCase()} 
+										secondLang={deck.secondLang.toUpperCase()}
+										countLikes={deck.countLikes || 0}
+										activeLike={deck.activeLike || false}
+										cards={deck.cards}
+										key={`deck_${index}`}
+										subscribed={deck.subscribed}
+										subscribe={this.handleUnsibscribe.bind(this)}
 
-									// enables
-									enableMethods={{ 
-										enableLike: true,
-										enableSubscribe: true
-									}}
+										// enables
+										enableMethods={{ 
+											enableLike: true,
+											enableSubscribe: true
+										}}
 
-									// active methods
-									like={this.like}
-									/>
-							})
+										// active methods
+										like={this.like}
+										/>
+								})
 						}
 					</div>
 				</section>

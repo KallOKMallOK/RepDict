@@ -2,21 +2,68 @@
 @import "../fonts";
 
 .Rating{
+	margin: 10px 50px;
+	h1{
+		margin-bottom: 20px;
+		font: 1.8em RobotoBold;
+	}
+	.header{
+		display: flex;
+		padding: 0;
+		width: 100%;
+		li{
+			width: 100%;
+			display: flex;
+			span{
+				width: calc(100% / 2);
+				font: 1em RobotoLight;
+				color: rgb(121, 121, 121);
+			}
+			span.header_login{
+				margin-left: 25px;
+			}
+		}
+	}
 	.main_list{
+		margin: 0;
+		padding: 0;
 		&_item{
 			width: 100%;
 			// background-color: red;
-			border: 2px solid $color-main;
-			@include bs(5px, 0px, $color-main);
+			border: 1px solid $color-main;
+			// @include bs(5px, 0px, $color-main);
 			border-radius: 3px;
 			display: flex;
 			justify-content: flex-start;
 			margin-bottom: 7px;
 			padding: 7px 10px;
 			span.login, span.rating{
-
+				
 				width: 50%;
 				display: block;
+			}
+			&:nth-child(1){
+				background-color: rgb(190, 163, 7);
+				border: 1px solid rgb(161, 138, 5);
+			}
+			&:nth-child(2){
+				background-color: rgb(192, 192, 192);
+				border: 1px solid rgb(138, 138, 138);
+			}
+			&:nth-child(3){
+				background-color: rgb(197, 135, 2);
+				border: 1px solid rgb(170, 117, 2);
+			}
+			.login{
+				font-family: RobotoBold;
+				a{
+					color: rgb(228, 228, 228);
+					text-decoration: none;
+					@include trs();
+					&:hover{
+						color: rgb(0, 66, 246);
+					}
+				}
 			}
 		}
 	}

@@ -92,7 +92,12 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 					<div className="form-floating mb-3">
 						<input 
 							name="name"
-							className={`form-control ${this.state.nameValidate !== null ? (this.state.nameValidate? "is-valid": "is-invalid"): ""}`}
+							className={`form-control 
+								${this.state.nameValidate !== null ? 
+									(this.state.nameValidate? "is-valid": 
+									"is-invalid"): 
+								""}
+							`}
 							onBlur={e => this.onValidate(e as any)}
 							type="text" 
 							ref={this.name} 
@@ -103,7 +108,13 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 					<div className="form-floating mb-3">
 						<input 
 							name="login"
-							className={`form-control ${this.state.loginValidate !== null ? (this.state.loginValidate? "is-valid": "is-invalid"): ""}`}
+							className={`form-control 
+								${this.state.loginValidate !== null ? 
+									(this.state.loginValidate? 
+										"is-valid": 
+										"is-invalid"): 
+									""}
+								`}
 							onBlur={e => this.onValidate(e as any)}
 							type="text" 
 							ref={this.login} 
@@ -115,7 +126,13 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 					<div className="form-floating mb-3">
 						<input 
 							name="password"
-							className={`form-control ${this.state.passwordValidate !== null ? (this.state.passwordValidate? "is-valid": "is-invalid"): ""}`}
+							className={`form-control 
+								${this.state.passwordValidate !== null ? 
+									(this.state.passwordValidate? 
+										"is-valid": 
+										"is-invalid"): 
+									""}
+								`}
 							onBlur={e => this.onValidate(e as any)}
 							type="password" 
 							ref={this.password} 
@@ -124,7 +141,13 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 						<label htmlFor="floatingInput">Password</label>
 					</div>
 					<div className="form-floating mb-3">
-						<input type="password" ref={this.rpassword} className="form-control" id="floatingInput" placeholder="your password" />
+						<input 
+							type="password" 
+							ref={this.rpassword} 
+							className="form-control" 
+							id="floatingInput" 
+							placeholder="your password" 
+						/>
 						<label htmlFor="floatingInput">Repeat password</label>
 					</div>
 
@@ -134,8 +157,5 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 		)
 	}
 }
-
-
-
 
 export default connector(Registration)

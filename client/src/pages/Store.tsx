@@ -1,16 +1,18 @@
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
+import API from '../api';
 import { Notification } from '../components/Notification';
 import { showLoader, hideLoader } from "../components"
 import { Deck, IDeckDefault } from '../components/Deck';
-import { IDeck } from "../domains/entities/deсk.entity"
-import API from '../api';
-import { connect, ConnectedProps } from 'react-redux';
+import Pagination from "../components/Pagination"
 
 import "../styles/pages/Decks.scss"
 
 interface StateStore{
-	decks: IDeck[]
+	decks: IDeckDefault[]
+	currentPage: number
+	countPages: number
 }
 
 const mapStateToProps = (state: any) => ({
@@ -23,9 +25,11 @@ const connector = connect(mapStateToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 
-class Store extends React.Component<PropsFromRedux>{
-	public state: any = {
-		decks: []
+class Store extends React.Component<PropsFromRedux, StateStore>{
+	public state: StateStore = {
+		decks: [],
+		currentPage: 1,
+		countPages: 1
 	}
 	constructor(props: PropsFromRedux){
 		super(props)
@@ -45,14 +49,23 @@ class Store extends React.Component<PropsFromRedux>{
 			.catch(err => console.log(err))
 	}
 
+	updateDecks(page: number){
+		// showLoader()
+		API.getAllDecks(page)
+		.then(res => {
+			console.log(res)
+			this.setState({ decks: res.data.decks, countPages: res.data.pages })
+			hideLoader()
+		})
+		.catch(err => console.log(err))
+	}
+	handleChangeCurrentPage(choosen: { selected: number }){
+		this.setState({ currentPage: choosen.selected + 1 })
+		this.updateDecks( choosen.selected + 1 )
+	}
 
 	componentDidMount(){
-		API.getAllDecks()
-			.then(res => {
-				this.setState({ decks: res.data.decks })
-				hideLoader()
-			})
-			.catch(err => console.log(err))
+		this.updateDecks(this.state.currentPage)
 	}
 
 	render(){
@@ -93,10 +106,13 @@ class Store extends React.Component<PropsFromRedux>{
 									/>
 							})
 						}
-
-						
-						
 					</div>
+
+					<Pagination 
+						countPages={this.state.countPages}
+						changeCountPages={a => console.log(a)}
+						changeCurrentPage={choosen => this.handleChangeCurrentPage(choosen)}
+					/>
 				</section>
 			</div>
 		)

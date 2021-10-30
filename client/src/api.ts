@@ -212,9 +212,9 @@ class API {
 		})
 	}
 	
-	public static getAllDecks(): Promise<any>{
+	public static getAllDecks(page?: number): Promise<any>{
 		return new Promise<any> ((resolve, reject) => {
-			this.GET(API_URLS.GET_ALL_DECKS, (localStorage.getItem("token")?.length !== undefined ? { token: localStorage.getItem("token") }: {}))
+			this.GET(API_URLS.GET_ALL_DECKS, (localStorage.getItem("token")?.length !== undefined ? { token: localStorage.getItem("token"), page }: { page }))
 				.then(response => {
 					const data: IDeck = response.data.decks.map((deck: any) => this.transormArrayOfDeck(deck))
 					resolve({

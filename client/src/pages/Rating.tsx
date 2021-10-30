@@ -1,12 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import API from '../api';
+import { hideLoader, showLoader } from '../components';
 
 import "../styles/pages/Rating.scss"
 interface RatingItem{
 	average_rating: number
-	login: "optimus"
-	name: "Оптимус Прайм Насрал"
-	rating: 82020
+	login: string
+	name: string
+	rating: number
 	walkthroughs: number
 }
 
@@ -28,6 +30,7 @@ class Rating extends React.Component<IRatingProps, RatingState>{
 
 	componentDidMount(){
 		const enableProps = ["login", "rating"]
+		showLoader()
 		API.getRating()
 			.then(data => {
 				this.setState({ 
@@ -36,18 +39,23 @@ class Rating extends React.Component<IRatingProps, RatingState>{
 							enableProps.includes(curr) ? {...prev, [curr]: item[curr]} : {...prev}, {}
 						)
 					)
-				})
+				}, () => hideLoader())
 			})
 	}
 	render(){
 		return(
 			<div className="Rating" style={{color: "white"}}>
+				<h1>Rating</h1>
+				<ul className="header">
+					<li><span className="header_login">Login</span></li>
+					<li><span className="header_scores">Scores</span></li>
+				</ul>
 				<ul className="main_list">
 					{
 						this.state.rating.map((item, index) => {
 							return <li className="main_list_item" key={index}>
 								
-								<span className="login"><span className="index">{index + 1}</span> {item.login}</span>
+								<span className="login"><span className="index">{index + 1}</span> <Link to={`/users/${item.login}`}>{item.login}</Link></span>
 								<span className="rating">{item.rating}</span>
 							</li>
 						})

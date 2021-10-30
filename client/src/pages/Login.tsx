@@ -1,13 +1,13 @@
 import React, { createRef, MouseEvent } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom'
-import Action from "../redux/actions"
 
+import Action from "../redux/actions"
 import API from "../api"
+import { Notification } from '../components/Notification';
 
 // Styles
 import "../styles/forms.scss"
-import { Notification } from '../components/Notification';
 
 const mapStateToProps = (state: any) => ({
 	auth: state.app.auth
@@ -58,14 +58,17 @@ class Login extends React.Component<PropsFromRedux, StateLogin>{
 				})
 			.catch(err => Notification.error("Error", "Error on server"))
 	}
+
 	validateForm(e: any){
 		console.log(e)
 		switch(e.target.name){
 			case "login":
-				e.target.value.length > 3 && e.target.value.length < 30? this.setState({ loginValidate: true }): this.setState({ loginValidate: false })
+				e.target.value.length > 3 && 
+					this.setState({ loginValidate: e.target.value.length < 30 })
 				break
 			case "password":
-				e.target.value.length > 7 && e.target.value.length < 40? this.setState({ passwordValidate: true }): this.setState({ passwordValidate: false })
+				e.target.value.length > 7 && 
+					this.setState({ passwordValidate: e.target.value.length < 40 })
 				break
 			default:
 				break

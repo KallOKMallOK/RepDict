@@ -298,7 +298,7 @@ header.main_header {
 	width: calc(100% - 20px);
 	// height: 100vh;
 	height: 100%;
-	position: absolute;
+	position: fixed;
 	z-index: 999;
 	top: 0;
 
@@ -358,7 +358,7 @@ header.main_header {
 
 #root{
 	position: relative;
-	padding-bottom: 50px;
+	padding-bottom: 100px;
 	min-height: 100vh;
 }
 
@@ -387,6 +387,60 @@ footer{
 					text-decoration: underline;
 					color: rgb(144, 144, 144);
 				}
+			}
+		}
+	}
+}
+
+
+// -----------------------------------------------------------------------------
+// ----------------------------- Pagination ------------------------------------
+// -----------------------------------------------------------------------------
+
+.pagination{
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	align-items: end;
+	.pagination_select_count_pages{
+		background-color: $color-bg-dark;
+		color: rgb(160, 160, 160);
+		border: 2px solid lighten($color-bg-dark, 10);
+		border-radius: 3px;
+		min-width: 200px;
+		height: 40px;
+		outline: none;
+		padding: 0 10px;
+	}
+	.pagination_pages_buttons{
+		// background-color: red;
+		display: flex;
+		margin: 0;
+		padding: 0;
+		li{
+			margin: 0 3px;
+			a{
+				padding: 5px 10px;
+				color: rgb(211, 211, 211);
+				font-family: RobotoBold;
+				border-radius: 3px;
+			}
+		}
+		li.previous, li.next{
+			// padding: 5px 7px;
+			a{
+				// display: flex;
+				// align-items: center;
+				// // line-height: 1.5em;
+				svg{
+					margin-top: -5px;
+				}
+			}
+		}
+		li.active{
+			a{
+				background-color: $color-main;
+				color: white;
 			}
 		}
 	}

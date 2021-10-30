@@ -259,21 +259,65 @@ interface EditedCardProps extends ICard{
 }
 
 const EditedCard: React.FC<EditedCardProps> = props => {
-	const [changes, changeChanges] = useState([] as ActionChange[])
+	// const [changes, changeChanges] = useState([] as ActionChange[])
 	const [main_word, changeMain_word] = useState(props.main_word)
 	const [answer, changeAnswer] = useState(props.answer)
 	const [description, changeDescription] = useState(props.description)
 
 	const thisRef = useRef<any>(null)
 
+	const handleChangeMainWord = (e: React.FormEvent<HTMLInputElement>) => {
+		changeMain_word(e.currentTarget.value)
+	}
+
+	const handleChangeAnswer = (e: React.FormEvent<HTMLInputElement>) => {
+		changeAnswer(e.currentTarget.value)
+	}
+
+	const handleChangeDescription = (e: React.FormEvent<HTMLTextAreaElement>) => {
+		changeDescription(e.currentTarget.value)
+	}
+
+	const handleSaveChanges = () => {
+		let changes: ActionChange[] = []
+		if(main_word !== props.main_word)
+			changes  = [...changes, {
+				type: "CHANGE_CARD",
+				payload: {
+					name: "main_word",
+					id: props.id,
+					value: main_word
+				}
+			}]
+		if(answer !== props.answer)
+			changes  = [...changes, {
+				type: "CHANGE_CARD",
+				payload: {
+					name: "answer",
+					id: props.id,
+					value: answer
+				}
+			}]
+		if(description !== props.description)
+			changes  = [...changes, {
+				type: "CHANGE_CARD",
+				payload: {
+					name: "description",
+					id: props.id,
+					value: description
+				}
+			}]
+		props.save(changes, props.id)
+		props.close(null)
+	}
+
 	useOutsideClick(thisRef, () => {
 		if(props.visible) props.close(null)
 	})
 
-	console.log("render EditedCard", props.description);
 	return (
 		ReactDOM.createPortal(
-			<div ref={thisRef} className="editedCardWatch" style={{display: props.visible? "block": "none", top: props.positionElement.y + 240, left: props.positionElement.x + 20}}>
+			<div ref={thisRef} className="editedCardWatch" style={{display: props.visible? "block": "none", top: props.positionElement.y + 240, left: props.positionElement.x - 20}}>
 				<div className="wrapper">
 					<div className="beforeTringle">
 						<FaCaretUp />
@@ -283,13 +327,13 @@ const EditedCard: React.FC<EditedCardProps> = props => {
 					</div>
 
 					<div className="control-top">
-						<input type="text" className="__input __input_default" value={props.main_word}/>
+						<input type="text" className="__input __input_default" value={main_word} onChange={e => handleChangeMainWord(e)}/>
 						<FaLongArrowAltRight />
-						<input type="text" className="__input __input_default" value={props.answer}/>
+						<input type="text" className="__input __input_default" value={answer} onChange={e => handleChangeAnswer(e)}/>
 					</div>
 
-					<textarea name="description" className="__input __input_default" id="" cols={10} rows={2} value={props.description}></textarea>
-					<button className="__btn" onClick={e => props.save(changes, props.id)}>save</button>
+					<textarea name="description" className="__input __input_default" id="" cols={10} rows={2} value={description} onChange={e => handleChangeDescription(e)}></textarea>
+					<button className="__btn" onClick={handleSaveChanges}>save</button>
 				</div>
 			</div>,
 			document.getElementById("root")!
@@ -435,7 +479,13 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 	}
 
 	const handleChangeCard = (changesCard: ActionChange[], indexCard: number) => {
-		console.log(changesCard, indexCard);
+		addChange((old) => [...old, ...changesCard])
+		console.log(changesCard);
+		// const changedCards = cards.map((card: ICard) => {
+		// 	changes.
+		// })
+
+		// changeCards(cards => [...cards, ...changeCards])
 	} 
 	// -----------------------------------------------------------------------------
 	// ---------------------------- Export JSON -----------------------------------

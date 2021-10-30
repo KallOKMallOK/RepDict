@@ -1,5 +1,6 @@
 @import "../vars";
 @import "../fonts";
+@import "~animate.css/source/animate.css";
 
 // -----------------------------------------------------------------------------
 // -------------------------------- Cards --------------------------------------
@@ -495,6 +496,7 @@
 	top: 0;
 	padding: 100px 0;
 	.watcher{
+		@include fadeInDown(.15s);
 		overflow-y: scroll;
 		background-color: $color-bg-ligth;
 		color: white;

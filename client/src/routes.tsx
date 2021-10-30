@@ -32,7 +32,7 @@ export const routes: IRoute[] = [
 	},
 	{
 		// dashboard - last cards and statistics
-		isNavBar: true,
+		isNavBar: false,
 		isLogin: true,
 		isExact: true,
 		isPrivate: true,
@@ -72,7 +72,7 @@ export const routes: IRoute[] = [
 		icon: FaStore
 	},
 	{
-		isNavBar: true,
+		isNavBar: false,
 		isLogin: true,
 		isExact: true,
 		isPrivate: true,
