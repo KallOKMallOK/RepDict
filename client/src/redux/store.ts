@@ -15,7 +15,7 @@ const asyncDispatchMiddleware: MiddlewareFunction = store => next => action => {
 		actionQueue = [];
 	}
 
-	function asyncDispatch(asyncAction: Object) {
+	function asyncDispatch(asyncAction: Record<string, any>) {
 		actionQueue = actionQueue.concat([asyncAction]);
 
 		if (syncActivityFinished)

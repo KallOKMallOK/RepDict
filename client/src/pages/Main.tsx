@@ -4,7 +4,9 @@ import { showLoader, hideLoader } from "../components"
 
 import "../styles/pages/Main.scss"
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IMainProps{
+	
 }
 
 class Main extends React.Component{

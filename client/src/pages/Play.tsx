@@ -1,4 +1,5 @@
 import React from 'react';
+import { Dispatch } from "redux"
 import { RouteComponentProps } from 'react-router'
 import { connect, ConnectedProps } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -14,7 +15,7 @@ import Action from "../redux/actions"
 
 import "../styles/pages/Play.scss"
 
-const mapDispatchToProps = (f: Function) => ({
+const mapDispatchToProps = (f: Dispatch) => ({
 	addScores: (scores: number) => f(Action.app.addScores(scores))
 })
 
@@ -188,7 +189,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	componentDidMount(){
 		const params: any = this.props.match.params
 		const id = Number(params.id)
-		if(Boolean(id)){
+		if(id){
 			API.getDeck(id)
 				.then(resp => {
 					this.getTimeDeck("start")
@@ -208,7 +209,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				<div className={`Play__card ${this.state.ended? "ended": ""}`}>
 					<Currsection 
 						info = {{ 
-							name: this.state.deck?.name,
+							name: this.state.deck?.name as string,
 							description: this.state.deck?.description || "no description",
 							"current card": `${this.state.currentCard + 1} / ${this.state.deck?.cards.length}`
 						}}
@@ -242,7 +243,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					<div className="congratulations">
 						<div className="welc">
 							<h2>Congratulations!</h2>
-							<h3>You have passed the "{this.state.deck?.name}" deck once again.</h3>
+							<h3>You have passed the &quot;{this.state.deck?.name}&quot; deck once again.</h3>
 						</div>
 						<h1>Your scores: {this.state.scores}</h1>
 						<div className="control_buttons">
@@ -267,8 +268,8 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				<div className={`section_results ${this.state.showResults? "showed": "hided"}`}>
 					<ul>
 						{
-							this.getResults().map(result => {
-								return <li>
+							this.getResults().map((result, index) => {
+								return <li key={index}>
 									{result.main_word} - {result.answer}: {result.successed? "Yes!": "no!"} on {result.time}
 								</li>
 							})

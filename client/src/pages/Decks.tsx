@@ -1,11 +1,12 @@
 import React, { MouseEvent } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
 import API from "../api"
 import { showLoader, hideLoader } from "../components"
 
 
 // Components and redux instances
-import { 
+import {
 	Deck, 
 	DeckActive, 
 	DeckAdd,
@@ -13,12 +14,12 @@ import {
 } from "../components/Deck"
 import { Notification } from '../components/Notification';
 import { Modal } from '../components/modals';
-import { connect, ConnectedProps } from 'react-redux';
 
 import { ActionChange } from '../domains/entities/actions.entity';
 
 // App styles
 import "../styles/pages/Decks.scss"
+import { RootState } from '../redux/store';
 
 interface IDecksProps {
 	init?: boolean
@@ -32,7 +33,8 @@ interface StateDecks{
 	isEdit: boolean
 	deckEdit: IDeckDefault | null
 }
-const mapStateToProps = (state: any) => ({
+
+const mapStateToProps = (state: RootState) => ({
 	user: state.app.user
 })
 const connector = connect(mapStateToProps)
@@ -55,7 +57,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		showLoader()
 	}
 
-	addDeck(e: React.FormEvent<any>){
+	addDeck(){
 		this.setState({
 			isNewDeck: true
 		})
@@ -70,7 +72,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			.catch(err => console.log(err))
 	}
 
-	editDeck(e: React.FormEvent<any>, index: number){
+	editDeck(e: React.FormEvent<HTMLElement>, index: number){
 		console.log("edit", index);
 		this.setState({
 			isEdit: true,
@@ -78,11 +80,11 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		})
 	}
 
-	deleteDeck(e: React.FormEvent<any>, id: number){
+	deleteDeck(e: React.FormEvent<HTMLElement>, id: number){
 		Modal.confirm(
 			"Вы действительно хотите удалить дек?", 
 			"Если вы удалите дек, все карточки тоже удалятся, вы уверены, что хотите это сделать?",
-			() => {},
+			() => console.log(),
 			(accept) => {
 				if(accept){
 					API.deleteDeck(id)
@@ -93,7 +95,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 								Notification.success("OK", "Дек успешно удален", 3000)
 							}
 						})
-						.catch(err => {
+						.catch(() => {
 							Notification.error("Ошбика", "Дек не успешно удален", 3000)
 						})
 				}
@@ -101,14 +103,14 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		// Notification.success("Hello!", "Content", 3000)
 	}
 
-	like(e: any, id: number){
+	like(e: unknown, id: number){
 		API.setLike(id)
 			.then(res => console.log(res))
 			.catch(err => console.log(err))
 		console.log("like", id);
 	}
 
-	changePrivate(e: any, id: number, valuePrivate: boolean){
+	changePrivate(e: unknown, id: number, valuePrivate: boolean){
 		API.applyChanges(id, [
 			{
 				type: "CHANGE_DECK",
@@ -122,7 +124,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			.catch(err => console.log(err))
 	}
 
-	createNewDeck(e: any, data: any){
+	createNewDeck(e: unknown, data: any){
 		API.addDeck(data)
 			.then(response => {
 				console.log(response)

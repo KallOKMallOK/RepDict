@@ -1,5 +1,5 @@
 import React, {  useEffect, useRef, useState } from 'react'
-import { Link, useLocation, useHistory } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { connect, ConnectedProps } from 'react-redux'
 import { FaUser, FaBars } from "react-icons/fa"
 
@@ -10,18 +10,21 @@ import useOutsideClick from "../hoc/OutsideClicker"
 
 // Styles
 import "../styles/components.scss"
+import { Dispatch } from 'redux'
+import { RootState } from '../redux/store'
+import { User } from '../domains/entities/user.entity'
 
 // -----------------------------------------------------------------------------
 // ---------------------- Connect to redux emmiter -----------------------------
 // -----------------------------------------------------------------------------
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: RootState) => ({
 	auth: state.app.auth,
 	user: state.app.user
 })
 
-const mapDispatchToProps = (f: Function) => ({
-	login: (user: any) => f(Action.app.login(user)),
+const mapDispatchToProps = (f: Dispatch) => ({
+	login: (user: User) => f(Action.app.login(user)),
 	logout: () => f(Action.app.logout())
 })
 
@@ -40,12 +43,11 @@ interface AppProps extends PropsFromRedux{
 // -----------------------------------------------------------------------------
 
 const Header: React.FC<AppProps> = props => {
-	const history = useHistory()
 
 	const [dropdownVisible, openDropdownUser] = useState(false)
 	const [menuVisible, openMenuUser] = useState(false)
 
-	const dropdownRef = useRef<any>(null)
+	const dropdownRef = useRef<HTMLUListElement>(null)
 	const match = useLocation().pathname
 
 	useOutsideClick(dropdownRef, () => {
@@ -59,20 +61,19 @@ const Header: React.FC<AppProps> = props => {
 			document.body.style.overflow = 'unset'
 	}, [menuVisible ])
 
-	const logout = (e: any) => {
+	const logout = () => {
 		props.logout()
 		openMenuUser(false)
-		// history.push("/")
 	}
 	
 	return (
 		<header className="main_header">
 			<div className="logo">
-				<span className="logo_text"><Link to="/" onClick={e => openMenuUser(false)}>RepDict</Link></span>
+				<span className="logo_text"><Link to="/" onClick={() => openMenuUser(false)}>RepDict</Link></span>
 			</div>
 
 			<div className="menu">
-				<div className="icon_bars" onClick={e => openMenuUser(!menuVisible)}>
+				<div className="icon_bars" onClick={() => openMenuUser(!menuVisible)}>
 					<FaBars />
 				</div>
 
@@ -85,7 +86,7 @@ const Header: React.FC<AppProps> = props => {
 								className={`menu_list_item ${route.path === match ? "active": "noactive"}`}>
 									<Link 
 										className="menu_list_item_link" 
-										to={`${route.path}`} onClick={e => openMenuUser(false)}>
+										to={`${route.path}`} onClick={() => openMenuUser(false)}>
 										{!!route.icon && <route.icon/>}
 										{route.name}
 										
@@ -95,17 +96,17 @@ const Header: React.FC<AppProps> = props => {
 					}
 					{
 						// User panel
-						props.auth && <li style={{ color: "white" }} className="user_panel" onClick={e => openDropdownUser(!dropdownVisible)}>
+						props.auth && <li style={{ color: "white" }} className="user_panel" onClick={() => openDropdownUser(!dropdownVisible)}>
 							<div className="user_panel_head"><FaUser />{props.user.name} <span className="user__balance">{props.user.balance}</span></div>
 							<ul className={`dropdown ${dropdownVisible? "showedDB__fadeIn": "closed"}`} ref={dropdownRef}>
 								<li className="dropdown_item">
-									<Link to={`/users/${props.user.login}`} onClick={e => openMenuUser(false)}>Profile</Link>
+									<Link to={`/users/${props.user.login}`} onClick={() => openMenuUser(false)}>Profile</Link>
 								</li>
 								<li className="dropdown_item">
-									<Link to="/settings" onClick={e => openMenuUser(false)}>Setting</Link>
+									<Link to="/settings" onClick={() => openMenuUser(false)}>Setting</Link>
 								</li>
 								<li className="dropdown_item">
-									<Link to="/" onClick={e => logout(e)}>Logout</Link>
+									<Link to="/" onClick={() => logout()}>Logout</Link>
 								</li>
 							</ul>
 						</li>

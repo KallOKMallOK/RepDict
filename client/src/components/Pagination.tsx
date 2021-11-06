@@ -7,7 +7,7 @@ interface PaginationProps{
 	countPages: number
 
 	// action props
-	changeCountPages: (e: React.FormEvent<any>) => void
+	changeCountPages: () => void
 	changeCurrentPage: (selectedItem: { selected: number }) => void
 }
 

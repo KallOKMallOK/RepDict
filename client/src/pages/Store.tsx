@@ -110,7 +110,7 @@ class Store extends React.Component<PropsFromRedux, StateStore>{
 
 					<Pagination 
 						countPages={this.state.countPages}
-						changeCountPages={a => console.log(a)}
+						changeCountPages={() => console.log()}
 						changeCurrentPage={choosen => this.handleChangeCurrentPage(choosen)}
 					/>
 				</section>

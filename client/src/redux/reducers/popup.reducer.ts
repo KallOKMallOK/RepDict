@@ -7,6 +7,7 @@ const initialState = {
 	content: "",
 
 	// Actions
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	close: () => {}
 }
 

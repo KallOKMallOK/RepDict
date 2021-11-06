@@ -12,6 +12,7 @@ interface RatingItem{
 	walkthroughs: number
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IRatingProps{
 }
 

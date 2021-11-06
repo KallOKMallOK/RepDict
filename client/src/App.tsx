@@ -21,6 +21,7 @@ import 'react-notifications/lib/notifications.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { POPUP_TYPES } from './redux/types'
 import Footer from './components/Footer';
+import { Dispatch } from 'redux';
 
 // -----------------------------------------------------------------------------
 // ---------------------- Connect to redux emmiter -----------------------------
@@ -32,7 +33,7 @@ const mapStateToProps = (state: any) => ({
 	popupProps: state.popup
 })
 
-const mapDispatchToProps = (f: Function) => ({
+const mapDispatchToProps = (f: Dispatch) => ({
 	login: (user: any) => f(Action.app.login(user)),
 	logout: () => f(Action.app.logout()),
 	confirm: (head: string, content: string, close: () => void, success: (s: boolean) => void) => 
@@ -105,6 +106,7 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 					if(!res.data.error){
 						this.setState({ auth: true })
 						this.props.login(res.data.data)
+						console.log(res.data.data);
 					}
 					else this.props.logout()
 					

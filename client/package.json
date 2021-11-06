@@ -38,7 +38,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "postinstall": "node ./node_modules/node-sass/scripts/install.js"
+    "postinstall": "node ./node_modules/node-sass/scripts/install.js",
+    "lint": "eslint src --ext .ts,.tsx"
   },
   "eslintConfig": {
     "extends": [
@@ -66,6 +67,14 @@
     "@types/react-modal": "^3.12.1",
     "@types/react-paginate": "^7.1.1",
     "@types/react-router-dom": "^5.1.8",
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "@typescript-eslint/parser": "^5.3.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "redux-devtools-extension": "^2.13.9",

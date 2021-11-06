@@ -3,6 +3,7 @@ import ReactDOM from "react-dom"
 import { FaTimes } from "react-icons/fa"
 import ModalReact from "react-modal"
 import { connect, ConnectedProps } from "react-redux"
+import { Dispatch } from "redux"
 import Actions from "../../redux/actions"
 import store from "../../redux/store"
 import { POPUP_TYPES } from "../../redux/types"
@@ -18,7 +19,7 @@ interface StatePopup{
 // 	popupProps: state.popup
 // })
 
-const mapDispatchToProps = (f: Function) => ({
+const mapDispatchToProps = (f: Dispatch) => ({
 	hide: () => f(Actions.popup.hide())
 })
 
@@ -29,8 +30,8 @@ type PropsFromRedux = ConnectedProps<typeof connector>
 interface PropsPopup extends PropsFromRedux{
 	visible: boolean
 	type: POPUP_TYPES
-	head: string | Function
-	content: string | Function
+	head: string
+	content: string
 
 	// actions
 	close: () => void

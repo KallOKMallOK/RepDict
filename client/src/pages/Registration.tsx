@@ -1,6 +1,7 @@
 import React, { createRef, MouseEvent } from "react"
 import { connect, ConnectedProps } from "react-redux"
 import { RouteComponentProps } from "react-router-dom"
+import { Dispatch } from "redux"
 
 import API from "../api"
 import { Notification } from "../components/Notification"
@@ -12,7 +13,7 @@ const mapStateToProps = (state: any) => ({
 	auth: state.app.auth
 })
 
-const mapDispatchToProps = (f: Function) => ({
+const mapDispatchToProps = (f: Dispatch) => ({
 	login: (user: any) => f(Action.app.login(user))
 })
 

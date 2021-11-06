@@ -1,6 +1,6 @@
 import React, { createRef, MouseEvent } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Link, RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 
 import Action from "../redux/actions"
 import API from "../api"
@@ -8,12 +8,13 @@ import { Notification } from '../components/Notification';
 
 // Styles
 import "../styles/forms.scss"
+import { Dispatch } from 'redux';
 
 const mapStateToProps = (state: any) => ({
 	auth: state.app.auth
 })
 
-const mapDispatchToProps = (f: Function) => ({
+const mapDispatchToProps = (f: Dispatch) => ({
 	login: (user: any) => f(Action.app.login(user))
 })
 
@@ -56,7 +57,7 @@ class Login extends React.Component<PropsFromRedux, StateLogin>{
 				else
 					Notification.error("Ошибка", "Неверный логин или пароль", 4000)
 				})
-			.catch(err => Notification.error("Error", "Error on server"))
+			.catch((err: {name: string}) => Notification.error("Error", "Error on server"))
 	}
 
 	validateForm(e: any){
