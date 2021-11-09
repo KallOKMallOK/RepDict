@@ -1,4 +1,4 @@
-import React, { createRef, MouseEvent } from 'react';
+import React, { createRef, MouseEvent, SyntheticEvent } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom'
 
@@ -9,13 +9,15 @@ import { Notification } from '../components/Notification';
 // Styles
 import "../styles/forms.scss"
 import { Dispatch } from 'redux';
+import { RootState } from '../redux/store';
+import { User } from '../domains/entities/user.entity';
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: RootState) => ({
 	auth: state.app.auth
 })
 
 const mapDispatchToProps = (f: Dispatch) => ({
-	login: (user: any) => f(Action.app.login(user))
+	login: (user: User) => f(Action.app.login(user))
 })
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
@@ -26,6 +28,11 @@ type PropsFromRedux = ConnectedProps<typeof connector> & RouteComponentProps
 interface StateLogin{
 	loginValidate: boolean | null,
 	passwordValidate: boolean | null
+}
+
+interface FocusEvent<T = Element> extends SyntheticEvent<T> {
+	relatedTarget: EventTarget | null;
+	target: EventTarget & T;
 }
 
 class Login extends React.Component<PropsFromRedux, StateLogin>{
@@ -44,7 +51,7 @@ class Login extends React.Component<PropsFromRedux, StateLogin>{
 
 	clickLogin(e: MouseEvent){
 		e.preventDefault()
-		API.login({
+		this.state.loginValidate !== false && this.state.passwordValidate !== false ? API.login({
 			login: this.login.current?.value,
 			password: this.password.current?.value
 		})
@@ -57,10 +64,12 @@ class Login extends React.Component<PropsFromRedux, StateLogin>{
 				else
 					Notification.error("Ошибка", "Неверный логин или пароль", 4000)
 				})
-			.catch((err: {name: string}) => Notification.error("Error", "Error on server"))
+			.catch(() => Notification.error("Error", "Error on server")):
+
+			Notification.error("Error", "Login or password too long")
 	}
 
-	validateForm(e: any){
+	validateForm(e: FocusEvent<HTMLInputElement>){
 		console.log(e)
 		switch(e.target.name){
 			case "login":

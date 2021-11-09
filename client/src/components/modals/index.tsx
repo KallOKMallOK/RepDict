@@ -1,7 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import { FaTimes } from "react-icons/fa"
-import ModalReact from "react-modal"
 import { connect, ConnectedProps } from "react-redux"
 import { Dispatch } from "redux"
 import Actions from "../../redux/actions"
@@ -55,7 +54,7 @@ class ModalContainer extends React.PureComponent<PropsPopup, StatePopup>{
 	}
 
 	success(successed: boolean){
-		this.props.success!(successed)
+		this.props.success?.(successed)
 		this.props.hide()
 		this.props.close()
 	}
@@ -92,7 +91,7 @@ class ModalContainer extends React.PureComponent<PropsPopup, StatePopup>{
 
 				</div>
 				,
-				document.getElementById("root-modals")!
+				document.getElementById("root-modals") || document.body
 			)
 		)
 	}

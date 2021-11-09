@@ -1,20 +1,28 @@
-import React, { createRef, MouseEvent } from "react"
+import React, { createRef, MouseEvent, SyntheticEvent } from "react"
 import { connect, ConnectedProps } from "react-redux"
 import { RouteComponentProps } from "react-router-dom"
 import { Dispatch } from "redux"
 
 import API from "../api"
 import { Notification } from "../components/Notification"
+import { User } from "../domains/entities/user.entity"
 import Action from "../redux/actions"
+import { RootState } from "../redux/store"
 
 import "../styles/forms.scss"
 
-const mapStateToProps = (state: any) => ({
+interface FocusEvent<T = Element> extends SyntheticEvent<T> {
+	relatedTarget: EventTarget | null;
+	target: EventTarget & T;
+}
+
+
+const mapStateToProps = (state: RootState) => ({
 	auth: state.app.auth
 })
 
 const mapDispatchToProps = (f: Dispatch) => ({
-	login: (user: any) => f(Action.app.login(user))
+	login: (user: User) => f(Action.app.login(user))
 })
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
@@ -73,7 +81,7 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 		
 	}
 
-	onValidate(e: MouseEvent<HTMLInputElement>){
+	onValidate(e: FocusEvent<HTMLInputElement>){
 		console.log(e);
 		switch(e.currentTarget.name){
 			case "name":
@@ -99,7 +107,7 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 									"is-invalid"): 
 								""}
 							`}
-							onBlur={e => this.onValidate(e as any)}
+							onBlur={e => this.onValidate(e)}
 							type="text" 
 							ref={this.name} 
 							id="floatingInput"
@@ -116,7 +124,7 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 										"is-invalid"): 
 									""}
 								`}
-							onBlur={e => this.onValidate(e as any)}
+							onBlur={e => this.onValidate(e)}
 							type="text" 
 							ref={this.login} 
 							id="floatingInput" 
@@ -134,7 +142,7 @@ class Registration extends React.Component<PropsFromRedux, RegistrationState>{
 										"is-invalid"): 
 									""}
 								`}
-							onBlur={e => this.onValidate(e as any)}
+							onBlur={e => this.onValidate(e)}
 							type="password" 
 							ref={this.password} 
 							id="floatingInput" 

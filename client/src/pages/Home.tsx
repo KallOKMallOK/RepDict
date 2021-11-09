@@ -10,6 +10,7 @@ interface HomeProps{
 	sayHello?: string 
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Home: React.FC<HomeProps> = (props: HomeProps) => {
 	return (
 		<div className="home">

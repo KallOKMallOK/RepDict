@@ -1,4 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit'
+import { User } from '../../domains/entities/user.entity'
 import { APP } from "../types"
 
 interface State{
@@ -20,7 +21,7 @@ const initialState: State = {
    }
 }
 
-export const app = (state: State = initialState, action: PayloadAction<any>) => {
+export const app = (state: State = initialState, action: PayloadAction<User & number>) => {
    switch(action.type){
       case APP.LOGIN:
          localStorage.setItem("token", action.payload.token)

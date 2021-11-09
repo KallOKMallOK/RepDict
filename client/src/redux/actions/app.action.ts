@@ -1,6 +1,6 @@
 import { APP } from "../types"
 
-enum ERefer {NOT, GOOGLE, VK, FACEBOOK}
+// enum ERefer {NOT, GOOGLE, VK, FACEBOOK}
 
 export interface IPerson{
 	login: string,

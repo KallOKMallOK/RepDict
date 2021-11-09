@@ -1,4 +1,4 @@
-import { POPUP, POPUP_TYPES } from "../types"
+import { POPUP } from "../types"
 
 const initialState = {
 	visible: false,
@@ -11,7 +11,10 @@ const initialState = {
 	close: () => {}
 }
 
-export const popup = (state = initialState, action: any) => {
+export const popup = (
+	state = initialState, 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	action: any) => {
 	switch(action.type){
 		case POPUP.SHOW:
 			return{

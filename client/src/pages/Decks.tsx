@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import API from "../api"
@@ -63,7 +63,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		})
 	}
 
-	saveDeck(e: React.FormEvent<any>, id: number, changes: ActionChange[]){
+	saveDeck(_e: React.FormEvent<HTMLElement>, id: number, changes: ActionChange[]){
 		API.applyChanges(id, changes)
 			.then(response => {
 				console.log(response)
@@ -72,7 +72,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			.catch(err => console.log(err))
 	}
 
-	editDeck(e: React.FormEvent<HTMLElement>, index: number){
+	editDeck(_e: React.FormEvent<HTMLElement>, index: number){
 		console.log("edit", index);
 		this.setState({
 			isEdit: true,
@@ -80,7 +80,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		})
 	}
 
-	deleteDeck(e: React.FormEvent<HTMLElement>, id: number){
+	deleteDeck(_e: React.FormEvent<HTMLElement>, id: number){
 		Modal.confirm(
 			"Вы действительно хотите удалить дек?", 
 			"Если вы удалите дек, все карточки тоже удалятся, вы уверены, что хотите это сделать?",
@@ -103,14 +103,14 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		// Notification.success("Hello!", "Content", 3000)
 	}
 
-	like(e: unknown, id: number){
+	like(_e: unknown, id: number){
 		API.setLike(id)
 			.then(res => console.log(res))
 			.catch(err => console.log(err))
 		console.log("like", id);
 	}
 
-	changePrivate(e: unknown, id: number, valuePrivate: boolean){
+	changePrivate(_e: unknown, id: number, valuePrivate: boolean){
 		API.applyChanges(id, [
 			{
 				type: "CHANGE_DECK",
@@ -124,7 +124,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			.catch(err => console.log(err))
 	}
 
-	createNewDeck(e: unknown, data: any){
+	createNewDeck(_e: unknown, data: any){
 		API.addDeck(data)
 			.then(response => {
 				console.log(response)
@@ -133,15 +133,15 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			.catch(err => console.log(err))
 	}
 
-	handleUnsibscribe(e: any, id: number){
+	handleUnsibscribe(_e: React.FormEvent<HTMLElement>, id: number){
 		this.setState({ decksSubscriptions: this.state.decksSubscriptions.filter(deck => deck.id !== id) })
 	}
 
-	handleCloseActiveAddingDeck(e: React.FormEvent<any>){
+	handleCloseActiveAddingDeck(){
 		this.setState({ isNewDeck: false })
 	}
 
-	handleCloseActiveEditingDeck(e: React.FormEvent<any>){
+	handleCloseActiveEditingDeck(){
 		this.setState({ isEdit: false })
 	}
 
@@ -159,7 +159,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 					})
 					hideLoader()
 				})
-				.catch(err => Notification.error("Error", "Failed to load data", 3000))
+				.catch(() => Notification.error("Error", "Failed to load data", 3000))
 		}
 	}
 
@@ -175,19 +175,19 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 							this.state.isEdit && <DeckActive
 
 								index={-1}
-								id={this.state.deckEdit!.id}
-								name={this.state.deckEdit!.name} 
-								countWords={this.state.deckEdit!.countWords} 
-								countRepetitions={this.state.deckEdit!.countRepetitions} 
-								isPrivate={this.state.deckEdit!.isPrivate} 
-								mainLang={this.state.deckEdit!.mainLang} 
-								secondLang={this.state.deckEdit!.secondLang} 
-								cards={this.state.deckEdit!.cards}
-								author={this.state.deckEdit!.author}
-								owner={this.state.deckEdit!.owner}
-								description={this.state.deckEdit!.description}
-								countLikes={this.state.deckEdit!.countLikes || 0}
-								activeLike={this.state.deckEdit!.activeLike || false}
+								id={this.state.deckEdit?.id || -1}
+								name={this.state.deckEdit?.name || "NONAME"} 
+								countWords={this.state.deckEdit?.countWords || 0} 
+								countRepetitions={this.state.deckEdit?.countRepetitions || 0} 
+								isPrivate={this.state.deckEdit?.isPrivate} 
+								mainLang={this.state.deckEdit?.mainLang || "NL"} 
+								secondLang={this.state.deckEdit?.secondLang || "NL"} 
+								cards={this.state.deckEdit?.cards || []}
+								author={this.state.deckEdit?.author}
+								owner={this.state.deckEdit?.owner}
+								description={this.state.deckEdit?.description || "no description"}
+								countLikes={this.state.deckEdit?.countLikes || 0}
+								activeLike={this.state.deckEdit?.activeLike || false}
 
 								enableMethods={{
 									enableSave: true,

@@ -2,12 +2,12 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import API from '../api';
-import { Notification } from '../components/Notification';
 import { showLoader, hideLoader } from "../components"
 import { Deck, IDeckDefault } from '../components/Deck';
 import Pagination from "../components/Pagination"
 
 import "../styles/pages/Decks.scss"
+import { RootState } from '../redux/store';
 
 interface StateStore{
 	decks: IDeckDefault[]
@@ -15,7 +15,7 @@ interface StateStore{
 	countPages: number
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: RootState) => ({
 	auth: state.app.auth,
 	notify: state.notification,
 	user: state.app.user
@@ -37,13 +37,13 @@ class Store extends React.Component<PropsFromRedux, StateStore>{
 	}
 
 	// Methods
-	handleLike(e: any, id: number){
+	handleLike(e: unknown, id: number){
 		console.log("like", id);
 		API.setLike(id)
 			.then(response => console.log(response))
 			.catch(err => console.log(err))
 	}
-	handleClone(e: any, id: number){
+	handleClone(e: unknown, id: number){
 		API.cloneDeck(id)
 			.then(res => console.log(res))
 			.catch(err => console.log(err))

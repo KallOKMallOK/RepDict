@@ -109,7 +109,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				this.getTimeDeck("start")
 				API.getScoresAfterEndPlay({
 					results: this.state.successed
-				}, this.state.deck!.id)
+				}, this.state.deck?.id || -1)
 					.then(res => {
 						// console.log(res);
 						this.setState({ scores: res.data.score || 0 })
@@ -133,7 +133,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 		return 0
 	}
 
-	checkCard(card: ICard, value: string, lang?: string): boolean{
+	checkCard(card: ICard, value: string): boolean{
 		const answers = card.answer
 			.split("|")
 			.map(ans => ans.trim().toLowerCase())
@@ -187,7 +187,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	}
 
 	componentDidMount(){
-		const params: any = this.props.match.params
+		const params: {id: number} = this.props.match.params as {id: number}
 		const id = Number(params.id)
 		if(id){
 			API.getDeck(id)
@@ -234,7 +234,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 							placeholder={`translate on ${this.state.deck?.secondLang.toUpperCase()}...`} 
 							autoFocus
 						/>
-						<div onClick={e => this.handleNextCard()} className="answer_button_next_word"><FaArrowRight /></div>
+						<div onClick={() => this.handleNextCard()} className="answer_button_next_word"><FaArrowRight /></div>
 					</section>
 				</div>	
 				
@@ -249,7 +249,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 						<div className="control_buttons">
 							<button 
 								className="btn btn-primary" 
-								onClick={e => this.setState({ 
+								onClick={() => this.setState({ 
 									ended: false, 
 									currentCard: 0, 
 									cards: this.shuffleCards(this.state.cards),
@@ -258,7 +258,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 							>Once again</button>
 							<button 
 								className="btn btn-success" 
-								onClick={e => this.setState({ showResults: true })}
+								onClick={() => this.setState({ showResults: true })}
 							>results</button>
 							<Link to="/decks" className="btn btn-danger">To Decks</Link>
 						</div>
@@ -275,7 +275,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 							})
 						}
 					</ul>
-					<button className="btn btn-primary" onClick={e => this.setState({ showResults: false })}>back</button>
+					<button className="btn btn-primary" onClick={() => this.setState({ showResults: false })}>back</button>
 				</div>
 			</div>
 		)

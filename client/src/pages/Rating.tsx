@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api';
 import { hideLoader, showLoader } from '../components';
+import { User } from '../domains/entities/user.entity';
 
 import "../styles/pages/Rating.scss"
 interface RatingItem{
@@ -35,7 +36,7 @@ class Rating extends React.Component<IRatingProps, RatingState>{
 		API.getRating()
 			.then(data => {
 				this.setState({ 
-					rating: data.data.users.map((item: any) => 
+					rating: data.data.users.map((item: Record<string, string | number | boolean> & User) => 
 						Object.keys(item).reduce((prev, curr) => 
 							enableProps.includes(curr) ? {...prev, [curr]: item[curr]} : {...prev}, {}
 						)
