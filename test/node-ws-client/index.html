@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Test calc on WS</title>
+</head>
+<body>
+	<input type="number" id="op_1">
+	<span>+</span>
+	<input type="number" id="op_2">
+	<button id="button_calc">calc!</button>
+	<span>result: <span id="result"></span></span>
+
+	<script>
+		// Создаёт WebSocket - подключение.
+		const socket = new WebSocket('ws://localhost:8080');
+
+		// Соединение открыто
+		socket.addEventListener('open', function (event) {
+			console.log("Socket is connected!!")
+		});
+
+		// Инициализируем html-компоненты
+		const op_1 = document.getElementById("op_1")
+		const op_2 = document.getElementById("op_2")
+		const button_calc = document.getElementById("button_calc")
+		const result = document.getElementById("result")
+		
+		// Клик на кнопку
+		button_calc.addEventListener("click", (e) => {
+			// Отправка на сервер
+			socket.send(JSON.stringify({
+				op1: +op_1.value,
+				op2: +op_2.value,
+				operation: "+"
+			}))
+		})
+		// слушаем все-все данные от сервера
+		socket.addEventListener("message", (data) => {
+			data.data.text()
+				.then(text => {
+					const req = JSON.parse(text)
+					result.innerHTML = req.result || 0
+				})
+		})
+	</script>
+</body>
+</html>
