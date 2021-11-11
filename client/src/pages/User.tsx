@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { useParams } from "react-router-dom";
-import { FaStar } from "react-icons/fa"
+import { Link, useParams } from "react-router-dom";
+import { FaStar, FaListOl } from "react-icons/fa"
 import ScrollContainer from 'react-indiana-drag-scroll'
 import API from "../api";
 import { Deck } from "../components/Deck";
@@ -37,22 +37,33 @@ const UserPage: React.FC = () => {
 	return (
 		<div className="UserPage">
 			<div className="top_panel">
-				<div className="avatar">
-					<img src="https://avatars.githubusercontent.com/u/73424545?v=4" alt="avatar"/>
+
+
+				<div className="top_panel_left">
+					<div className="avatar">
+						<img src="https://avatars.githubusercontent.com/u/73424545?v=4" alt="avatar"/>
+					</div>
+					<div className="info">
+						<h2 className="info_name">{user.name || "USERNAME"}</h2>
+						<span className="info_login">@{user.login || "NOLOGIN"}</span>
+					</div>
 				</div>
-				<div className="info">
-					<h2 className="info_name">{user.name || "USERNAME"}</h2>
-					<span className="info_login">@{user.login || "NOLOGIN"}</span>
+
+				<div className="top_panel_right">
 					<div className="info_rating">
 						<span className="info_rating_icon"><FaStar/></span>
 						<span className="info_rating_count">{user.rating || 10000}</span>
 					</div>
+					<div className="info_position">
+						<span className="info_position_cnt"><Link to="/rating" className="position_mark">#{1}</Link> in Rating!</span>
+					</div>
+
 				</div>
 			</div>
 
 			<section className="owners_deck">
-				<h2 className="head_section_owners_deck">User&apos;s decks</h2>
-				<ScrollContainer className="cards">
+				<h2 className="head_section_owners_deck">Last Decks</h2>
+				<ScrollContainer hideScrollbars={false} className="cards">
 				{
 					user.decks?.length !== 0 && user.decks?.map((deck, index: number) => {
 						return <Deck

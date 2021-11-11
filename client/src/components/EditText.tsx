@@ -5,13 +5,14 @@ import useOutsideClick from "../hoc/OutsideClicker"
 interface EditTextProps{
 	text: string
 	typeInput: "text" | "number"
+	focus?: boolean
 
 	onChanged: (oldValue: string | number, newValue: string | number) => void
 }
 
 export const EditText: React.FC<EditTextProps> = props => {
 	const [text, changeText] = useState(props.text)
-	const [editing, changeEditing] = useState(false)
+	const [editing, changeEditing] = useState(props.focus || false)
 	const editTextRef = useRef<HTMLInputElement>(null)
 	const editTextInputRef = useRef<HTMLInputElement>(null)
 
@@ -23,7 +24,7 @@ export const EditText: React.FC<EditTextProps> = props => {
 			changeEditing(true)
 		else{
 			changeEditing(false)
-			props.onChanged(props.text, newValue || "")
+			props.text !== newValue && props.onChanged(props.text, newValue || "")
 		}
 	}
 
