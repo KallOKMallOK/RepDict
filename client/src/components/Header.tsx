@@ -100,7 +100,7 @@ const Header: React.FC<AppProps> = props => {
 							<div className="user_panel_head"><FaUser />{props.user.name} <span className="user__balance">{props.user.balance}</span></div>
 							<ul className={`dropdown ${dropdownVisible? "showedDB__fadeIn": "closed"}`} ref={dropdownRef}>
 								<li className="dropdown_item">
-									<Link to={`/users/${props.user.login}`} onClick={() => openMenuUser(false)}>Profile</Link>
+									<Link to={`/user/${props.user.login}`} onClick={() => openMenuUser(false)}>Profile</Link>
 								</li>
 								<li className="dropdown_item">
 									<Link to="/settings" onClick={() => openMenuUser(false)}>Setting</Link>

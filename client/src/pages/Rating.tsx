@@ -57,7 +57,7 @@ class Rating extends React.Component<IRatingProps, RatingState>{
 						this.state.rating.map((item, index) => {
 							return <li className="main_list_item" key={index}>
 								
-								<span className="login"><span className="index">{index + 1}</span> <Link to={`/users/${item.login}`}>{item.login}</Link></span>
+								<span className="login"><span className="index">{index + 1}</span> <Link to={`/user/${item.login}`}>{item.login}</Link></span>
 								<span className="rating">{item.rating}</span>
 							</li>
 						})

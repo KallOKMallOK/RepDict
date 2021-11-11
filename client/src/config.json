@@ -7,6 +7,7 @@
 		"REGISTRATION": "/registration",
 		"LOGIN": "/login",
 		"AUTH": "/auth",
+		"GET_USER": "/user",
 
 		"GET_DECKS": "/get_decks",
 		"GET_DECK": "/get_deck",

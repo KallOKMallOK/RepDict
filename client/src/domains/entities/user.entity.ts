@@ -1,3 +1,5 @@
+import { IDeck } from "./deсk.entity";
+
 export interface User{
 	average_rating: number
 	balance: number
@@ -10,4 +12,6 @@ export interface User{
 	refer: null
 	token: string
 	walkthroughs: number
+	type_user?: "USER" | "ADMIN"
+	decks?: IDeck[]
 }

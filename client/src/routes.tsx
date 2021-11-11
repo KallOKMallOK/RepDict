@@ -119,7 +119,7 @@ export const routes: IRoute[] = [
 		isExact: true,
 		path: '/user/:login',
 		name: 'User',
-		component: Pages.Home
+		component: Pages.User
 	},
 
 	
