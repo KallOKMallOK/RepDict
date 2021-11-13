@@ -1,14 +1,15 @@
 import { PayloadAction } from '@reduxjs/toolkit'
-import { User } from '../../domains/entities/user.entity'
-import { APP } from "../types"
+import i18n from '../../i18n';
+import { APP, ELangsInterface } from "../types"
 
 interface State{
-   auth: boolean,
+   auth: boolean
    user: {
       name: string,
       login: string,
       balance: number
    }
+   lang: ELangsInterface
 }
 
 
@@ -18,10 +19,11 @@ const initialState: State = {
       name: "",
       login: "",
       balance: 0
-   }
+   },
+   lang: localStorage.getItem("i18nextLng") as ELangsInterface || ELangsInterface.EN
 }
 
-export const app = (state: State = initialState, action: PayloadAction<User & number>) => {
+export const app = (state: State = initialState, action: PayloadAction<any>) => {
    switch(action.type){
       case APP.LOGIN:
          localStorage.setItem("token", action.payload.token)
@@ -52,6 +54,13 @@ export const app = (state: State = initialState, action: PayloadAction<User & nu
                ...state.user,
                balance: state.user.balance + action.payload
             }
+         }
+      case APP.CHANGE_LANG:
+         i18n.changeLanguage(action.payload)
+         localStorage.setItem("i18nextLng", action.payload)
+         return {
+            ...state,
+            lang: action.payload
          }
       default:
          return state

@@ -1,0 +1,22 @@
+{
+	"Pages": {
+		"Main": {
+			"welcome": "Learn, Repeate and Develop",
+			"description": "Welcome to the service for memorizing words in foreign languages using flashcards"
+		}
+	},
+	"Components": {
+		"Header": {
+			"Home": "Home",
+			"Decks": "Decks",
+			"Store": "Store",
+			"Rating": "Rating",
+			"Statistics": "Statistics",
+			"Registration": "Registration",
+			"Login": "Login",
+			"Profile": "Profile",
+			"Settings": "Settings",
+			"Logout": "Logout"
+		}
+	}
+}

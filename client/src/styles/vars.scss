@@ -54,11 +54,20 @@ $columns: 10;
 @mixin mr($m) {
 	margin-right: 5px * $m;
 }
+@mixin pl($m) {
+	margin-left: 5px * $m;
+}
 
 @mixin mr-x {
   @for $i from 1 through $columns {
       .mr-#{$i} { @include mr($i); }
   }
 }
+@mixin pl-x {
+  @for $i from 1 through $columns {
+      .pl-#{$i} { @include pl($i); }
+  }
+}
 
 @include mr-x;
+@include pl-x;

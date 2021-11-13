@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom";
-import { FaStar, FaListOl } from "react-icons/fa"
+import { FaStar } from "react-icons/fa"
 import ScrollContainer from 'react-indiana-drag-scroll'
 import API from "../api";
 import { Deck } from "../components/Deck";
@@ -62,7 +62,7 @@ const UserPage: React.FC = () => {
 			</div>
 
 			<section className="owners_deck">
-				<h2 className="head_section_owners_deck">Last Decks</h2>
+				<h2 className="head_section_owners_deck">Last Owned Decks</h2>
 				<ScrollContainer hideScrollbars={false} className="cards">
 				{
 					user.decks?.length !== 0 && user.decks?.map((deck, index: number) => {

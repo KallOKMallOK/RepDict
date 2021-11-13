@@ -1,6 +1,9 @@
-import { APP } from "../types"
+import { APP, ELangsInterface } from "../types"
 
 // enum ERefer {NOT, GOOGLE, VK, FACEBOOK}
+enum ELangs {
+	"en", "ru"
+}
 
 export interface IPerson{
 	login: string,
@@ -26,3 +29,8 @@ export const addScores = (scores: number) => {
 		payload: scores
 	}
 }
+
+export const changeLang = (lang: ELangsInterface) => ({
+	type: APP.CHANGE_LANG,
+	payload: lang
+})

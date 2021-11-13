@@ -12,6 +12,12 @@ import Components, { showLoader, hideLoader } from "./components"
 import Authorization from './hoc/Authorization'
 import ModalContainer from "./components/modals"
 
+// Translation
+import './i18n';
+
+
+
+
 
 // App styles
 import "./styles/reset.scss"
@@ -53,8 +59,8 @@ interface StateApp{
 // ------------------------- Switcher for Router -------------------------------
 // -----------------------------------------------------------------------------
 
-class Switcher extends React.PureComponent<StateApp>{
-	constructor(props: any){
+class Switcher extends React.PureComponent<StateApp, PropsFromRedux>{
+	constructor(props: PropsFromRedux){
 		super(props)
 	}
 	render(){
@@ -80,7 +86,6 @@ class Switcher extends React.PureComponent<StateApp>{
 // -----------------------------------------------------------------------------
 // -------------------- App class including interfaces -------------------------
 // -----------------------------------------------------------------------------
-
 
 class App extends React.Component<PropsFromRedux, StateApp>{
 	public state: StateApp = {

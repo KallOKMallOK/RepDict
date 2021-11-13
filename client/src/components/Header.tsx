@@ -1,6 +1,7 @@
 import React, {  useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { connect, ConnectedProps } from 'react-redux'
+import Select, { components } from 'react-select'
 import { FaUser, FaBars } from "react-icons/fa"
 
 // Controllers data
@@ -13,6 +14,8 @@ import "../styles/components.scss"
 import { Dispatch } from 'redux'
 import { RootState } from '../redux/store'
 import { User } from '../domains/entities/user.entity'
+import { ELangsInterface, LangsInterface } from '../redux/types'
+import { useTranslation, withTranslation } from 'react-i18next'
 
 // -----------------------------------------------------------------------------
 // ---------------------- Connect to redux emmiter -----------------------------
@@ -20,12 +23,14 @@ import { User } from '../domains/entities/user.entity'
 
 const mapStateToProps = (state: RootState) => ({
 	auth: state.app.auth,
-	user: state.app.user
+	user: state.app.user,
+	lang: state.app.lang
 })
 
 const mapDispatchToProps = (f: Dispatch) => ({
 	login: (user: User) => f(Action.app.login(user)),
-	logout: () => f(Action.app.logout())
+	logout: () => f(Action.app.logout()),
+	changeLangInterface: (lang: ELangsInterface) => f(Action.app.changeLang(lang))
 })
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
@@ -49,6 +54,8 @@ const Header: React.FC<AppProps> = props => {
 
 	const dropdownRef = useRef<HTMLUListElement>(null)
 	const match = useLocation().pathname
+
+	const { t } = useTranslation()
 
 	useOutsideClick(dropdownRef, () => {
 		if(dropdownVisible) openDropdownUser(false)
@@ -88,25 +95,62 @@ const Header: React.FC<AppProps> = props => {
 										className="menu_list_item_link" 
 										to={`${route.path}`} onClick={() => openMenuUser(false)}>
 										{!!route.icon && <route.icon/>}
-										{route.name}
-										
+										{t(`Components.Header.${route.name}`)}
+										{/* {route.name} */}
 									</Link>
 								</li>
 						})
 					}
+					{/* <div className="theme_interface_toggler">
+						Dark/Light
+					</div>*/}
+					<div className="language_interaface_toggler">
+
+						<Select
+							options={LangsInterface.map(__lang => {return { value: __lang.alias, label: __lang.displayName }})}
+							onChange={e => props.changeLangInterface(e?.value as ELangsInterface)}
+							value={{ value: props.lang, label: (LangsInterface.filter(l => l.alias === props.lang))[0].displayName}}
+							isSearchable={false}
+							components={{
+								Control: ({ children, ...rest }) => (
+									<components.Control {...rest}>
+										<div className="img_wrapper pl-2">
+											<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/OOjs_UI_icon_language-ltr.svg/1024px-OOjs_UI_icon_language-ltr.svg.png" width={20} alt="lang"/>
+										</div>{children}
+									</components.Control>
+								)}}
+						/>
+						{/* <select 
+							className="select_lang form-select" 
+							aria-label="Default select example"
+							onChange={e => props.changeLangInterface(e.currentTarget.value as ELangsInterface)}
+							>
+							{
+								LangsInterface.map(langItem => {
+									return <option 
+										selected={langItem.alias === props.lang}
+										key={langItem.internationalName} 
+										value={langItem.alias}
+										>
+											{langItem.displayName}
+										</option>
+								})
+							}
+						</select> */}
+					</div> 
 					{
 						// User panel
 						props.auth && <li style={{ color: "white" }} className="user_panel" onClick={() => openDropdownUser(!dropdownVisible)}>
 							<div className="user_panel_head"><FaUser />{props.user.name} <span className="user__balance">{props.user.balance}</span></div>
 							<ul className={`dropdown ${dropdownVisible? "showedDB__fadeIn": "closed"}`} ref={dropdownRef}>
 								<li className="dropdown_item">
-									<Link to={`/user/${props.user.login}`} onClick={() => openMenuUser(false)}>Profile</Link>
+									<Link to={`/user/${props.user.login}`} onClick={() => openMenuUser(false)}>{t(`Components.Header.Profile`)}</Link>
 								</li>
 								<li className="dropdown_item">
-									<Link to="/settings" onClick={() => openMenuUser(false)}>Setting</Link>
+									<Link to="/settings" onClick={() => openMenuUser(false)}>{t(`Components.Header.Settings`)}</Link>
 								</li>
 								<li className="dropdown_item">
-									<Link to="/" onClick={() => logout()}>Logout</Link>
+									<Link to="/" onClick={() => logout()}>{t(`Components.Header.Logout`)}</Link>
 								</li>
 							</ul>
 						</li>
@@ -118,4 +162,5 @@ const Header: React.FC<AppProps> = props => {
 	);
 }
 
-export default connector(Header)
+export default connector(withTranslation()(Header))
+
