@@ -1,4 +1,4 @@
-import React, { MouseEvent, useCallback, useRef, useState } from 'react'
+import React, { MouseEvent, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { 
 	FaPlus,
@@ -9,10 +9,10 @@ import {
 	FaTimes,
 	FaLongArrowAltRight,
 	FaArrowsAltH,
-	FaCaretRight,
 	FaCaretUp
 } from "react-icons/fa"
 import { Link, useHistory } from 'react-router-dom'
+import Linkify from 'react-linkify'
 import API from '../api'
 import { ActionChange } from '../domains/entities/actions.entity'
 import { ICard } from '../domains/entities/card.entity'
@@ -27,7 +27,7 @@ import { Notification } from './Notification'
 // -------------------------------- Deck ---------------------------------------
 // -----------------------------------------------------------------------------
 
-type actionClick = (e: React.FormEvent<any>, ...more: any[]) => void
+type actionClick = (e: React.FormEvent<HTMLElement>, ...more: any[]) => void
 
 interface enableMethodsOptions{
 	enableDelete?: boolean
@@ -66,25 +66,29 @@ interface WatchContainerProps {
 	author: string
 	cards: ICard[]
 	visible: boolean
-	close: (e: React.FormEvent<HTMLDivElement>) => void
+	close: () => void
 }
 
 const WatchContainer: React.FC<WatchContainerProps> = props => {
 	const history = useHistory()
+	const thisRef = useRef<HTMLDivElement>(null)
+	useOutsideClick(thisRef, () => {
+		props.close()
+	})
 
 	if(props.visible) return(
 		<div className={`watch_container`}>
-			<div className="watcher">
+			<div className="watcher" ref={thisRef}>
 				<div className="name_card">{props.nameCard}</div>
 				<div className="author">by <Link to={`/user/${props.author}`}>{props.author}</Link></div>
-				<div className="close" onClick={e => props.close(e)}>
+				<div className="close" onClick={() => props.close()}>
 					<FaTimes />
 				</div>
 				<div className="card_item_panel_item_words">
 					<ul className="card_item_panel_item_words_ul">
 						{
 							props.cards.map((card: ICard, index: number) => {
-								return <li className="item">
+								return <li className="item" key={index}>
 									<span className="index">#{index + 1}. </span>
 									<span className="main_word">{card.main_word}</span>
 									-
@@ -95,7 +99,7 @@ const WatchContainer: React.FC<WatchContainerProps> = props => {
 					</ul>
 				</div>
 				<div className="btn_wrapper">
-					<button className="__btn btn_play" onClick={e => history.push(`/play/${props.id}`)}>play</button>
+					<button className="__btn btn_play" onClick={() => history.push(`/play/${props.id}`)}>play</button>
 				</div>
 			</div>
 
@@ -118,37 +122,37 @@ export const Deck: React.FC<IDeckDefault> = props => {
 	const [countLikes, changeCountLikes] = useState(props.countLikes || 0)
 	const [isPrivate, changePrivate] = useState(props.isPrivate || false)
 
-	const dropdownRef = useRef<any>(null)
+	const dropdownRef = useRef<HTMLUListElement>(null)
 
 	useOutsideClick(dropdownRef, () => {
 		if(dropdownVisible) openDropdown(false)
 	})
 
-	const likeUser = (e: any) => {
+	const likeUser = (e: MouseEvent<HTMLSpanElement>) => {
 		console.log(props.enableMethods)
 		if(props.enableMethods?.enableLike){
 			activeLike(!activedLike)
 			activedLike?
 				changeCountLikes(countLikes - 1):
 				changeCountLikes(countLikes + 1)
-			props.like!(e, props.id)
+			props.like?.(e, props.id)
 		}
 		else{
 			Notification.warning("Warning", "Please, sign in", 3000)
 		}
 	}
 
-	const handleChangePrivate = (e: any) => {
+	const handleChangePrivate = (e: MouseEvent<HTMLSpanElement>) => {
 		if(props.author === props.owner){
-			props.changePrivate!(e, props.id, !isPrivate)
+			props.changePrivate?.(e, props.id, !isPrivate)
 			changePrivate(!isPrivate)
 		}
 	}
-	const handleEdit = (e: any, index: number) => {
+	const handleEdit = (e: MouseEvent<HTMLLIElement>) => {
 		openDropdown(false)
-		props.edit!(e, props.index)
+		props.edit?.(e, props.index)
 	}
-	const handleChangeSubscribed = (e: any) => {
+	const handleChangeSubscribed = (e: MouseEvent<HTMLButtonElement>) => {
 		props.subscribe !== undefined && props.subscribe(e, props.id)
 		API.subscribe(props.id)
 			.then(resp => {
@@ -159,38 +163,38 @@ export const Deck: React.FC<IDeckDefault> = props => {
 		changeSubscribed(!subscribed)
 	}
 
-  	return (
+	return (
 	<div className="card_item card_item_noactive">
 		{
-			ReactDOM.createPortal(
+			watched && ReactDOM.createPortal(
 				<WatchContainer
 					id={props.id}
-					author={props.author!}
+					author={props.author || ""}
 					nameCard={props.name}
-					close={e => changeWatched(false)} 
+					close={() => changeWatched(false)} 
 					visible={watched} 
 					cards={props.cards}
 				/>,
-				document.getElementById("root-modals")!
+				document.getElementById("root-modals") || document.body
 			)
 		}
 		{/* control items */}
 			<div className="control">
-				<span className="icon" onClick={e => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
+				<span className="icon" onClick={() => openDropdown(!dropdownVisible)}><FaEllipsisV/></span>
 				<ul className={`dropdown ${dropdownVisible ? "active": "noactive"}`} ref={dropdownRef}>
-					<li className="dropdown_item" onClick={e => changeWatched(true)}>Watch</li>
-					<li className="dropdown_item" onClick={e => history.push(`/play/${props.id}`)}>Play</li>
+					<li className="dropdown_item" onClick={() => changeWatched(true)}>Watch</li>
+					<li className="dropdown_item" onClick={() => history.push(`/play/${props.id}`)}>Play</li>
 					{
 						props.enableMethods?.enableEdit && 
-							<li className="dropdown_item" onClick={e => handleEdit(e, props.index)}>Edit</li>
+							<li className="dropdown_item" onClick={e => handleEdit(e)}>Edit</li>
 					}
 					{
 						props.enableMethods?.enableDelete && 
-						<li className="dropdown_item" onClick={e => props.delete!(e, props.id)}>Delete</li>
+						<li className="dropdown_item" onClick={e => props.delete?.(e, props.id)}>Delete</li>
 					}
 					{
 						props.enableMethods?.enableClone && 
-							<li className="dropdown_item" onClick={e => props.clone!(e, props.id)}>Clone</li>
+							<li className="dropdown_item" onClick={e => props.clone?.(e, props.id)}>Clone</li>
 					}
 					
 					
@@ -229,12 +233,16 @@ export const Deck: React.FC<IDeckDefault> = props => {
 			</div>
 		</div>
 
-		<p className="card_item_description">{props.description}</p>
+		<p className="card_item_description"><Linkify>{props.description}</Linkify></p>
 
 		<div className="footer">
 			{
 				props.enableMethods?.enableSubscribe ?
-					<button className={`btn btn-${!subscribed? "primary": "danger"}`} onClick={e => handleChangeSubscribed(e)}>{subscribed? "Unsubscribe": "Subscribe"}</button>:
+					<button 
+						className={`btn btn-${!subscribed? "primary": "danger"}`} 
+						onClick={e => handleChangeSubscribed(e)}>
+							{subscribed? "Unsubscribe": "Subscribe"}
+					</button>:
 					<div></div>
 			}
 			<span className="likes" onClick={e => likeUser(e)}>
@@ -254,26 +262,85 @@ export const Deck: React.FC<IDeckDefault> = props => {
 interface EditedCardProps extends ICard{
 	visible: boolean
 	positionElement: {x: number, y: number}
-	close: (e: React.FormEvent<any> | null) => void
+
+	eventOnChangeMainWord?: (value: string) => void
+	eventOnChangeSecondWord?: (e: React.FormEvent<HTMLInputElement>) => void
+	eventOnChangeDescriptionCard?: (e: React.FormEvent<HTMLTextAreaElement>) => void
+
+	close: (e: React.FormEvent<HTMLElement> | null) => void
 	save: (changes: ActionChange[], idCard: number) => void
 }
 
+
 const EditedCard: React.FC<EditedCardProps> = props => {
-	const [changes, changeChanges] = useState([] as ActionChange[])
-	const [main_word, changeMain_word] = useState(props.main_word)
+	const [mainWordChanged, setMainWordChanged] = useState(false)
+	const [answerChanged, setAnswerChanged] = useState(false)
+	const [descriptionChanged, setDescriptionChanged] = useState(false)
+	const [mainWord, changeMainWord] = useState(props.main_word)
 	const [answer, changeAnswer] = useState(props.answer)
 	const [description, changeDescription] = useState(props.description)
 
-	const thisRef = useRef<any>(null)
+	const thisRef = useRef<HTMLDivElement>(null)
+
+	const handleChangeMainWord = (e: React.FormEvent<HTMLInputElement>) => {
+		props.eventOnChangeMainWord?.(e.currentTarget.value)
+		changeMainWord(e.currentTarget.value)
+		setMainWordChanged(true)
+	}
+
+	const handleChangeAnswer = (e: React.FormEvent<HTMLInputElement>) => {
+		props.eventOnChangeSecondWord?.(e)
+		changeAnswer(e.currentTarget.value)
+		setAnswerChanged(true)
+	}
+
+	const handleChangeDescription = (e: React.FormEvent<HTMLTextAreaElement>) => {
+		props.eventOnChangeDescriptionCard?.(e)
+		changeDescription(e.currentTarget.value)
+		setDescriptionChanged(true)
+	}
+
+	const handleSaveChanges = () => {
+		let __changes: ActionChange[] = []
+		if(mainWordChanged)
+			__changes  = [...__changes, {
+				type: "CHANGE_CARD",
+				payload: {
+					name: "main_word",
+					id: props.id,
+					value: mainWord
+				}
+			}]
+		if(answerChanged)
+			__changes  = [...__changes, {
+				type: "CHANGE_CARD",
+				payload: {
+					name: "answer",
+					id: props.id,
+					value: answer
+				}
+			}]
+		if(descriptionChanged)
+			__changes  = [...__changes, {
+				type: "CHANGE_CARD",
+				payload: {
+					name: "description",
+					id: props.id,
+					value: description
+				}
+			}]
+		console.log(__changes);
+		props.save(__changes, props.id)
+		props.close(null)
+	}
 
 	useOutsideClick(thisRef, () => {
 		if(props.visible) props.close(null)
 	})
 
-	console.log("render EditedCard", props.description);
 	return (
 		ReactDOM.createPortal(
-			<div ref={thisRef} className="editedCardWatch" style={{display: props.visible? "block": "none", top: props.positionElement.y + 240, left: props.positionElement.x + 20}}>
+			<div ref={thisRef} className="editedCardWatch" style={{display: props.visible? "block": "none", top: props.positionElement.y + 240, left: props.positionElement.x - 20}}>
 				<div className="wrapper">
 					<div className="beforeTringle">
 						<FaCaretUp />
@@ -283,16 +350,16 @@ const EditedCard: React.FC<EditedCardProps> = props => {
 					</div>
 
 					<div className="control-top">
-						<input type="text" className="__input __input_default" value={props.main_word}/>
+						<input type="text" className="__input __input_default" value={mainWord} onChange={e => handleChangeMainWord(e)}/>
 						<FaLongArrowAltRight />
-						<input type="text" className="__input __input_default" value={props.answer}/>
+						<input type="text" className="__input __input_default" value={answer} onChange={e => handleChangeAnswer(e)}/>
 					</div>
 
-					<textarea name="description" className="__input __input_default" id="" cols={10} rows={2} value={props.description}></textarea>
-					<button className="__btn" onClick={e => props.save(changes, props.id)}>save</button>
+					<textarea name="description" className="__input __input_default" id="" cols={10} rows={2} value={description} onChange={e => handleChangeDescription(e)}></textarea>
+					<button className="__btn" onClick={handleSaveChanges}>save</button>
 				</div>
 			</div>,
-			document.getElementById("root")!
+			document.getElementById("root") || document.body
 		)
 	)
 }
@@ -313,15 +380,17 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 	const [name, changeName] = useState(props.name)
 	const [mainWordValue, changeMainWordValue] = useState("")
 	const [secondWordValue, changeSecondWordValue] = useState("")
+	const [descriptionCard, changeDescriptionCard] = useState("")
 	const [indexCard, changeIndexCard] = useState(1)
 
+	console.log(changes);
 	// Edited card menu
 	const [currentCardOpened, changeCurrentCardOpened] = useState(cards[0])
 	const [visibleCardWatch, changeVisibleCardWatch] = useState(false)
 	const [positionCard, changePositionCard] = useState({x: 0, y: 0})
 
-	const [mainLang, changeMainLang] = useState("RU")
-	const [secondLang, changeSecondLang] = useState("ENG")
+	const [mainLang, changeMainLang] = useState("ENG")
+	const [secondLang, changeSecondLang] = useState("RU")
 	// const [isPrivate, changeName] = useState(props.name || "Deck name")
 
 	const mainWordRef = useRef<HTMLInputElement>(null)
@@ -355,13 +424,13 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		})
 	}
 
-	const handleAddCard = (e: React.FormEvent<HTMLButtonElement>) => {
+	const handleAddCard = () => {
 		const newCard: ICard = {
-			id: -1,
+			id: (cards[cards.length - 1] || {id: -1}).id + 1,
 			main_word: mainWordValue,
 			answer: secondWordValue,
 			type: "default",
-			description: descriptionCardRef.current?.value!
+			description: descriptionCard
 		}
 		changeCards(oldCards => [...oldCards, newCard])
 		incCountCards(countCardsOld => countCardsOld + 1)
@@ -374,24 +443,40 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 
 		changeMainWordValue("")
 		changeSecondWordValue("")
+		changeDescriptionCard("")
 		changeIndexCard(indexCard + 1)
 		// mainWordRef.current?.value = ""
 	}
 
-	const handleChangeMainWord = (e: React.FormEvent<HTMLInputElement>) => {
-		changeMainWordValue(e.currentTarget.value)
+	const handleChangeMainWord__press = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if(e.key === "Enter")
+			handleAddCard()
 	}
+	
+	const handleChangeSecondWord__press = (e: React.KeyboardEvent<HTMLInputElement>) => { if(e.key === "Enter")handleAddCard() }
 
-	const handleChangeSecondWord = (e: React.FormEvent<HTMLInputElement>) => {
-		changeSecondWordValue(e.currentTarget.value)
-	}
+	const handleChangeDescriptionCard__press = (e: React.KeyboardEvent<HTMLTextAreaElement>) => { if(e.key === "Enter") handleAddCard() }
 
-	const handleChangeMainLang = (e: React.FormEvent<HTMLSelectElement>) => {
-		changeMainLang(e.currentTarget.value)
-	}
+	const handleChangeMainWord = (e: React.FormEvent<HTMLInputElement>) => { changeMainWordValue(e.currentTarget.value) }
+	
+	const handleChangeSecondWord = (e: React.FormEvent<HTMLInputElement>) => { changeSecondWordValue(e.currentTarget.value) }
 
-	const handleChangeSecondLang = (e: React.FormEvent<HTMLSelectElement>) => {
-		changeSecondLang(e.currentTarget.value)
+	const handleChangeDescriptionCard = (e: React.FormEvent<HTMLTextAreaElement>) => { changeDescriptionCard(e.currentTarget.value) }
+
+	const handleChangeMainLang = (e: React.FormEvent<HTMLSelectElement>) => { changeMainLang(e.currentTarget.value) }
+
+	const handleChangeSecondLang = (e: React.FormEvent<HTMLSelectElement>) => { changeSecondLang(e.currentTarget.value) }
+
+	const handleChangeMainWordInConsistCard = (value: string, id: number) => {
+		changeCards((oldCards) => {
+			const __cards = oldCards.map(item => {
+				if(item.id === id)
+					item.main_word = value
+				return item
+			})
+			console.log(oldCards, value, id);
+			return __cards
+		})
 	}
 
 	const handleSwapLangs = () => {
@@ -401,8 +486,8 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 	}
 
 	// For creating
-	const handleCreateDeck = (e: any) => {
-		const dataNewDeck = {
+	const handleCreateDeck = (e: MouseEvent<HTMLButtonElement>) => {
+		const dataNewDeck: Partial<IDeck & {description: string, price: number}> = {
 			name,
 			isPrivate: false,
 			description: descriptionDeckRef.current?.value,
@@ -412,11 +497,11 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 			cards: cards
 		}
 		cards.length !== 0 ? 
-			props.create!(e, dataNewDeck):
+			props.create?.(e, dataNewDeck):
 			Notification.warning("Предупреждение!", "Вы не добавили ни одной карточки!", 2500)
 	}
 
-	const handleDeleteCard = (e: MouseEvent<any>, index: number) => {
+	const handleDeleteCard = (e: MouseEvent<HTMLDivElement>, index: number) => {
 		e.stopPropagation()
 		changeVisibleCardWatch(false)
 		changeCards(oldCards => oldCards.filter((_, _index: number) => _index !== index))
@@ -434,20 +519,22 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		changeVisibleCardWatch(true)
 	}
 
-	const handleChangeCard = (changesCard: ActionChange[], indexCard: number) => {
-		console.log(changesCard, indexCard);
+	const handleChangeCard = (changesCard: ActionChange[]) => {
+		console.log(changesCard);
+		addChange((old) => [...old, ...changesCard])
 	} 
 	// -----------------------------------------------------------------------------
 	// ---------------------------- Export JSON -----------------------------------
 	// -----------------------------------------------------------------------------
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const handleExportFileAsJSON = (e: React.FormEvent<HTMLInputElement>) => {
-		const files = e.currentTarget.files!
+		const files = e.currentTarget.files || []
 		const file = files[0]
 		const reader = new FileReader()
 
 		reader.onload = function() {
-			var data = JSON.parse(reader.result as string)
+			const data = JSON.parse(reader.result as string)
 			uploadJSONToCards(data.decks)
 		}
 
@@ -485,13 +572,15 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 			</div>
 
 
-			<p className="card_item_name"><EditText text={name} typeInput="text" onChanged={(old, _new) => handleChangeName(_new as string)}/></p>
+			<p className="card_item_name">
+				<EditText text={name} typeInput="text" focus onChanged={(old, _new) => handleChangeName(_new as string)}/>
+			</p>
 			<div className="top-panel">
 				<div className="select_languages">
 					<select onChange={handleChangeMainLang} className="form-select" aria-label="Default select example">
 						{
-							LANGS.map(lang => {
-								return <option selected={lang === mainLang}>{lang}</option>
+							LANGS.map((lang, index) => {
+								return <option key={index} selected={lang === mainLang}>{lang}</option>
 							})
 						}
 					</select>
@@ -501,8 +590,8 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 
 					<select onChange={handleChangeSecondLang} className="form-select" aria-label="Default select example">
 						{
-							LANGS.map(lang => {
-								return <option selected={lang === secondLang}>{lang}</option>
+							LANGS.map((lang, index) => {
+								return <option key={index} selected={lang === secondLang}>{lang}</option>
 							})
 						}
 					</select>
@@ -520,7 +609,15 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 			</div>
 
 			<div className="description_deck__wrapper">
-				<textarea defaultValue={props.description || ""} ref={descriptionDeckRef} placeholder="Type description deck" name="" id="" cols={60} rows={10}></textarea>
+				<textarea 
+					defaultValue={props.description || ""} 
+					ref={descriptionDeckRef} 
+					placeholder="Type description deck" 
+					name="" 
+					id="" 
+					cols={60} 
+					rows={10}>
+				</textarea>
 			</div>
 
 
@@ -531,20 +628,48 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 					</span>
 					<div className="main-answer-words">
 						<div className="input-wrapper form-floating">
-							<input onChange={handleChangeMainWord} value={mainWordValue} type="text" className="form-control" id="floatingInput" placeholder="type word..." ref={mainWordRef}/>
+							<input 
+								onKeyPress={handleChangeMainWord__press} 
+								onChange={handleChangeMainWord}
+								value={mainWordValue} 
+								type="text" 
+								className="form-control" 
+								id="floatingInput" 
+								placeholder="type word..." 
+								ref={mainWordRef}
+							/>
 							<label htmlFor="floatingInput">Main word on {mainLang}</label>
 						</div>
 
-						<span className="card_item_panel_toggler"><FaLongArrowAltRight /></span>
+						<span className="card_item_panel_toggler" onClick={handleSwapLangs}><FaLongArrowAltRight /></span>
 
 						<div className="input-wrapper form-floating">
-							<input onChange={handleChangeSecondWord} value={secondWordValue} type="text" className="form-control" id="floatingInput" placeholder="type word..." ref={secondWordRef}/>
+							<input 
+								onKeyPress={handleChangeSecondWord__press} 
+								onChange={handleChangeSecondWord} 
+								value={secondWordValue} 
+								type="text" 
+								className="form-control" 
+								id="floatingInput" 
+								placeholder="type word..." 
+								ref={secondWordRef}
+							/>
 							<label htmlFor="floatingInput">Second word {secondLang}</label>
 						</div>
 					</div>
 
 					<div className="control_bottom__wrapper">
-						<textarea ref={descriptionCardRef} placeholder="Type description" name="" id="" cols={60} rows={10}></textarea>
+						<textarea 
+							ref={descriptionCardRef} 
+							value={descriptionCard} 
+							onKeyPress={handleChangeDescriptionCard__press} 
+							onChange={handleChangeDescriptionCard} 
+							placeholder="Type description" 
+							name="" 
+							id="" 
+							cols={60} 
+							rows={10}>
+						</textarea>
 						<button  className="card_item_panel_button_add" onClick={handleAddCard}>add</button>
 					</div>
 
@@ -557,14 +682,16 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 			{
 				visibleCardWatch && <EditedCard 
 					visible={visibleCardWatch}
-					id={currentCardOpened!.id}
-					main_word={currentCardOpened!.main_word}
-					answer={currentCardOpened!.answer}
-					description={currentCardOpened!.description}
+					id={currentCardOpened?.id}
+					main_word={currentCardOpened?.main_word}
+					answer={currentCardOpened?.answer}
+					description={currentCardOpened?.description}
 					type="default"
 					positionElement={positionCard}
 
-					close={e => changeVisibleCardWatch(false)}
+					eventOnChangeMainWord={e => handleChangeMainWordInConsistCard(e, currentCardOpened?.id)}
+
+					close={() => changeVisibleCardWatch(false)}
 					save={handleChangeCard}
 				/>
 			}
@@ -573,7 +700,7 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 				<ul className="card_item_panel_item_words_ul">
 					{
 						cards.map((card: ICard, index: number) => {
-							return <li className="item" onClick={e => handleOpenCardForWatch(e, index)}>
+							return <li key={index} className="item" onClick={e => handleOpenCardForWatch(e, index)}>
 								<span className="index">#{index + 1}. </span>
 								<span className="main_word">{card.main_word}</span>
 								-
@@ -594,11 +721,11 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 				}
 				{
 					props.enableMethods?.enableSave && 
-						<button className="__btn __button-default button-save mr-5" onClick={e => props.save!(e, props.id, changes)}>save</button>
+						<button className="__btn __button-default button-save mr-5" onClick={e => props.save?.(e, props.id, changes)}>save</button>
 				}
 				{
 					props.enableMethods?.enableDelete &&
-						<button className="__btn __button-default button-delete" onClick={e => props.delete!(e, props.id)}>delete</button>
+						<button className="__btn __button-default button-delete" onClick={e => props.delete?.(e, props.id)}>delete</button>
 				}
 			</div>
 		</div>

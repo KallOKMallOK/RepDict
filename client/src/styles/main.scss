@@ -10,6 +10,19 @@
 
 body{
 	background-color: $color-bg-dark !important;
+	&::-webkit-scrollbar {
+		width: 0.4em;
+	}
+	
+	&::-webkit-scrollbar-track {
+		box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.541);
+	}
+	
+	&::-webkit-scrollbar-thumb {
+		 border-radius: 5px;
+		background-color: rgb(59, 59, 59);
+		// outline: 1px solid rgb(70, 70, 70);
+	 }
 }
 
 .mark_red{

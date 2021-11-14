@@ -12,6 +12,12 @@ import Components, { showLoader, hideLoader } from "./components"
 import Authorization from './hoc/Authorization'
 import ModalContainer from "./components/modals"
 
+// Translation
+import './i18n';
+
+
+
+
 
 // App styles
 import "./styles/reset.scss"
@@ -21,6 +27,7 @@ import 'react-notifications/lib/notifications.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { POPUP_TYPES } from './redux/types'
 import Footer from './components/Footer';
+import { Dispatch } from 'redux';
 
 // -----------------------------------------------------------------------------
 // ---------------------- Connect to redux emmiter -----------------------------
@@ -32,7 +39,7 @@ const mapStateToProps = (state: any) => ({
 	popupProps: state.popup
 })
 
-const mapDispatchToProps = (f: Function) => ({
+const mapDispatchToProps = (f: Dispatch) => ({
 	login: (user: any) => f(Action.app.login(user)),
 	logout: () => f(Action.app.logout()),
 	confirm: (head: string, content: string, close: () => void, success: (s: boolean) => void) => 
@@ -52,8 +59,8 @@ interface StateApp{
 // ------------------------- Switcher for Router -------------------------------
 // -----------------------------------------------------------------------------
 
-class Switcher extends React.PureComponent<StateApp>{
-	constructor(props: any){
+class Switcher extends React.PureComponent<StateApp, PropsFromRedux>{
+	constructor(props: PropsFromRedux){
 		super(props)
 	}
 	render(){
@@ -80,7 +87,6 @@ class Switcher extends React.PureComponent<StateApp>{
 // -------------------- App class including interfaces -------------------------
 // -----------------------------------------------------------------------------
 
-
 class App extends React.Component<PropsFromRedux, StateApp>{
 	public state: StateApp = {
 		auth: true
@@ -105,8 +111,13 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 					if(!res.data.error){
 						this.setState({ auth: true })
 						this.props.login(res.data.data)
+						console.log(res.data.data);
+						hideLoader()
 					}
-					else this.props.logout()
+					else {
+						this.props.logout()
+						hideLoader()
+					}
 					
 				})
 				.catch(err => console.log(err))
@@ -114,8 +125,9 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 		else{
 			this.setState({ auth: false })
 			localStorage.removeItem("token")
+			hideLoader()
 		}
-		hideLoader()
+		
 	}
 
 	render(){

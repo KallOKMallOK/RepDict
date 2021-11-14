@@ -3,6 +3,9 @@ package com.nafanya.danil00t.RepDict.controllers;
 import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
 import com.nafanya.danil00t.RepDict.funcs.JsonUtils;
 import com.nafanya.danil00t.RepDict.models.User;
+import com.nafanya.danil00t.RepDict.repository.CardRatingRepository;
+import com.nafanya.danil00t.RepDict.repository.CardRepository;
+import com.nafanya.danil00t.RepDict.repository.DeckRepository;
 import com.nafanya.danil00t.RepDict.repository.UserRepository;
 import com.sun.istack.NotNull;
 import io.jsonwebtoken.Claims;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Date;
 
 
 @CrossOrigin
@@ -22,6 +26,15 @@ public class LogRegController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CardRepository cardRepository;
+
+    @Autowired
+    private DeckRepository deckRepository;
+
+    @Autowired
+    private CardRatingRepository cardRatingRepository;
 
     @PostMapping("/login")
     public JSONObject login(
@@ -79,6 +92,13 @@ public class LogRegController {
         JSONObject o = JsonUtils.getUserJson(user);
         o.remove("error");
         object.put("data", o);
+        if(user.getLastWorstDeckCreation() != null) {
+            if (user.getLastWorstDeckCreation().getTime() + WORST_DECK_UPDATE_PERIOD >= (new Date()).getTime())
+                return object;
+        }
+        DecksController.createWorstDeck(token, cardRatingRepository, deckRepository, userRepository, cardRepository);
+        user.setLastWorstDeckCreation(new Date());
+        userRepository.save(user);
         return object;
     }
 
@@ -99,6 +119,8 @@ public class LogRegController {
             return null;
         return user;
     }
+
+    private static final long WORST_DECK_UPDATE_PERIOD = 100000;
 
     public static boolean MiddleWare(String token, UserRepository userRepository) throws IOException {
         return findUserByToken(token, userRepository) != null;

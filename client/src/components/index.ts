@@ -10,7 +10,7 @@ const Components = {
 	Notification,
 }
 
-const loader = document.querySelector('.loader__wrapper')!;
+const loader = document.querySelector('.loader__wrapper') || document.body;
 
 // if you want to show the loader when React loads data again
 export const showLoader = () => {

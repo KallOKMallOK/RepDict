@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import Action from "../redux/actions"
 import store from "../redux/store"
 
@@ -21,19 +21,19 @@ interface NotifyProps{
 }
 
 export const Notification = {
-	success: (head: string, content: NotifyProps['content'], timeout: number = 2000) => {
+	success: (head: string, content: NotifyProps['content'], timeout = 2000) => {
 		store.dispatch(Action.notification.show("success", head, content, timeout))
 	},
-	error: (head: string, content: NotifyProps['content'], timeout: number = 2000) => {
+	error: (head: string, content: NotifyProps['content'], timeout = 2000) => {
 		store.dispatch(Action.notification.show("error", head, content, timeout))
 	},
-	warning: (head: string, content: NotifyProps['content'], timeout: number = 2000) => {
+	warning: (head: string, content: NotifyProps['content'], timeout = 2000) => {
 		store.dispatch(Action.notification.show("warning", head, content, timeout))
 	}
 }
 
 const NotificationContainer: React.FC<NotifyProps> = props => {
-	const [visible, changeVisible] = useState(props.visible)
+	const [, changeVisible] = useState(props.visible)
 
 
 	props.visible && setTimeout(() => {
@@ -44,7 +44,7 @@ const NotificationContainer: React.FC<NotifyProps> = props => {
 	return (
 		<div className={`Notification notify_${props.type || "default"}`} style={{display: props.visible? "block": "none"}}>
 			<div className="Notification_wrapper_content">
-				<div className="close" onClick={e => store.dispatch(Action.notification.hide())}><FaTimes/></div>
+				<div className="close" onClick={() => store.dispatch(Action.notification.hide())}><FaTimes/></div>
 				<h2 className="head">{props.head}</h2>
 				<p className="content">{props.content}</p>
 

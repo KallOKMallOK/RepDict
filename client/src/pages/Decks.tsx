@@ -1,25 +1,28 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
 import API from "../api"
 import { showLoader, hideLoader } from "../components"
+
+
 // Components and redux instances
-import { 
+import {
 	Deck, 
 	DeckActive, 
 	DeckAdd,
 	IDeckDefault
 } from "../components/Deck"
+import { Notification } from '../components/Notification';
+import { Modal } from '../components/modals';
 
+import { ActionChange } from '../domains/entities/actions.entity';
 
 // App styles
 import "../styles/pages/Decks.scss"
-import { Notification } from '../components/Notification';
-import { ActionChange } from '../domains/entities/actions.entity';
-import { connect, ConnectedProps } from 'react-redux';
-import { Modal } from '../components/modals';
-import { notification } from '../redux/reducers/notification.reducer';
+import { RootState } from '../redux/store';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-interface IDecksProps {
+interface IDecksProps extends WithTranslation{
 	init?: boolean
 	textHello?: string
 }
@@ -31,7 +34,8 @@ interface StateDecks{
 	isEdit: boolean
 	deckEdit: IDeckDefault | null
 }
-const mapStateToProps = (state: any) => ({
+
+const mapStateToProps = (state: RootState) => ({
 	user: state.app.user
 })
 const connector = connect(mapStateToProps)
@@ -48,18 +52,19 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		isEdit: false,
 		deckEdit: null
 	}
+
 	constructor(props: PropsFromRedux){
 		super(props)
 		showLoader()
 	}
 
-	addDeck(e: React.FormEvent<any>){
+	addDeck(){
 		this.setState({
 			isNewDeck: true
 		})
 	}
 
-	saveDeck(e: React.FormEvent<any>, id: number, changes: ActionChange[]){
+	saveDeck(_e: React.FormEvent<HTMLElement>, id: number, changes: ActionChange[]){
 		API.applyChanges(id, changes)
 			.then(response => {
 				console.log(response)
@@ -67,18 +72,20 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			})
 			.catch(err => console.log(err))
 	}
-	editDeck(e: React.FormEvent<any>, index: number){
+
+	editDeck(_e: React.FormEvent<HTMLElement>, index: number){
 		console.log("edit", index);
 		this.setState({
 			isEdit: true,
 			deckEdit: this.state.decksOwned[index]
 		})
 	}
-	deleteDeck(e: React.FormEvent<any>, id: number){
+
+	deleteDeck(_e: React.FormEvent<HTMLElement>, id: number){
 		Modal.confirm(
 			"Вы действительно хотите удалить дек?", 
 			"Если вы удалите дек, все карточки тоже удалятся, вы уверены, что хотите это сделать?",
-			() => {},
+			() => console.log(),
 			(accept) => {
 				if(accept){
 					API.deleteDeck(id)
@@ -89,7 +96,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 								Notification.success("OK", "Дек успешно удален", 3000)
 							}
 						})
-						.catch(err => {
+						.catch(() => {
 							Notification.error("Ошбика", "Дек не успешно удален", 3000)
 						})
 				}
@@ -97,14 +104,14 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		// Notification.success("Hello!", "Content", 3000)
 	}
 
-	like(e: any, id: number){
+	like(_e: unknown, id: number){
 		API.setLike(id)
 			.then(res => console.log(res))
 			.catch(err => console.log(err))
 		console.log("like", id);
 	}
 
-	changePrivate(e: any, id: number, valuePrivate: boolean){
+	changePrivate(_e: unknown, id: number, valuePrivate: boolean){
 		API.applyChanges(id, [
 			{
 				type: "CHANGE_DECK",
@@ -118,7 +125,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			.catch(err => console.log(err))
 	}
 
-	createNewDeck(e: any, data: any){
+	createNewDeck(_e: unknown, data: any){
 		API.addDeck(data)
 			.then(response => {
 				console.log(response)
@@ -127,13 +134,15 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 			.catch(err => console.log(err))
 	}
 
-	handleUnsibscribe(e: any, id: number){
+	handleUnsibscribe(_e: React.FormEvent<HTMLElement>, id: number){
 		this.setState({ decksSubscriptions: this.state.decksSubscriptions.filter(deck => deck.id !== id) })
 	}
-	handleCloseActiveAddingDeck(e: React.FormEvent<any>){
+
+	handleCloseActiveAddingDeck(){
 		this.setState({ isNewDeck: false })
 	}
-	handleCloseActiveEditingDeck(e: React.FormEvent<any>){
+
+	handleCloseActiveEditingDeck(){
 		this.setState({ isEdit: false })
 	}
 
@@ -151,34 +160,35 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 					})
 					hideLoader()
 				})
-				.catch(err => Notification.error("Error", "Failed to load data", 3000))
+				.catch(() => Notification.error("Error", "Failed to load data", 3000))
 		}
 	}
+
 	render(){
 
 		return(
 			<React.Fragment>
 				<section className="lesson_section">
-					<h2 className="cards_main_name">My Decks</h2>
+					<h2 className="cards_main_name">{this.props.t`Pages.Decks.MyDecks`}</h2>
 					<div className="cards">
 						{/* deck for EDIT */}
 						{
 							this.state.isEdit && <DeckActive
 
 								index={-1}
-								id={this.state.deckEdit!.id}
-								name={this.state.deckEdit!.name} 
-								countWords={this.state.deckEdit!.countWords} 
-								countRepetitions={this.state.deckEdit!.countRepetitions} 
-								isPrivate={this.state.deckEdit!.isPrivate} 
-								mainLang={this.state.deckEdit!.mainLang} 
-								secondLang={this.state.deckEdit!.secondLang} 
-								cards={this.state.deckEdit!.cards}
-								author={this.state.deckEdit!.author}
-								owner={this.state.deckEdit!.owner}
-								description={this.state.deckEdit!.description}
-								countLikes={this.state.deckEdit!.countLikes || 0}
-								activeLike={this.state.deckEdit!.activeLike || false}
+								id={this.state.deckEdit?.id || -1}
+								name={this.state.deckEdit?.name || "NONAME"} 
+								countWords={this.state.deckEdit?.countWords || 0} 
+								countRepetitions={this.state.deckEdit?.countRepetitions || 0} 
+								isPrivate={this.state.deckEdit?.isPrivate} 
+								mainLang={this.state.deckEdit?.mainLang || "NL"} 
+								secondLang={this.state.deckEdit?.secondLang || "NL"} 
+								cards={this.state.deckEdit?.cards || []}
+								author={this.state.deckEdit?.author}
+								owner={this.state.deckEdit?.owner}
+								description={this.state.deckEdit?.description || "no description"}
+								countLikes={this.state.deckEdit?.countLikes || 0}
+								activeLike={this.state.deckEdit?.activeLike || false}
 
 								enableMethods={{
 									enableSave: true,
@@ -257,39 +267,40 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 				</section>
 
 				<section className={`lesson_section ${this.state.decksSubscriptions.length === 0? "noactive": "active"}`}>
-					<h2 className="cards_main_name">My Subscribed Decks</h2>
+					<h2 className="cards_main_name">{this.props.t`Pages.Decks.MySubsDecks`}</h2>
 					<div className="cards">
 					{
-							this.state.decksSubscriptions.length !== 0 && this.state.decksSubscriptions.map((deck: IDeckDefault, index: number) => {
-								return <Deck
-									index={index}
-									id={deck.id}
-									name={deck.name}
-									countWords={deck.countWords || 0} 
-									author={deck.author}
-									owner={deck.owner}
-									description={deck.description}
-									countRepetitions={deck.countRepetitions || 0} 
-									isPrivate={deck.isPrivate} 
-									mainLang={deck.mainLang.toUpperCase()} 
-									secondLang={deck.secondLang.toUpperCase()}
-									countLikes={deck.countLikes || 0}
-									activeLike={deck.activeLike || false}
-									cards={deck.cards}
-									key={`deck_${index}`}
-									subscribed={deck.subscribed}
-									subscribe={this.handleUnsibscribe.bind(this)}
+							this.state.decksSubscriptions.length !== 0 && 
+								this.state.decksSubscriptions.map((deck: IDeckDefault, index: number) => {
+									return <Deck
+										index={index}
+										id={deck.id}
+										name={deck.name}
+										countWords={deck.countWords || 0} 
+										author={deck.author}
+										owner={deck.owner}
+										description={deck.description}
+										countRepetitions={deck.countRepetitions || 0} 
+										isPrivate={deck.isPrivate} 
+										mainLang={deck.mainLang.toUpperCase()} 
+										secondLang={deck.secondLang.toUpperCase()}
+										countLikes={deck.countLikes || 0}
+										activeLike={deck.activeLike || false}
+										cards={deck.cards}
+										key={`deck_${index}`}
+										subscribed={deck.subscribed}
+										subscribe={this.handleUnsibscribe.bind(this)}
 
-									// enables
-									enableMethods={{ 
-										enableLike: true,
-										enableSubscribe: true
-									}}
+										// enables
+										enableMethods={{ 
+											enableLike: true,
+											enableSubscribe: true
+										}}
 
-									// active methods
-									like={this.like}
-									/>
-							})
+										// active methods
+										like={this.like}
+										/>
+								})
 						}
 					</div>
 				</section>
@@ -298,4 +309,4 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 	}
 }
 
-export default connector(Decks)
+export default withTranslation()(connector(Decks))

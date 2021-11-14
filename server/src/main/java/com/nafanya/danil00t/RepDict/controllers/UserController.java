@@ -3,11 +3,12 @@ package com.nafanya.danil00t.RepDict.controllers;
 import com.nafanya.danil00t.RepDict.funcs.JWTokenUtils;
 import com.nafanya.danil00t.RepDict.funcs.JsonUtils;
 import com.nafanya.danil00t.RepDict.funcs.ListUtils;
+import com.nafanya.danil00t.RepDict.models.Deck;
+import com.nafanya.danil00t.RepDict.models.SubscriptionKey;
 import com.nafanya.danil00t.RepDict.models.User;
-import com.nafanya.danil00t.RepDict.repository.CardRepository;
-import com.nafanya.danil00t.RepDict.repository.DeckRepository;
-import com.nafanya.danil00t.RepDict.repository.UserRepository;
+import com.nafanya.danil00t.RepDict.repository.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @CrossOrigin
 public class UserController {
     @Getter
-    private static final Integer USERS_ON_PAGE = 10;
+    private static final Integer USERS_ON_PAGE = 9;
+
+    @Autowired
+    SubscriptionRepository subscriptionRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -34,6 +37,9 @@ public class UserController {
 
     @Autowired
     DeckRepository deckRepository;
+
+    @Autowired
+    CardRatingRepository cardRatingRepository;
 
     @Value("${upload.path}")
     private String uploadAvatarPath;
@@ -97,6 +103,41 @@ public class UserController {
                     userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token)));
         if(object == null)
             return MainController.getError();
+        return object;
+    }
+    @Value("${worst.top.count}")
+    private int TOP_COUNT;
+    @GetMapping("/worst_decks")
+    public JSONObject getWorstDecks(
+            @RequestParam String token
+    ) throws IOException {
+
+        if(!LogRegController.MiddleWare(token, userRepository))
+            return MainController.getError();
+        @Getter
+        @Setter
+        class DeckWorstWalkthroughs{
+            Deck deck;
+            Double percent;
+
+            public DeckWorstWalkthroughs(Deck deck, Double averageRating){
+                this.deck = deck;
+                percent = averageRating/BalanceController.getMaximumRating(deck);
+            }
+        }
+        Comparator<DeckWorstWalkthroughs> comparator = (o1, o2) -> o1.percent.compareTo(o2.percent);
+        User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
+        ArrayList<DeckWorstWalkthroughs> list = new ArrayList<>();
+        for(Deck deck : user.getSubscriptionDecks()){
+            list.add(new DeckWorstWalkthroughs(deck, subscriptionRepository.getById(new SubscriptionKey(user, deck)).getAverageRating()));
+        }
+        Collections.sort(list, comparator.reversed());
+        JSONObject object = MainController.getSuccess();
+        JSONArray decksArray = new JSONArray();
+        for(int i = 0; i < Math.min(TOP_COUNT, list.size()); i++){
+            decksArray.add(JsonUtils.getDeckJson(list.get(i).deck, user));
+        }
+        object.put("decks", decksArray);
         return object;
     }
 }

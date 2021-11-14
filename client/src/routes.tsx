@@ -7,6 +7,8 @@ import {
 	FaChartBar,
 	FaStar,
 } from "react-icons/fa"
+import React from "react";
+import { ConnectedComponent } from "react-redux";
  
 export interface IRoute{
 	isNavBar?: boolean,
@@ -32,7 +34,7 @@ export const routes: IRoute[] = [
 	},
 	{
 		// dashboard - last cards and statistics
-		isNavBar: true,
+		isNavBar: false,
 		isLogin: true,
 		isExact: true,
 		isPrivate: true,
@@ -72,7 +74,7 @@ export const routes: IRoute[] = [
 		icon: FaStore
 	},
 	{
-		isNavBar: true,
+		isNavBar: false,
 		isLogin: true,
 		isExact: true,
 		isPrivate: true,
@@ -117,7 +119,7 @@ export const routes: IRoute[] = [
 		isExact: true,
 		path: '/user/:login',
 		name: 'User',
-		component: Pages.Home
+		component: Pages.User
 	},
 
 	

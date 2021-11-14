@@ -9,6 +9,25 @@ export enum LANGS{
 	GER = "GER"
 }
 
+export enum ELangsInterface{
+	EN = "en",
+	RU = "ru"
+}
+
+export const LangsInterface = [
+	{
+		alias: "en",
+		displayName: "English",
+		internationalName: "ENG"
+	},
+	{
+		alias: "ru",
+		displayName: "Русский",
+		internationalName: "RUS"
+	},
+
+]
+
 export enum EStatusNotification{
 	SUCCESS = "SUCCESS", 
 	ERROR = "ERROR", 
@@ -20,6 +39,7 @@ export const APP = {
 	LOGIN: "APP/LOGIN",
 	LOGOUT: "APP/LOGOUT",
 	ADD_SCORES: "APP/ADD_SCORES",
+	CHANGE_LANG: "APP/CHANGE_LANG"
 }
 
 export const NOTIFY = {
