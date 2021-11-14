@@ -12,6 +12,7 @@ import {
 	FaCaretUp
 } from "react-icons/fa"
 import { Link, useHistory } from 'react-router-dom'
+import Linkify from 'react-linkify'
 import API from '../api'
 import { ActionChange } from '../domains/entities/actions.entity'
 import { ICard } from '../domains/entities/card.entity'
@@ -232,7 +233,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 			</div>
 		</div>
 
-		<p className="card_item_description">{props.description}</p>
+		<p className="card_item_description"><Linkify>{props.description}</Linkify></p>
 
 		<div className="footer">
 			{

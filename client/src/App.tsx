@@ -112,8 +112,12 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 						this.setState({ auth: true })
 						this.props.login(res.data.data)
 						console.log(res.data.data);
+						hideLoader()
 					}
-					else this.props.logout()
+					else {
+						this.props.logout()
+						hideLoader()
+					}
 					
 				})
 				.catch(err => console.log(err))
@@ -121,8 +125,9 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 		else{
 			this.setState({ auth: false })
 			localStorage.removeItem("token")
+			hideLoader()
 		}
-		hideLoader()
+		
 	}
 
 	render(){

@@ -11,6 +11,7 @@ import useOutsideClick from "../hoc/OutsideClicker"
 
 // Styles
 import "../styles/components.scss"
+import "../styles/vars.scss"
 import { Dispatch } from 'redux'
 import { RootState } from '../redux/store'
 import { User } from '../domains/entities/user.entity'
@@ -111,6 +112,17 @@ const Header: React.FC<AppProps> = props => {
 							onChange={e => props.changeLangInterface(e?.value as ELangsInterface)}
 							value={{ value: props.lang, label: (LangsInterface.filter(l => l.alias === props.lang))[0].displayName}}
 							isSearchable={false}
+							// theme={(theme: any) => ({
+							// 	...theme,
+							// 	borderRadius: 5,
+							// 	colors: {
+							// 		...theme.colors,
+							// 		primary25: 'red',
+							// 		primary: 'black',
+							// 		neutral0: "#202022"
+							// 	},
+								
+							// })}
 							components={{
 								Control: ({ children, ...rest }) => (
 									<components.Control {...rest}>

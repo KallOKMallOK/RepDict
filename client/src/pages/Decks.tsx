@@ -20,8 +20,9 @@ import { ActionChange } from '../domains/entities/actions.entity';
 // App styles
 import "../styles/pages/Decks.scss"
 import { RootState } from '../redux/store';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-interface IDecksProps {
+interface IDecksProps extends WithTranslation{
 	init?: boolean
 	textHello?: string
 }
@@ -168,7 +169,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		return(
 			<React.Fragment>
 				<section className="lesson_section">
-					<h2 className="cards_main_name">My Decks</h2>
+					<h2 className="cards_main_name">{this.props.t`Pages.Decks.MyDecks`}</h2>
 					<div className="cards">
 						{/* deck for EDIT */}
 						{
@@ -266,7 +267,7 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 				</section>
 
 				<section className={`lesson_section ${this.state.decksSubscriptions.length === 0? "noactive": "active"}`}>
-					<h2 className="cards_main_name">My Subscribed Decks</h2>
+					<h2 className="cards_main_name">{this.props.t`Pages.Decks.MySubsDecks`}</h2>
 					<div className="cards">
 					{
 							this.state.decksSubscriptions.length !== 0 && 
@@ -308,4 +309,4 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 	}
 }
 
-export default connector(Decks)
+export default withTranslation()(connector(Decks))

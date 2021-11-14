@@ -12,10 +12,11 @@ $color-bg-grey: #444748;
 $color-bg-mark: #db4f4f;
 $color-bg-mark_: #b34343;
 $color-bg-mark_: #993636;
+$color-link: #2235e0;
 
 // mixins
-@mixin trs {
-	transition: all .2s ease-in-out;
+@mixin trs($time: .2s) {
+	transition: all $time ease-in-out;
 }
 
 @mixin button_default {
@@ -71,3 +72,7 @@ $columns: 10;
 
 @include mr-x;
 @include pl-x;
+
+:export {
+	colorMain: $color-main
+}

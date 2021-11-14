@@ -3,6 +3,22 @@
 		"Main": {
 			"welcome": "Learn, Repeate and Develop",
 			"description": "Welcome to the service for memorizing words in foreign languages using flashcards"
+		},
+		"Decks": {
+			"MyDecks": "My Decks",
+			"MySubsDecks": "My Subscribed Decks"
+		},
+		"User": {
+			"LastOwnedDecks": "Last Owned Decks",
+			"inRating": "in Rating"
+		},
+		"Rating": {
+			"Rating": "Rating",
+			"login": "Login",
+			"scores": "Scores"
+		},
+		"Store": {
+			"Store": "Store"
 		}
 	},
 	"Components": {
@@ -17,6 +33,9 @@
 			"Profile": "Profile",
 			"Settings": "Settings",
 			"Logout": "Logout"
+		},
+		"Notification": {
+			"authSuccess": "You are logged in!"
 		}
 	}
 }

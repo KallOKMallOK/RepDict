@@ -143,6 +143,15 @@
 				font-family: RobotoLight;
 				margin-top: 10px;
 				margin-bottom: 40px;
+				a{
+					font-family: RobotoBold;
+					color: $color-link;
+					text-decoration: none;
+					@include trs(.1s);
+					&:hover{
+						color: darken($color-link, 5);
+					}
+				}
 			}
 			.footer{
 				display: flex;

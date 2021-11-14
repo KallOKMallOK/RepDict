@@ -8,6 +8,7 @@ import Pagination from "../components/Pagination"
 
 import "../styles/pages/Decks.scss"
 import { RootState } from '../redux/store';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface StateStore{
 	decks: IDeckDefault[]
@@ -22,7 +23,7 @@ const mapStateToProps = (state: RootState) => ({
 })
 const connector = connect(mapStateToProps)
 
-type PropsFromRedux = ConnectedProps<typeof connector>
+type PropsFromRedux = ConnectedProps<typeof connector> & WithTranslation
 
 
 class Store extends React.Component<PropsFromRedux, StateStore>{
@@ -73,7 +74,7 @@ class Store extends React.Component<PropsFromRedux, StateStore>{
 		return(
 			<div className="Store" style={{color: "white"}}>
 				<section className="lesson_section">
-					<h2 className="cards_main_name">Store</h2>
+					<h2 className="cards_main_name">{this.props.t("Pages.Store.Store")}</h2>
 					<div className="cards">
 						{
 							this.state.decks.length !== 0 && this.state.decks.map((deck: IDeckDefault, index: number) => {
@@ -120,4 +121,4 @@ class Store extends React.Component<PropsFromRedux, StateStore>{
 }
 
 
-export default connector(Store)
+export default withTranslation()(connector(Store))

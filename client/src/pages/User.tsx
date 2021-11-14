@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { FaStar } from "react-icons/fa"
 import ScrollContainer from 'react-indiana-drag-scroll'
 import API from "../api";
@@ -8,14 +8,17 @@ import { User } from "../domains/entities/user.entity"
 
 import "../styles/pages/User.scss"
 import { hideLoader, showLoader } from "../components";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { Notification } from "../components/Notification";
 
 interface ParamsUserPage{
 	login: string
 }
 
 
-const UserPage: React.FC = () => {
+const UserPage: React.FC<WithTranslation> = props => {
 	const { login } = useParams<ParamsUserPage>();
+	const history = useHistory()
 
 	const [user, setUser] = useState({} as User)
 	const [loader, setLoader] = useState(false)
@@ -24,6 +27,7 @@ const UserPage: React.FC = () => {
 	useEffect(() => {
 		API.getUser(login, 1)
 			.then(data => {
+				console.log(data);
 				setUser(data)
 				if(!loader){
 					hideLoader()
@@ -31,6 +35,13 @@ const UserPage: React.FC = () => {
 				}
 			})
 			.then(data => console.log(user))
+			.catch(err => {
+				console.log("[ERROR]: ", err);
+				Notification.error("Ошибка", "Кажется, данные пользователя не смогли загрузиться...", 4000)
+				setTimeout(() => {
+					history.push("/")
+				}, 500)
+			})
 	}, [login, loader])
 
 
@@ -55,14 +66,14 @@ const UserPage: React.FC = () => {
 						<span className="info_rating_count">{user.rating || 10000}</span>
 					</div>
 					<div className="info_position">
-						<span className="info_position_cnt"><Link to="/rating" className="position_mark">#{1}</Link> in Rating!</span>
+						<span className="info_position_cnt"><Link to="/rating" className="position_mark">#{1}</Link> {props.t("Pages.User.inRating")}!</span>
 					</div>
 
 				</div>
 			</div>
 
 			<section className="owners_deck">
-				<h2 className="head_section_owners_deck">Last Owned Decks</h2>
+				<h2 className="head_section_owners_deck">{props.t("Pages.User.LastOwnedDecks")}</h2>
 				<ScrollContainer hideScrollbars={false} className="cards">
 				{
 					user.decks?.length !== 0 && user.decks?.map((deck, index: number) => {
@@ -101,4 +112,4 @@ const UserPage: React.FC = () => {
 	)
 }
 
-export default UserPage
+export default withTranslation()(UserPage)

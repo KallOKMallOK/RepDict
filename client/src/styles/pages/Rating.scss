@@ -59,9 +59,9 @@
 				a{
 					color: rgb(228, 228, 228);
 					text-decoration: none;
-					@include trs();
+					@include trs(.1s);
 					&:hover{
-						color: rgb(0, 66, 246);
+						color: $color-link;
 					}
 				}
 			}
