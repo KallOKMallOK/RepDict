@@ -19,6 +19,20 @@
 		},
 		"Store": {
 			"Store": "Магазин колод"
+		},
+		"Play": {
+			"name": "название",
+			"description": "описание",
+			"currentCard": "текущая карточка",
+			"skip": "Пропустить",
+			"translateOn": "Переведите на",
+			"congr": "Поздравления!",
+			"congrDesc1": "Вы прошли",
+			"congrDesc2": "еще раз",
+			"scores": "Ваш результат",
+			"onceAgain": "Пройти еще раз",
+			"results": "Результаты",
+			"toDecks": "К Колодам"
 		}
 	},
 	"Components": {

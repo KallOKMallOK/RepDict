@@ -11,7 +11,7 @@ import {
 	DeckActive, 
 	DeckAdd,
 	IDeckDefault
-} from "../components/Deck"
+} from "../components/Deck/index"
 import { Notification } from '../components/Notification';
 import { Modal } from '../components/modals';
 
@@ -21,6 +21,7 @@ import { ActionChange } from '../domains/entities/actions.entity';
 import "../styles/pages/Decks.scss"
 import { RootState } from '../redux/store';
 import { WithTranslation, withTranslation } from 'react-i18next';
+import Pagination from '../components/Pagination';
 
 interface IDecksProps extends WithTranslation{
 	init?: boolean
@@ -33,6 +34,12 @@ interface StateDecks{
 	isNewDeck: boolean
 	isEdit: boolean
 	deckEdit: IDeckDefault | null
+
+	// for pagination
+	countOwnedPages: number
+	countSubsPages: number
+	currentOwnedPage: number
+	currentSubsPage: number
 }
 
 const mapStateToProps = (state: RootState) => ({
@@ -50,7 +57,11 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 
 		isNewDeck: false,
 		isEdit: false,
-		deckEdit: null
+		deckEdit: null,
+		countOwnedPages: 1,
+		countSubsPages: 1,
+		currentOwnedPage: 1,
+		currentSubsPage: 1,
 	}
 
 	constructor(props: PropsFromRedux){
@@ -146,22 +157,38 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 		this.setState({ isEdit: false })
 	}
 
-	componentDidMount(){
-		console.log(this.state.decksOwned);
-		if(this.state.decksOwned.length === 0){
-			API.getDecks()
+	handleChangeCurrentOwnedPage(choosen: { selected: number }){
+		this.setState({ currentOwnedPage: choosen.selected + 1 })
+		this.updateDecks( choosen.selected + 1, this.state.currentSubsPage )
+	}
+
+	handleChangeCurrentSubsPage(choosen: { selected: number }){
+		this.setState({ currentSubsPage: choosen.selected + 1 })
+		this.updateDecks( this.state.currentOwnedPage, choosen.selected + 1 )
+	}
+
+	updateDecks(ownedPage: number, subsPage: number){
+		// if(this.state.decksOwned.length === 0){
+			API.getDecks(ownedPage, subsPage)
 				// .then(data => console.log(data))
 				.then(data => {
 					console.log(data);
 					!data.error && 
 					this.setState({
-						decksSubscriptions: [...this.state.decksSubscriptions, ...data.data.subscriptions],
-						decksOwned: [...this.state.decksOwned, ...data.data.owned],
+						decksSubscriptions: data.data.subscriptions,
+						decksOwned: data.data.owned,
+						countOwnedPages: data.data.owned_pages,
+						countSubsPages: data.data.subscription_pages,
 					})
 					hideLoader()
 				})
 				.catch(() => Notification.error("Error", "Failed to load data", 3000))
-		}
+		// }
+	}
+
+	componentDidMount(){
+		console.log(this.state.decksOwned);
+		this.updateDecks(this.state.currentOwnedPage, this.state.currentSubsPage)
 	}
 
 	render(){
@@ -264,6 +291,11 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 							})
 						}
 					</div>
+					<Pagination 
+						countPages={this.state.countOwnedPages}
+						changeCountPages={() => console.log()}
+						changeCurrentPage={choosen => this.handleChangeCurrentOwnedPage(choosen)}
+					/>
 				</section>
 
 				<section className={`lesson_section ${this.state.decksSubscriptions.length === 0? "noactive": "active"}`}>
@@ -303,6 +335,11 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 								})
 						}
 					</div>
+					<Pagination 
+						countPages={this.state.countSubsPages}
+						changeCountPages={() => console.log()}
+						changeCurrentPage={choosen => this.handleChangeCurrentSubsPage(choosen)}
+					/>
 				</section>
 			</React.Fragment>
 		)

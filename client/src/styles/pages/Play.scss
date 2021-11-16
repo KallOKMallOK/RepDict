@@ -59,7 +59,19 @@
 				height: 30px;
 				color: #fff;
 				cursor: pointer;
-
+				@include trs(.1s);
+				&:hover{
+					color: rgb(202, 202, 202);
+				}
+			}
+			&_button_skip_word{
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				
+				svg{
+					font-size: 1.5em;
+				}
 			}
 		}
 	
@@ -70,7 +82,6 @@
 
 	.section_congratulations{
 		display: none;
-
 	}
 	.section_congratulations.ended{
 		display: flex;
@@ -103,6 +114,7 @@
 	}
 	.section_results.showed{
 		display: block;
+		// background-color: red;
 	}
 	.section_results.hided{
 		display: none;

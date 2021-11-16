@@ -51,7 +51,8 @@ class Store extends React.Component<PropsFromRedux, StateStore>{
 	}
 
 	updateDecks(page: number){
-		// showLoader()
+		showLoader()
+		this.setState({ decks: [], countPages: 0 })
 		API.getAllDecks(page)
 		.then(res => {
 			console.log(res)

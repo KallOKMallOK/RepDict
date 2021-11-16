@@ -7,7 +7,7 @@ const Components = {
 	Header,
 	Deck,
 	Currsection,
-	Notification,
+	Notification
 }
 
 const loader = document.querySelector('.loader__wrapper') || document.body;

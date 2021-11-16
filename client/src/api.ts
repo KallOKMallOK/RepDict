@@ -182,9 +182,9 @@ class API {
 		};
 	}
 
-	public static getDecks(): Promise<any> {
+	public static getDecks(ownedPage: number, subsPage: number): Promise<any> {
 		return new Promise<any>((resolve, reject) => {
-			this.GET(API_URLS.GET_DECKS, {}, { token: true })
+			this.GET(API_URLS.GET_DECKS, { owned_page: ownedPage, subscribed_page: subsPage }, { token: true })
 				.then((response) => {
 					const data = {
 						subscriptions: response.data.subscriptions.map((deck: any) => this.transormArrayOfDeck(deck)),

@@ -3,7 +3,7 @@ import { Dispatch } from "redux"
 import { RouteComponentProps } from 'react-router'
 import { connect, ConnectedProps } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FaArrowRight } from "react-icons/fa"
+import { FaArrowRight, FaTimesCircle } from "react-icons/fa"
 
 import API from '../api';
 import { ICard } from '../domains/entities/card.entity';
@@ -14,6 +14,7 @@ import { Notification } from '../components/Notification';
 import Action from "../redux/actions"
 
 import "../styles/pages/Play.scss"
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 const mapDispatchToProps = (f: Dispatch) => ({
 	addScores: (scores: number) => f(Action.app.addScores(scores))
@@ -24,7 +25,7 @@ const connector = connect(null, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 
-interface IPlayProps extends RouteComponentProps, PropsFromRedux{
+interface IPlayProps extends RouteComponentProps, PropsFromRedux, WithTranslation{
 }
 
 interface ResultEndPlayToServer{
@@ -209,9 +210,9 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				<div className={`Play__card ${this.state.ended? "ended": ""}`}>
 					<Currsection 
 						info = {{ 
-							name: this.state.deck?.name as string,
-							description: this.state.deck?.description || "no description",
-							"current card": `${this.state.currentCard + 1} / ${this.state.deck?.cards.length}`
+							[this.props.t("Pages.Play.name")]: this.state.deck?.name as string,
+							[this.props.t("Pages.Play.description")]: this.state.deck?.description || "no description",
+							[this.props.t("Pages.Play.currentCard")]: `${this.state.currentCard + 1} / ${this.state.deck?.cards.length}`
 						}}
 						/>
 					<section className="lesson_section Play__card_section">
@@ -226,26 +227,26 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					</section>
 
 					<section className="lesson_section answer">
-						<div onClick={this.handleSkipCard.bind(this)} className="answer_button_skip_word">Skip</div>
+						<div onClick={this.handleSkipCard.bind(this)} className="answer_button_skip_word"><FaTimesCircle /></div>
 						<input 
 							value={this.state.valueInputAnswer} 
 							onChange={this.handleChangeInputAnswer.bind(this)} 
 							type="text" className="answer_input" 
-							placeholder={`translate on ${this.state.deck?.secondLang.toUpperCase()}...`} 
+							placeholder={`${this.props.t("Pages.Play.translateOn")} ${this.state.deck?.secondLang.toUpperCase()}...`} 
 							autoFocus
 						/>
 						<div onClick={() => this.handleNextCard()} className="answer_button_next_word"><FaArrowRight /></div>
 					</section>
 				</div>	
 				
-
+				{/* The end */}
 				<div className={`section_congratulations ${this.state.ended && !this.state.showResults? "ended": ""}`}>
 					<div className="congratulations">
 						<div className="welc">
-							<h2>Congratulations!</h2>
-							<h3>You have passed the &quot;{this.state.deck?.name}&quot; deck once again.</h3>
+							<h2>{this.props.t("Pages.Play.congr")}</h2>
+							<h3>{this.props.t("Pages.Play.congrDesc1")} &quot;{this.state.deck?.name}&quot; {this.props.t("Pages.Play.congrDesc2")}</h3>
 						</div>
-						<h1>Your scores: {this.state.scores}</h1>
+						<h1>{this.props.t("Pages.Play.scores")}: {this.state.scores}</h1>
 						<div className="control_buttons">
 							<button 
 								className="btn btn-primary" 
@@ -255,22 +256,22 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 									cards: this.shuffleCards(this.state.cards),
 									successed: []
 								})}
-							>Once again</button>
+							>{this.props.t("Pages.Play.onceAgain")}</button>
 							<button 
 								className="btn btn-success" 
 								onClick={() => this.setState({ showResults: true })}
-							>results</button>
-							<Link to="/decks" className="btn btn-danger">To Decks</Link>
+							>{this.props.t("Pages.Play.results")}</button>
+							<Link to="/decks" className="btn btn-danger">{this.props.t("Pages.Play.toDecks")}</Link>
 						</div>
 					</div>
 				</div>
 
 				<div className={`section_results ${this.state.showResults? "showed": "hided"}`}>
-					<ul>
+					<ul className="section_results_items">
 						{
 							this.getResults().map((result, index) => {
-								return <li key={index}>
-									{result.main_word} - {result.answer}: {result.successed? "Yes!": "no!"} on {result.time}
+								return <li key={index} className="section_results_item">
+									<span>{result.main_word}</span> - <span>{result.answer}</span><span>{result.successed? "Yes!": "no!"}</span><span>{result.time}</span>
 								</li>
 							})
 						}
@@ -283,4 +284,4 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 }
 
 
-export default connector(Play)
+export default withTranslation()(connector(Play))

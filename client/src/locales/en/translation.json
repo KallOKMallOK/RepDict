@@ -19,6 +19,20 @@
 		},
 		"Store": {
 			"Store": "Store"
+		},
+		"Play": {
+			"name": "name",
+			"description": "description",
+			"currentCard": "current card",
+			"skip": "skip",
+			"translateOn": "stranslate on",
+			"congr": "Congratulations!",
+			"congrDesc1": "You have passed the",
+			"congrDesc2": "deck once again.",
+			"scores": "Your scores",
+			"onceAgain": "Once again",
+			"results": "Results",
+			"toDecks": "To Decks"
 		}
 	},
 	"Components": {
