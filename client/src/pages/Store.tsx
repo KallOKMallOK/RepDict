@@ -1,31 +1,36 @@
 import React from 'react';
-
-import { Notification } from '../components/Notification';
-import { showLoader, hideLoader } from "../components"
-import { Deck, IDeckDefault } from '../components/Deck';
-import { IDeck } from "../domains/entities/deсk.entity"
-import API from '../api';
 import { connect, ConnectedProps } from 'react-redux';
 
+import API from '../api';
+import { showLoader, hideLoader } from "../components"
+import { Deck, IDeckDefault } from '../components/Deck';
+import Pagination from "../components/Pagination"
+
 import "../styles/pages/Decks.scss"
+import { RootState } from '../redux/store';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface StateStore{
-	decks: IDeck[]
+	decks: IDeckDefault[]
+	currentPage: number
+	countPages: number
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: RootState) => ({
 	auth: state.app.auth,
 	notify: state.notification,
 	user: state.app.user
 })
 const connector = connect(mapStateToProps)
 
-type PropsFromRedux = ConnectedProps<typeof connector>
+type PropsFromRedux = ConnectedProps<typeof connector> & WithTranslation
 
 
-class Store extends React.Component<PropsFromRedux>{
-	public state: any = {
-		decks: []
+class Store extends React.Component<PropsFromRedux, StateStore>{
+	public state: StateStore = {
+		decks: [],
+		currentPage: 1,
+		countPages: 1
 	}
 	constructor(props: PropsFromRedux){
 		super(props)
@@ -33,26 +38,35 @@ class Store extends React.Component<PropsFromRedux>{
 	}
 
 	// Methods
-	handleLike(e: any, id: number){
+	handleLike(e: unknown, id: number){
 		console.log("like", id);
 		API.setLike(id)
 			.then(response => console.log(response))
 			.catch(err => console.log(err))
 	}
-	handleClone(e: any, id: number){
+	handleClone(e: unknown, id: number){
 		API.cloneDeck(id)
 			.then(res => console.log(res))
 			.catch(err => console.log(err))
 	}
 
+	updateDecks(page: number){
+		// showLoader()
+		API.getAllDecks(page)
+		.then(res => {
+			console.log(res)
+			this.setState({ decks: res.data.decks, countPages: res.data.pages })
+			hideLoader()
+		})
+		.catch(err => console.log(err))
+	}
+	handleChangeCurrentPage(choosen: { selected: number }){
+		this.setState({ currentPage: choosen.selected + 1 })
+		this.updateDecks( choosen.selected + 1 )
+	}
 
 	componentDidMount(){
-		API.getAllDecks()
-			.then(res => {
-				this.setState({ decks: res.data.decks })
-				hideLoader()
-			})
-			.catch(err => console.log(err))
+		this.updateDecks(this.state.currentPage)
 	}
 
 	render(){
@@ -60,7 +74,7 @@ class Store extends React.Component<PropsFromRedux>{
 		return(
 			<div className="Store" style={{color: "white"}}>
 				<section className="lesson_section">
-					<h2 className="cards_main_name">Store</h2>
+					<h2 className="cards_main_name">{this.props.t("Pages.Store.Store")}</h2>
 					<div className="cards">
 						{
 							this.state.decks.length !== 0 && this.state.decks.map((deck: IDeckDefault, index: number) => {
@@ -93,10 +107,13 @@ class Store extends React.Component<PropsFromRedux>{
 									/>
 							})
 						}
-
-						
-						
 					</div>
+
+					<Pagination 
+						countPages={this.state.countPages}
+						changeCountPages={() => console.log()}
+						changeCurrentPage={choosen => this.handleChangeCurrentPage(choosen)}
+					/>
 				</section>
 			</div>
 		)
@@ -104,4 +121,4 @@ class Store extends React.Component<PropsFromRedux>{
 }
 
 
-export default connector(Store)
+export default withTranslation()(connector(Store))

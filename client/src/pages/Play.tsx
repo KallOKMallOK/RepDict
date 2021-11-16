@@ -1,20 +1,21 @@
 import React from 'react';
+import { Dispatch } from "redux"
 import { RouteComponentProps } from 'react-router'
 import { connect, ConnectedProps } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FaArrowRight } from "react-icons/fa"
 
 import API from '../api';
-import Currsection from '../components/Currsection';
 import { ICard } from '../domains/entities/card.entity';
 import { IDeck } from '../domains/entities/deсk.entity';
 
+import Currsection from '../components/Currsection';
 import { Notification } from '../components/Notification';
 import Action from "../redux/actions"
 
 import "../styles/pages/Play.scss"
 
-const mapDispatchToProps = (f: Function) => ({
+const mapDispatchToProps = (f: Dispatch) => ({
 	addScores: (scores: number) => f(Action.app.addScores(scores))
 })
 
@@ -23,9 +24,9 @@ const connector = connect(null, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 
-
 interface IPlayProps extends RouteComponentProps, PropsFromRedux{
 }
+
 interface ResultEndPlayToServer{
 	idCard: number
 	time: number
@@ -79,14 +80,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 
 		return array;
 	}
-	where(array: any[], field: string){
 
-	}
-
-
-	// 
-	// 
-	// 
 	nextCard(successed: boolean){
 		if(this.state.currentCard + 1 < this.state.cards.length){		
 			this.setState({ 
@@ -115,7 +109,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				this.getTimeDeck("start")
 				API.getScoresAfterEndPlay({
 					results: this.state.successed
-				}, this.state.deck!.id)
+				}, this.state.deck?.id || -1)
 					.then(res => {
 						// console.log(res);
 						this.setState({ scores: res.data.score || 0 })
@@ -139,7 +133,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 		return 0
 	}
 
-	checkCard(card: ICard, value: string, lang?: string): boolean{
+	checkCard(card: ICard, value: string): boolean{
 		const answers = card.answer
 			.split("|")
 			.map(ans => ans.trim().toLowerCase())
@@ -161,6 +155,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	handleSkipCard(){
 		this.nextCard(false)
 	}
+
 	handleChangeInputAnswer(e: React.FormEvent<HTMLInputElement>){
 		if(this.checkCard(this.state.cards[this.state.currentCard], e.currentTarget.value)){
 			this.setState({ valueInputAnswer: ""})
@@ -174,6 +169,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				this.setState({ valueInputAnswer: e.currentTarget.value })
 		}
 	}
+
 	handleHint(){
 		this.setState({ visibleHint: !this.state.visibleHint })
 	}
@@ -191,9 +187,9 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	}
 
 	componentDidMount(){
-		const params: any = this.props.match.params
+		const params: {id: number} = this.props.match.params as {id: number}
 		const id = Number(params.id)
-		if(Boolean(id)){
+		if(id){
 			API.getDeck(id)
 				.then(resp => {
 					this.getTimeDeck("start")
@@ -213,7 +209,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				<div className={`Play__card ${this.state.ended? "ended": ""}`}>
 					<Currsection 
 						info = {{ 
-							name: this.state.deck?.name,
+							name: this.state.deck?.name as string,
 							description: this.state.deck?.description || "no description",
 							"current card": `${this.state.currentCard + 1} / ${this.state.deck?.cards.length}`
 						}}
@@ -238,7 +234,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 							placeholder={`translate on ${this.state.deck?.secondLang.toUpperCase()}...`} 
 							autoFocus
 						/>
-						<div onClick={e => this.handleNextCard()} className="answer_button_next_word"><FaArrowRight /></div>
+						<div onClick={() => this.handleNextCard()} className="answer_button_next_word"><FaArrowRight /></div>
 					</section>
 				</div>	
 				
@@ -247,20 +243,23 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					<div className="congratulations">
 						<div className="welc">
 							<h2>Congratulations!</h2>
-							<h3>You have passed the "{this.state.deck?.name}" deck once again.</h3>
+							<h3>You have passed the &quot;{this.state.deck?.name}&quot; deck once again.</h3>
 						</div>
 						<h1>Your scores: {this.state.scores}</h1>
 						<div className="control_buttons">
 							<button 
 								className="btn btn-primary" 
-								onClick={e => this.setState({ 
+								onClick={() => this.setState({ 
 									ended: false, 
 									currentCard: 0, 
 									cards: this.shuffleCards(this.state.cards),
 									successed: []
 								})}
 							>Once again</button>
-							<button className="btn btn-success" onClick={e => this.setState({ showResults: true })}>results</button>
+							<button 
+								className="btn btn-success" 
+								onClick={() => this.setState({ showResults: true })}
+							>results</button>
 							<Link to="/decks" className="btn btn-danger">To Decks</Link>
 						</div>
 					</div>
@@ -269,12 +268,14 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				<div className={`section_results ${this.state.showResults? "showed": "hided"}`}>
 					<ul>
 						{
-							this.getResults().map(result => {
-								return <li>{result.main_word} - {result.answer}: {result.successed? "Yes!": "no!"} on {result.time}</li>
+							this.getResults().map((result, index) => {
+								return <li key={index}>
+									{result.main_word} - {result.answer}: {result.successed? "Yes!": "no!"} on {result.time}
+								</li>
 							})
 						}
 					</ul>
-					<button className="btn btn-primary" onClick={e => this.setState({ showResults: false })}>back</button>
+					<button className="btn btn-primary" onClick={() => this.setState({ showResults: false })}>back</button>
 				</div>
 			</div>
 		)

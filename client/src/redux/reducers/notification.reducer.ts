@@ -1,4 +1,5 @@
-import { NOTIFY, EStatusNotification } from "../types"
+import { PayloadAction } from "@reduxjs/toolkit"
+import { NOTIFY } from "../types"
 
 const initialState = {
 	visible: false,
@@ -8,7 +9,7 @@ const initialState = {
 	timeout: 2000
 }
 
-export const notification = (state = initialState, action: any) => {
+export const notification = (state = initialState, action: PayloadAction<{type: string, head: string, content: string, timeout?: number} & number>) => {
 	switch(action.type){
 		case NOTIFY.SHOW:
 			return{

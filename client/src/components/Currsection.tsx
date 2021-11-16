@@ -4,7 +4,7 @@ import "../styles/components.scss"
 
 
 interface IProps{
-	info: Object
+	info: Record<string, string | number>
 }
 
 
@@ -14,7 +14,7 @@ const Currsection: React.FC<IProps> = ({info}) => {
 			{
 				Object.keys(info).map((key: string, index: number) => {
 					return (
-						<p className="lesson_info_item">
+						<p className="lesson_info_item" key={index}>
 							<span className="lesson_info_item_key">
 								{key}:
 							</span>

@@ -1,32 +1,34 @@
-import axios from "axios"
-import * as CONFIG from "./config.json"
-import { ActionChange } from "./domains/entities/actions.entity"
-import { IDeck } from "./domains/entities/deсk.entity"
+import axios from 'axios';
+import * as CONFIG from './config.json';
+import { ActionChange } from './domains/entities/actions.entity';
+import { IDeck } from './domains/entities/deсk.entity';
+import { User } from './domains/entities/user.entity';
 
 interface OptionsRequest{
 	token?: boolean
 	downloadFile?: boolean
 }
 
-const API_URLS: any = {
-	REGISTRATION: 		CONFIG.HOST + CONFIG.URLS.REGISTRATION,
-	LOGIN: 				CONFIG.HOST + CONFIG.URLS.LOGIN,
-	AUTH: 				CONFIG.HOST + CONFIG.URLS.AUTH,
-	GET_DECKS: 			CONFIG.HOST + CONFIG.URLS.GET_DECKS,
-	GET_DECK: 			CONFIG.HOST + CONFIG.URLS.GET_DECK,
-	GET_ALL_DECKS: 	CONFIG.HOST + CONFIG.URLS.GET_ALL_DECKS,
-	SET_LIKE: 			CONFIG.HOST + CONFIG.URLS.SET_LIKE,
-	ADD_DECK: 			CONFIG.HOST + CONFIG.URLS.ADD_DECK,
-	CHANGE_DECK: 		CONFIG.HOST + CONFIG.URLS.CHANGE_DECK,
-	SUBSCRIBE_DECK: 	CONFIG.HOST + CONFIG.URLS.SUBSCRIBE_DECK,
-	DELETE_DECK: 		CONFIG.HOST + CONFIG.URLS.DELETE_DECK,
-	GET_SCORES: 		CONFIG.HOST + CONFIG.URLS.GET_SCORES,
-	CLONE_DECK: 		CONFIG.HOST + CONFIG.URLS.CLONE_DECK,
-	GET_RATING: 		CONFIG.HOST + CONFIG.URLS.GET_RATING,
-}
+const API_URLS = {
+	REGISTRATION: CONFIG.HOST + CONFIG.URLS.REGISTRATION,
+	LOGIN: CONFIG.HOST + CONFIG.URLS.LOGIN,
+	AUTH: CONFIG.HOST + CONFIG.URLS.AUTH,
+	GET_DECKS: CONFIG.HOST + CONFIG.URLS.GET_DECKS,
+	GET_DECK: CONFIG.HOST + CONFIG.URLS.GET_DECK,
+	GET_ALL_DECKS: CONFIG.HOST + CONFIG.URLS.GET_ALL_DECKS,
+	SET_LIKE: CONFIG.HOST + CONFIG.URLS.SET_LIKE,
+	ADD_DECK: CONFIG.HOST + CONFIG.URLS.ADD_DECK,
+	CHANGE_DECK: CONFIG.HOST + CONFIG.URLS.CHANGE_DECK,
+	SUBSCRIBE_DECK: CONFIG.HOST + CONFIG.URLS.SUBSCRIBE_DECK,
+	DELETE_DECK: CONFIG.HOST + CONFIG.URLS.DELETE_DECK,
+	GET_SCORES: CONFIG.HOST + CONFIG.URLS.GET_SCORES,
+	CLONE_DECK: CONFIG.HOST + CONFIG.URLS.CLONE_DECK,
+	GET_RATING: CONFIG.HOST + CONFIG.URLS.GET_RATING,
+	GET_USER: CONFIG.HOST + CONFIG.URLS.GET_USER
+};
 
 const FAKE_DATA = (url: string) => {
-	switch(url){
+	switch (url) {
 		case API_URLS.GET_DECK:
 			return JSON.parse(`
 				{
@@ -78,76 +80,80 @@ const FAKE_DATA = (url: string) => {
 						"likes": 2
 					}
 				}
-			`)
+			`);
 		default:
 			return {
-				error: true
-			}
+				error: true,
+			};
 	}
-}
-
+};
 
 // Static class for wokring with API
 class API {
-	private static GET(url: string, data: any, options?: OptionsRequest): Promise<any>{
+	private static GET(url: string, data: any, options?: OptionsRequest): Promise<any> {
 		return axios.get(
-			url, 
+			url,
 			{
 				params: options?.token ? {
-					...data, 
-					token: localStorage.getItem("token") || ""
+					...data,
+					token: localStorage.getItem('token') || '',
 				} : {
-					...data
+					...data,
 				},
-				responseType: options?.downloadFile? "blob": "json"
-			}
-		)
+				responseType: options?.downloadFile ? 'blob' : 'json',
+			},
+		);
 	}
 
-	private static POST(url: string, data: any, options?: OptionsRequest): Promise<any>{
+	private static POST(url: string, data: any, options?: OptionsRequest): Promise<any> {
 		const bodyRequest = options?.token ? {
-			...data, 
-			token: localStorage.getItem("token") || ""
+			...data,
+			token: localStorage.getItem('token') || '',
 		} : {
-			...data
-		}
+			...data,
+		};
 		return axios.post(
-			url, 
+			url,
 			bodyRequest,
 			{
-				responseType: options?.downloadFile? "blob": "json"
-			}
-		)
+				responseType: options?.downloadFile ? 'blob' : 'json',
+			},
+		);
 	}
 
-	private static GETFake (url: string, data: any, options?: OptionsRequest): Promise<any>{
+	private static GETFake(url: string, data: any, options?: OptionsRequest): Promise<any> {
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
-				resolve({ data: FAKE_DATA(url) })
-			}, 100)
-		})
+				resolve({ data: FAKE_DATA(url) });
+			}, 100);
+		});
 	}
 
-	private POSTFake (url: string, data: any, options?: OptionsRequest): Promise<any>{
-		return new Promise((resolve, reject) => {
-
-		})
-	}
-	
 	// --------------------------------------------------------------------------
-	// ----------------------- Registration, Login, Auth ------------------------
+	// ---------------- Registration, Login, Auth and User Info -----------------
 	// --------------------------------------------------------------------------
 
-	public static registration(data: object): Promise<any>{
-		return this.POST(API_URLS.REGISTRATION, data)
+	public static registration(data: any): Promise<any> {
+		return this.POST(API_URLS.REGISTRATION, data);
 	}
 
-	public static login(data: object): Promise<any>{
-		return this.POST(API_URLS.LOGIN, data)
+	public static login(data: any): Promise<any> {
+		return this.POST(API_URLS.LOGIN, data);
 	}
 
-	public static auth(): Promise<any>{
-		return this.GET(API_URLS.AUTH, {  }, { token: true })
+	public static auth(): Promise<any> {
+		return this.GET(API_URLS.AUTH, { }, { token: true });
+	}
+
+	public static getUser(login: string, page?: number): Promise<User & {decks: IDeck[]}> {
+		return this.GET(API_URLS.GET_USER, { login, page }, { token: Boolean(localStorage.getItem("token")) }).then((res: any) => {
+			const __data = res.data
+			const decks = __data.decks.map((deck: any) => this.transormArrayOfDeck(deck))
+			return {
+				...__data,
+				decks: [...decks]
+			}
+		})
 	}
 
 	// --------------------------------------------------------------------------
@@ -157,7 +163,7 @@ class API {
 	// ***GET DATA***
 
 	// get decks for certain user (with token)
-	private static transormArrayOfDeck(deck: any): IDeck{
+	private static transormArrayOfDeck(deck: any): IDeck {
 		return {
 			id: deck.id,
 			name: deck.name,
@@ -172,101 +178,100 @@ class API {
 			countLikes: deck.likes,
 			activeLike: deck.liked,
 			cards: deck.cards,
-			subscribed: deck.subscribed
-		}
+			subscribed: deck.subscribed,
+		};
 	}
 
-	public static getDecks(): Promise<any>{
-		return new Promise<any> ((resolve, reject) => {
+	public static getDecks(): Promise<any> {
+		return new Promise<any>((resolve, reject) => {
 			this.GET(API_URLS.GET_DECKS, {}, { token: true })
-				.then(response => {
+				.then((response) => {
 					const data = {
 						subscriptions: response.data.subscriptions.map((deck: any) => this.transormArrayOfDeck(deck)),
-						owned: response.data.owned.map((deck: any) => this.transormArrayOfDeck(deck))
-					}
+						owned: response.data.owned.map((deck: any) => this.transormArrayOfDeck(deck)),
+					};
 					console.log({
 						...response.data,
-						...data
-					})
+						...data,
+					});
 					resolve({
 						data: {
 							...response.data,
-							...data
-						}
-					})
-				})
-		})
-		
+							...data,
+						},
+					});
+				});
+		});
 	}
 
-	public static getDeck(id: number): Promise<any>{
-		return new Promise<any> ((resolve, reject) => {
-			this.GET(API_URLS.GET_DECK, (localStorage.getItem("token")?.length !== undefined ? { token: localStorage.getItem("token"), id }: { id }))
-				.then(response => {
-					console.log(response)
-					const data: IDeck = this.transormArrayOfDeck(response.data.deck)
+	public static getDeck(id: number): Promise<any> {
+		return new Promise<any>((resolve, reject) => {
+			this.GET(API_URLS.GET_DECK, (localStorage.getItem('token')?.length !== undefined ? { token: localStorage.getItem('token'), id } : { id }))
+				.then((response) => {
+					console.log(response);
+					const data: IDeck = this.transormArrayOfDeck(response.data.deck);
 					resolve({
-						deck: data
-					})
-				})
-		})
+						deck: data,
+					});
+				});
+		});
 	}
-	
-	public static getAllDecks(): Promise<any>{
-		return new Promise<any> ((resolve, reject) => {
-			this.GET(API_URLS.GET_ALL_DECKS, (localStorage.getItem("token")?.length !== undefined ? { token: localStorage.getItem("token") }: {}))
-				.then(response => {
-					const data: IDeck = response.data.decks.map((deck: any) => this.transormArrayOfDeck(deck))
+
+	public static getAllDecks(page?: number): Promise<any> {
+		return new Promise<any>((resolve, reject) => {
+			this.GET(API_URLS.GET_ALL_DECKS, (localStorage.getItem('token')?.length !== undefined ? { token: localStorage.getItem('token'), page } : { page }))
+				.then((response) => {
+					const data: IDeck = response.data.decks.map((deck: any) => this.transormArrayOfDeck(deck));
 					resolve({
 						...response,
 						data: {
 							...response.data,
-							decks: data
-						}
-					})
-				})
-		})
-		
+							decks: data,
+						},
+					});
+				});
+		});
 	}
 
 	// ***POST DATA***
-	public static addDeck(data: any): Promise<any>{
-		return this.POST(API_URLS.ADD_DECK, data, { token: true })
+	public static addDeck(data: any): Promise<any> {
+		return this.POST(API_URLS.ADD_DECK, data, { token: true });
 	}
 
-	public static deleteDeck(deckId: number): Promise<any>{
-		return this.POST(API_URLS.DELETE_DECK, { deckId }, { token: true })
+	public static deleteDeck(deckId: number): Promise<any> {
+		return this.POST(API_URLS.DELETE_DECK, { deckId }, { token: true });
 	}
 
-	public static getScoresAfterEndPlay(data: any, deckId: number): Promise<any>{
-		return this.POST(API_URLS.GET_SCORES, { ...data, deckId }, {token: true })
+	public static getScoresAfterEndPlay(data: any, deckId: number): Promise<any> {
+		return this.POST(API_URLS.GET_SCORES, { ...data, deckId }, { token: true });
 	}
 
-	public static cloneDeck(deckId: number): Promise<any>{
-		return this.POST(API_URLS.CLONE_DECK, { deckId }, { token: true })
+	public static cloneDeck(deckId: number): Promise<any> {
+		return this.POST(API_URLS.CLONE_DECK, { deckId }, { token: true });
 	}
 
 	// ***CHANGE DATA***
-	public static applyChanges(idDeck: number, changes: ActionChange[]){
-		return this.POST(API_URLS.CHANGE_DECK, { idDeck, changes}, { token: true })
-	}
-	
-	// specific methods
-	public static setLike(deckId: number): Promise<any>{
-		return this.POST(API_URLS.SET_LIKE, { deckId }, { token: true })
+	public static applyChanges(idDeck: number, changes: ActionChange[]) {
+		return this.POST(API_URLS.CHANGE_DECK, { idDeck, changes }, { token: true });
 	}
 
-	public static subscribe(deckId: number): Promise<any>{
-		return this.POST(API_URLS.SUBSCRIBE_DECK, { deckId }, { token: true })
+	// specific methods
+	public static setLike(deckId: number): Promise<any> {
+		return this.POST(API_URLS.SET_LIKE, { deckId }, { token: true });
+	}
+
+	public static subscribe(deckId: number): Promise<any> {
+		return this.POST(API_URLS.SUBSCRIBE_DECK, { deckId }, { token: true });
 	}
 
 	// -----------------------------------------------------------------------------
 	// ------------------------------- Rating --------------------------------------
 	// -----------------------------------------------------------------------------
 
-	public static getRating(page?: number): Promise<any>{
-		return this.GET(API_URLS.GET_RATING, {  }, { token: false })
+	public static getRating(page?: number): Promise<any> {
+		return this.GET(API_URLS.GET_RATING, { }, { token: false });
 	}
+	
 }
 
-export default API
+export default API;
