@@ -26,6 +26,7 @@ public class JsonUtils {
 
     public static JSONObject getDeckJson(Deck deck){
         JSONObject object = new JSONObject();
+        object.put("is_worst", deck.getIsWorst());
         object.put("id", deck.getId());
         object.put("author_login", deck.getAuthor().getLogin());
         object.put("owner_login", deck.getOwner().getLogin());
@@ -205,9 +206,10 @@ public class JsonUtils {
                 page
         );
         JSONArray array = new JSONArray();
-        owned.forEach(deck -> {
-            array.add(JsonUtils.getDeckJson(deck));
-        });
+        if(owned != null)
+            owned.forEach(deck -> {
+                array.add(JsonUtils.getDeckJson(deck));
+            });
         object.put("decks", array);
         object.put("is_checked", user.getIsChecked());
         return object;

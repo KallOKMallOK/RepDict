@@ -53,6 +53,7 @@ public class Deck {
         likes = 0;
         price = 0;
         this.owner = owner;
+        this.isWorst = false;
         name = deck.getName() + " (clone)";
         cards = new ArrayList<Card>();
         for(Card card : deck.getCards()){

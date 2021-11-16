@@ -120,7 +120,7 @@ public class LogRegController {
         return user;
     }
 
-    private static final long WORST_DECK_UPDATE_PERIOD = 100000;
+    private static final long WORST_DECK_UPDATE_PERIOD = 86400000;
 
     public static boolean MiddleWare(String token, UserRepository userRepository) throws IOException {
         return findUserByToken(token, userRepository) != null;

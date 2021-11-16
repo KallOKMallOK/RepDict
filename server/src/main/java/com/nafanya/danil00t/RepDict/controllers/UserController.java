@@ -140,4 +140,40 @@ public class UserController {
         object.put("decks", decksArray);
         return object;
     }
+
+    @PostMapping("/change_user")
+    public JSONObject changeUser(
+            @RequestBody UserChangeRequest request
+    ) throws IOException {
+        if(!LogRegController.MiddleWare(request.getToken(), userRepository))
+            return MainController.getError();
+        User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()));
+        request.payload.forEach(payload -> changeUserSwitch(payload, user));
+        JSONObject object = MainController.getSuccess();
+        object.put("token", user.getToken());
+        return object;
+    }
+
+    private void changeUserSwitch(JSONObject payload, User user) {
+        switch ((String) payload.get("name")) {
+            case "password":
+                String password = (String) payload.get("value");
+                try {
+                    String token = JWTokenUtils.generateJWToken(user.getLogin(), password);
+                    user.setToken(token);
+                } catch (IOException ignore) { }
+                break;
+            case "name":
+                user.setName((String) payload.get("value"));
+                break;
+            default:
+                break;
+        }
+        userRepository.save(user);
+    }
+}
+@Getter
+@Setter
+class UserChangeRequest extends BanalRequest {
+    List<JSONObject> payload;
 }
