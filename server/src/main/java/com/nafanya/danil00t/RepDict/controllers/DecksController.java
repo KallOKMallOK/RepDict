@@ -7,6 +7,7 @@ import com.nafanya.danil00t.RepDict.models.*;
 import com.nafanya.danil00t.RepDict.repository.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.jboss.jandex.Main;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -28,7 +30,7 @@ public class DecksController {
 
     private static final Integer worstDeckSize = 20;
 
-    private final Integer decksOnOnePage = 10;
+    private final Integer decksOnOnePage = 9;
 
     @Autowired
     SubscriptionRepository subscriptionRepository;
@@ -69,6 +71,22 @@ public class DecksController {
         deckRepository.save(_deck);
         return MainController.getSuccess();
     }
+
+    @GetMapping("/worst_deck")
+    public JSONObject getWorstDeck(
+            @RequestParam String token
+    ) throws IOException {
+        if(!LogRegController.MiddleWare(token, userRepository))
+            return MainController.getError();
+        User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
+        Deck worstDeck = deckRepository.findByOwnerAndIsWorst(user, true);
+        if(worstDeck == null)
+            return MainController.getError();
+        JSONObject object = MainController.getSuccess();
+        object.put("worst_deck", JsonUtils.getDeckJson(worstDeck, user));
+        return object;
+    }
+
 
     @GetMapping("/get_all_decks")
     public JSONObject getAllDecks(
@@ -113,7 +131,7 @@ public class DecksController {
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(token));
         JSONObject object = new JSONObject();
 
-        List<Deck> ownedList = deckRepository.findAllByOwnerOrderByIdDesc(user);
+        List<Deck> ownedList = deckRepository.findAllByOwnerOrderByIdDesc(user).stream().filter(deck -> deck.getIsWorst().equals(false)).collect(Collectors.toList());
         int ownedPages = (int) (ownedList.size() / 10) + 1;
         if(ownedPage > ownedPages)
             return MainController.getError();
@@ -143,7 +161,6 @@ public class DecksController {
         return object;
     }
 
-    //TODO: Добавить в readme.md
     @GetMapping("/get_deck")
     public JSONObject getDeck(
             @RequestParam(required = false) String token,
@@ -207,6 +224,8 @@ public class DecksController {
             return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(body.getToken()));
         Deck deck = deckRepository.getById(body.getIdDeck());
+        if(deck.getIsWorst().equals(true))
+            return MainController.getError();
         if(!deck.getOwner().getLogin().equals(user.getLogin()))
             return MainController.getError();
         body.getChanges().forEach(change -> {
@@ -275,6 +294,8 @@ public class DecksController {
         JSONObject object = MainController.getSuccess();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()));
         Deck deck = deckRepository.getById(request.getDeckId());
+        if(deck.getIsWorst().equals(true))
+            return MainController.getError();
         if(deck.getOwner().equals(user))
             return MainController.getError();
         if(!user.getSubscriptionDecks().contains(deck)){
@@ -295,6 +316,8 @@ public class DecksController {
             return MainController.getError();
         User user = userRepository.getByLogin(JWTokenUtils.getLoginFromJWToken(request.getToken()));
         Deck original = deckRepository.getById(request.getDeckId());
+        if(original.getIsPrivate().equals(1) && !original.getOwner().equals(user))
+            return MainController.getError();
         Deck clone = new Deck(original, user);
         cardRepository.saveAll(clone.getCards());
         deckRepository.save(clone);
@@ -324,6 +347,7 @@ public class DecksController {
                 }
         );
     }
+
 
     private void changeCardSwitch(JSONObject payload, Deck deck){
         Card card = null;

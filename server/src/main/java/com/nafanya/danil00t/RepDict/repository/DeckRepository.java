@@ -18,4 +18,6 @@ public interface DeckRepository extends JpaRepository<Deck, Integer> {
 
     Deck getDeckByAuthorAndIsWorst(User author, Boolean isWorst);
 
+    Deck findByOwnerAndIsWorst(User owner, Boolean isWorst);
+
 }

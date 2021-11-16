@@ -22,7 +22,7 @@ public class User {
 
     public User(String login, String password) throws IOException {
         this.login = login;
-        this.token = JWTokenUtils.GenerateJWToken(login, password);
+        this.token = JWTokenUtils.generateJWToken(login, password);
         this.regDate = new Date();
         this.balance = 0;
         this.isChecked = false;

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class JWTokenUtils {
 
-    public static String GenerateJWToken(String login, String password) throws IOException {
+    public static String generateJWToken(String login, String password) throws IOException {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("login", login);
