@@ -5,12 +5,13 @@ import "../styles/components.scss"
 
 interface IProps{
 	info: Record<string, string | number>
+	className?: string
 }
 
 
-const Currsection: React.FC<IProps> = ({info}) => {
+const Currsection: React.FC<IProps> = ({info, className}) => {
   return (
-	<section className="lesson_section lesson_info">
+	<section className={`lesson_section lesson_info ${className || ""}`}>
 			{
 				Object.keys(info).map((key: string, index: number) => {
 					return (

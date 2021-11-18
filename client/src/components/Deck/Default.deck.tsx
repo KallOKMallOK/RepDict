@@ -197,7 +197,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 					</span>
 			}
 			
-			<span className="card_item_head_name">{props.name}</span>
+			<span className="card_item_head_name" onClick={() => history.push(`/play/${props.id}`)}>{props.name}</span>
 			{
 				// props.author !== props.owner && 
 				<Link to={`/user/${props.author}`} className="author">(by {props.author})</Link> 

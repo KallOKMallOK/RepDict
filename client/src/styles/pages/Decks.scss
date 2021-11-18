@@ -52,12 +52,21 @@
 					font-family: RobotoBlack;
 					margin-bottom: 15px;
 					color: white;
+					cursor: pointer;
+					@include trs(.1s);
+					&:hover{
+						color: rgb(224, 224, 224);
+					}
 				}
 				.author{
 					color: white;
 					font-family: RobotoLight;
 					margin-left: 5px;
 					text-decoration: none;
+					@include trs(.1s);
+					&:hover{
+						color: rgb(224, 224, 224);
+					}
 				}
 			}
 

@@ -10,13 +10,24 @@ import "../styles/pages/User.scss"
 import { hideLoader, showLoader } from "../components";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { Notification } from "../components/Notification";
+import { RootState } from "../redux/store";
+import { connect, ConnectedProps } from "react-redux";
 
 interface ParamsUserPage{
 	login: string
 }
 
+const mapDispatchToProps = (state: RootState) => ({
+	auth: state.app.auth
+})
 
-const UserPage: React.FC<WithTranslation> = props => {
+const connector = connect(mapDispatchToProps)
+
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+
+
+const UserPage: React.FC<WithTranslation & PropsFromRedux> = props => {
 	const { login } = useParams<ParamsUserPage>();
 	const history = useHistory()
 
@@ -99,7 +110,7 @@ const UserPage: React.FC<WithTranslation> = props => {
 								enableChangePrivate: false, 
 								enableDelete: false, 
 								enableEdit: false,
-								enableLike: true
+								enableLike: props.auth
 							}}
 
 							like={() => API.setLike(deck.id)}
@@ -112,4 +123,4 @@ const UserPage: React.FC<WithTranslation> = props => {
 	)
 }
 
-export default withTranslation()(UserPage)
+export default withTranslation()(connector(UserPage))

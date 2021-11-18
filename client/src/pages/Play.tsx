@@ -1,17 +1,17 @@
-import React from 'react';
 import { Dispatch } from "redux"
+import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router'
 import { connect, ConnectedProps } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { FaArrowRight, FaTimesCircle } from "react-icons/fa"
 
 import API from '../api';
 import { ICard } from '../domains/entities/card.entity';
 import { IDeck } from '../domains/entities/deсk.entity';
 
+import Action from "../redux/actions"
 import Currsection from '../components/Currsection';
 import { Notification } from '../components/Notification';
-import Action from "../redux/actions"
 
 import "../styles/pages/Play.scss"
 import { WithTranslation, withTranslation } from 'react-i18next';
@@ -46,6 +46,8 @@ interface StatePlay{
 	cards: ICard[]
 	currentCard: number
 	currentLang: string
+	lastLang: string
+	endedWithLastLang: boolean
 	successed: ResultEndPlayToServer[]
 	valueInputAnswer: string
 	ended: boolean
@@ -53,6 +55,37 @@ interface StatePlay{
 	scores: number
 	visibleHint: boolean
 }
+
+interface LangTogglerProps{
+	// data props
+	mainLang: string
+	secondLang: string
+
+	// component props
+	className?: string
+	// Actions
+	changeLang: (changedLang: string) => void
+}
+
+const LangToggler: React.FC<LangTogglerProps> = (props) => {
+	const [mainLangBool, setMainLangBool] = useState(true)
+	
+	const handleChangeLang = (lang: string, mainBool: boolean) => {
+		props.changeLang(lang)
+		setMainLangBool(mainBool)
+	}
+	return (
+		<div className={`lang_toggler ${props.className || ""}`}>
+			<span 
+				style={{color: !mainLangBool? "#777": "#fff"}} 
+				onClick={() => handleChangeLang(props.mainLang, true)}>{props.mainLang}</span>/
+			<span 
+				style={{color: mainLangBool? "#777": "#fff"}} 
+				onClick={() => handleChangeLang(props.secondLang, false)}>{props.secondLang}</span>
+		</div>
+	)
+}
+
 
 class Play extends React.Component<IPlayProps, StatePlay>{
 	private TIME_CARD = 0
@@ -63,6 +96,8 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 			deck: null,
 			cards: [],
 			currentLang: "ENG",
+			lastLang: "ENG",
+			endedWithLastLang: true,
 			currentCard: 0,
 			successed: [],
 			valueInputAnswer: "",
@@ -86,6 +121,8 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 		if(this.state.currentCard + 1 < this.state.cards.length){		
 			this.setState({ 
 				currentCard: this.state.currentCard + 1,
+				endedWithLastLang: true,
+				lastLang: this.state.currentLang,
 				successed: [
 					...this.state.successed, 
 					{ 
@@ -118,7 +155,6 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					})
 					.catch(err => console.log(err))
 			})
-
 		}
 	}
 
@@ -135,9 +171,23 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	}
 
 	checkCard(card: ICard, value: string): boolean{
-		const answers = card.answer
-			.split("|")
-			.map(ans => ans.trim().toLowerCase())
+		const answers = this.state.endedWithLastLang?
+			(this.state.currentLang === this.state.deck?.mainLang? 
+			card.answer
+				.split("|")
+				.map(ans => ans.trim().toLowerCase()):
+			card.main_word
+				.split("|")
+				.map(ans => ans.trim().toLowerCase())):
+			(this.state.lastLang === this.state.deck?.mainLang? 
+				card.answer
+					.split("|")
+					.map(ans => ans.trim().toLowerCase()):
+				card.main_word
+					.split("|")
+					.map(ans => ans.trim().toLowerCase()))
+		
+		
 			
 		return answers.includes(value.toLowerCase())
 	}
@@ -194,7 +244,11 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 			API.getDeck(id)
 				.then(resp => {
 					this.getTimeDeck("start")
-					this.setState({ deck: resp.deck, cards: this.shuffleCards(resp.deck.cards) })
+					this.setState({ 
+						deck: resp.deck, 
+						cards: this.shuffleCards(resp.deck.cards),
+						currentLang: resp.deck.mainLang
+					})
 				})
 				.catch(err => console.log(err))
 		}
@@ -205,35 +259,68 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 	}
 
 	render(){
+		console.log(this.state.currentLang, this.state.endedWithLastLang, this.state.endedWithLastLang &&
+			this.state.currentLang === this.state.deck?.mainLang);
 		return(
 			<div className="Play page" style={{color: "white"}}>
 				<div className={`Play__card ${this.state.ended? "ended": ""}`}>
+					<div className="top_panel">
+
+					</div>
 					<Currsection 
+						className="top_panel__currsection"
 						info = {{ 
 							[this.props.t("Pages.Play.name")]: this.state.deck?.name as string,
 							[this.props.t("Pages.Play.description")]: this.state.deck?.description || "no description",
 							[this.props.t("Pages.Play.currentCard")]: `${this.state.currentCard + 1} / ${this.state.deck?.cards.length}`
 						}}
 						/>
+						<LangToggler 
+							mainLang={this.state.deck?.mainLang || ""}
+							secondLang={this.state.deck?.secondLang || ""}
+							changeLang={lang => this.state.endedWithLastLang && this.setState({ currentLang: lang, lastLang: this.state.currentLang, endedWithLastLang: false })}
+						/>
+
+
 					<section className="lesson_section Play__card_section">
 						<div className="lesson_card">
-							<span className="lesson_card_lang">{this.state.deck?.mainLang.toUpperCase()}</span>
+
+							<span className="lesson_card_lang">
+								{
+									this.state.currentLang === this.state.lastLang ? 
+										this.state.currentLang.toUpperCase() :
+										`${this.state.lastLang.toUpperCase()} -> ${this.state.currentLang.toUpperCase()}`
+								}
+							</span>
+
 							<button className="lesson_card_hint" onClick={this.handleHint.bind(this)}>?</button>
 							<div className={`hint ${this.state.visibleHint? "active": "noactive"}`}>
 								{this.state.cards[this.state.currentCard]?.description}
 							</div>
-							<span className="lesson_card_word">{this.state.cards[this.state.currentCard]?.main_word}</span> 
+							<span className="lesson_card_word">
+								{this.state.endedWithLastLang?
+									(this.state.currentLang === this.state.deck?.mainLang?
+										this.state.cards[this.state.currentCard]?.main_word:
+										this.state.cards[this.state.currentCard]?.answer):
+									(this.state.lastLang === this.state.deck?.mainLang?
+											this.state.cards[this.state.currentCard]?.main_word:
+											this.state.cards[this.state.currentCard]?.answer)
+								}
+							</span> 
 						</div>
 					</section>
+
+
+
 
 					<section className="lesson_section answer">
 						<div onClick={this.handleSkipCard.bind(this)} className="answer_button_skip_word"><FaTimesCircle /></div>
 						<input 
+							autoFocus
 							value={this.state.valueInputAnswer} 
 							onChange={this.handleChangeInputAnswer.bind(this)} 
 							type="text" className="answer_input" 
-							placeholder={`${this.props.t("Pages.Play.translateOn")} ${this.state.deck?.secondLang.toUpperCase()}...`} 
-							autoFocus
+							placeholder={`${this.props.t("Pages.Play.translateOn")} ${!this.state.endedWithLastLang ? (this.state.lastLang === this.state.deck?.mainLang ? this.state.deck.secondLang : this.state.deck?.mainLang): (this.state.currentLang === this.state.deck?.mainLang ? this.state.deck.secondLang : this.state.deck?.mainLang)}...`} 
 						/>
 						<div onClick={() => this.handleNextCard()} className="answer_button_next_word"><FaArrowRight /></div>
 					</section>
