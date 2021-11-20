@@ -3,13 +3,15 @@ import { NOTIFY } from "../types"
 
 const initialState = {
 	visible: false,
-	type: null,
+	type: "",
 	head: "",
 	content: "",
 	timeout: 2000
 }
 
-export const notification = (state = initialState, action: PayloadAction<{type: string, head: string, content: string, timeout?: number} & number>) => {
+export const notification = (
+	state = initialState, 
+	action: PayloadAction<{type: string, head: string, content: string, timeout?: number} & number>) => {
 	switch(action.type){
 		case NOTIFY.SHOW:
 			return{

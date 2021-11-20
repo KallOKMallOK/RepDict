@@ -203,48 +203,7 @@ header.main_header {
 }
 // Notification
 
-.Notification{
-	position: fixed;
-	z-index: 999;
-	bottom: 25px;
-	right: 15px;
-	padding: 10px 25px;
-	border-radius: 3px;
-	@include bs(13px, 2px, rgba(73, 73, 73, 0.349));
-	.Notification_wrapper_content{
-		position: relative;
-		.close{
-			position: absolute;
-			top: -5px;
-			right: -20px;
-			color: white;
-			cursor: pointer;
-		}
-		.head{
-			font-size: 1.4em;
-			font-family: RobotoBold;
-			color: white;
-		}
-	
-		.content{
-			font: 1em RobotoLight;
-			color: white;
-		}
-	}
-}
 
-.Notification.notify_success{
-	background-color: green !important;
-	@include fadeInDown(.2s);
-}
-.Notification.notify_error{
-	background-color: rgb(167, 24, 24) !important;
-	@include fadeInDown(.2s);
-}
-.Notification.notify_warning{
-	background-color: rgb(190, 207, 33) !important;
-	@include fadeInDown(.2s);
-}
 
 
 // Popup
@@ -405,55 +364,3 @@ footer{
 }
 
 
-// -----------------------------------------------------------------------------
-// ----------------------------- Pagination ------------------------------------
-// -----------------------------------------------------------------------------
-
-.pagination{
-	width: 100%;
-	display: flex;
-	justify-content: flex-end;
-	align-items: end;
-	.pagination_select_count_pages{
-		background-color: $color-bg-dark;
-		color: rgb(160, 160, 160);
-		border: 2px solid lighten($color-bg-dark, 10);
-		border-radius: 3px;
-		min-width: 200px;
-		height: 40px;
-		outline: none;
-		padding: 0 10px;
-	}
-	.pagination_pages_buttons{
-		// background-color: red;
-		display: flex;
-		margin: 0;
-		padding: 0;
-		li{
-			margin: 0 3px;
-			a{
-				padding: 5px 10px;
-				color: rgb(211, 211, 211);
-				font-family: RobotoBold;
-				border-radius: 3px;
-			}
-		}
-		li.previous, li.next{
-			// padding: 5px 7px;
-			a{
-				// display: flex;
-				// align-items: center;
-				// // line-height: 1.5em;
-				svg{
-					margin-top: -5px;
-				}
-			}
-		}
-		li.active{
-			a{
-				background-color: $color-main;
-				color: white;
-			}
-		}
-	}
-}

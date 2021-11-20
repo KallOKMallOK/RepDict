@@ -23,7 +23,6 @@ import './i18n';
 import "./styles/reset.scss"
 import './styles/main.scss'
 import './styles/responsive.scss'
-import 'react-notifications/lib/notifications.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { POPUP_TYPES } from './redux/types'
 import Footer from './components/Footer';

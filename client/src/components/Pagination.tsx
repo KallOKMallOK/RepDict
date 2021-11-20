@@ -2,6 +2,8 @@ import React from "react"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import ReactPaginate from "react-paginate"
 
+import "../styles/components/pagination.scss"
+
 interface PaginationProps{
 	// values props
 	countPages: number

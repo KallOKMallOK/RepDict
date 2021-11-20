@@ -16,6 +16,8 @@ import useOutsideClick from '../../hoc/OutsideClicker'
 
 import { Notification } from '../Notification'
 
+import "../../styles/components/deck.scss"
+
 type actionClick = (e: React.FormEvent<HTMLElement>, ...more: any[]) => void
 
 interface enableMethodsOptions{

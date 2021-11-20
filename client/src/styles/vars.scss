@@ -3,16 +3,28 @@
 
 // Colors
 $color-main: #02a870;
-$color-main_: #02a87169; /* main, but with opacity */
-$color-main__: #04865b; /* main, but with opacity */
 $color-accent: #0d6efd;
+$color-accent_pink: #d61c85;
 $color-bg-ligth: #202022;
 $color-bg-dark: #161719;
 $color-bg-grey: #444748;
 $color-bg-mark: #db4f4f;
 $color-bg-mark_: #b34343;
-$color-bg-mark_: #993636;
 $color-link: #2235e0;
+
+$color_success: rgb(52, 153, 35);
+$color_error: rgb(172, 51, 47);
+$color_warning: rgb(196, 207, 42);
+
+// sizes
+$border_radius_sm: 3px;
+$border_radius_md: 5px;
+$border_radius_lg: 10px;
+// -----
+$border_size_sm: 2px;
+$border_size_md: 4px;
+$border_size_lg: 6px;
+
 
 // mixins
 @mixin trs($time: .2s) {
@@ -28,19 +40,27 @@ $color-link: #2235e0;
 	padding: 7px 10px;
 	border-radius: 50px;
 	@include trs;
-	box-shadow: 0 0 5px $color-main_;
+	// box-shadow: 0 0 5px $color-main_;
 	color: white;
 	outline: none;
 	cursor: pointer;
 
 	&:hover{
-		background-color: $color-main__;
+		// background-color: $color-main__;
 		/* border: 3px solid $color-bg-mark__; */
 	}
 }
 
 @mixin bs($blur: 10px, $size: 5px, $color: #000) {
 	box-shadow: 0px 0px $blur $size $color;
+}
+
+@mixin bs_inset($blur: 10px, $size: 5px, $color_inset: #000) {
+	box-shadow: inset 0px 0px $blur $size $color_inset;
+}
+
+@mixin bs_plus_inset($blur: 10px, $size: 5px, $color: #000, $blur_inset: 10px, $size_inset: 5px, $color_inset: #000) {
+	box-shadow: 0px 0px $blur $size $color ,inset 0px 0px $blur_inset $size_inset $color_inset;
 }
 
 @mixin fadeIn($time){

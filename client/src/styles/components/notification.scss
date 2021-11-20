@@ -1,0 +1,74 @@
+@import "../vars";
+@import "../fonts";
+
+.notification{
+	position: fixed;
+	z-index: 999;
+	bottom: 25px;
+	right: 15px;
+	padding: 10px 25px;
+	border-radius: $border_radius_lg;
+	background-color: rgba(lighten($color-bg-ligth, 1), .7);
+	border: $border_size_sm solid $color-bg-ligth;
+	backdrop-filter: blur(3px);
+	&_content{
+		position: relative;
+		&__icon{
+			// color: white;
+			font-size: 1.2em;
+			margin-top: -5px;
+			float: left;
+			margin-right: 5px;
+		}
+		&__close{
+			position: absolute;
+			top: -5px;
+			right: -15px;
+			color: white;
+			cursor: pointer;
+		}
+		&__head{
+			font-size: 1.4em;
+			font-family: RobotoBold;
+			color: white;
+		}
+	
+		&__text{
+			font: 1em RobotoLight;
+			color: white;
+		}
+	}
+	// @modificators
+	&_visible{
+		visibility: visible;
+	}
+	&_non-visible{
+		// visibility: hidden;
+		display: none;
+	}
+}
+
+.notification_success{
+	border-color: $color_success !important;
+	@include bs_plus_inset(13px, 2px, rgba($color_success, .5), 5px, 2px, rgba($color_success, .5));
+	@include fadeInDown(.2s);
+	.notification_content__icon{
+		color: $color_success;
+	}
+}
+.notification_error{
+	border-color: $color_error !important;
+	@include bs_plus_inset(13px, 2px, rgba($color_error, .5), 5px, 2px, rgba($color_error, .5));
+	@include fadeInDown(.2s);
+	.notification_content__icon{
+		color: $color_error;
+	}
+}
+.notification_warning{
+	border-color: $color_warning !important;
+	@include bs_plus_inset(13px, 2px, rgba($color_warning, .5), 5px, 2px, rgba($color_warning, .5));
+	@include fadeInDown(.2s);
+	.notification_content__icon{
+		color: $color_warning;
+	}
+}

@@ -2,7 +2,9 @@ import React, { useState } from "react"
 import Action from "../redux/actions"
 import store from "../redux/store"
 
-import { FaTimes } from "react-icons/fa"
+import { FaCheckCircle, FaExclamationCircle, FaExclamationTriangle, FaTimes, FaTimesCircle } from "react-icons/fa"
+
+import "../styles/components/notification.scss"
 
 enum EStatus{
 	SUCCESS = "SUCCESS", 
@@ -33,21 +35,31 @@ export const Notification = {
 }
 
 const NotificationContainer: React.FC<NotifyProps> = props => {
-	const [, changeVisible] = useState(props.visible)
-
 
 	props.visible && setTimeout(() => {
-		changeVisible(false)
 		store.dispatch(Action.notification.hide())
 	}, props.timeout || 2000)
 
+	const iconSwitcher = (type: string) => {
+		switch(type){
+			case "success":
+				return <FaCheckCircle />
+			case "error":
+				return <FaExclamationTriangle />
+			case "warning":
+				return <FaExclamationCircle />
+		}
+	}
 	return (
-		<div className={`Notification notify_${props.type || "default"}`} style={{display: props.visible? "block": "none"}}>
-			<div className="Notification_wrapper_content">
-				<div className="close" onClick={() => store.dispatch(Action.notification.hide())}><FaTimes/></div>
-				<h2 className="head">{props.head}</h2>
-				<p className="content">{props.content}</p>
-
+		// including BEM methodology
+		<div className={`notification notification_${props.type || "default"} notification_${props.visible? "visible": "non-visible"}`}>
+			<div className="notification_content">
+				<div className="notification_content__close" onClick={() => store.dispatch(Action.notification.hide())}><FaTimes/></div>
+				<span className="notification_content__icon">
+					{ iconSwitcher(props.type) }
+				</span>
+				<h2 className="notification_content__head">{props.head}</h2>
+				<p className="notification_content__text">{props.content}</p>
 			</div>
 		</div>
 	)
