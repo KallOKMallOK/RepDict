@@ -22,8 +22,9 @@ import "../styles/pages/Decks.scss"
 import { RootState } from '../redux/store';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import Pagination from '../components/Pagination';
+import { RouteComponentProps } from 'react-router-dom';
 
-interface IDecksProps extends WithTranslation{
+interface IDecksProps extends WithTranslation, RouteComponentProps{
 	init?: boolean
 	textHello?: string
 }
@@ -173,16 +174,24 @@ class Decks extends React.Component<PropsFromRedux, StateDecks>{
 				// .then(data => console.log(data))
 				.then(data => {
 					console.log(data);
-					!data.error && 
-					this.setState({
-						decksSubscriptions: data.data.subscriptions,
-						decksOwned: data.data.owned,
-						countOwnedPages: data.data.owned_pages,
-						countSubsPages: data.data.subscription_pages,
-					})
+					if(!data.error)
+						this.setState({
+							decksSubscriptions: data.data.subscriptions,
+							decksOwned: data.data.owned,
+							countOwnedPages: data.data.owned_pages,
+							countSubsPages: data.data.subscription_pages,
+						})
+					else{
+						Notification.error("Ошибка!", "Колоды не загрузились, возможно, ошибка на сервере")
+						this.props.history.push("/")
+					}
 					hideLoader()
 				})
-				.catch(() => Notification.error("Error", "Failed to load data", 3000))
+				.catch((e) => {
+					console.log(e);
+					Notification.error("Ошибка!", "Колоды не загрузились, возможно, ошибка на сервере")
+					this.props.history.push("/")
+				})
 		// }
 	}
 

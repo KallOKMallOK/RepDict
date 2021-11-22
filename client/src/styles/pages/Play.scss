@@ -42,6 +42,7 @@
 			justify-content: center;
 			align-items: center;
 			gap: 10px;
+			margin-top: 20px;
 			&_input{
 				width: 360px;
 				height: 42px;
@@ -119,6 +120,56 @@
 	.section_results.hided{
 		display: none;
 	}
+
+	.top_panel{
+		// background-color: red;
+		// display: flex;
+		width: 100%;
+		columns: 2 500px;
+		padding: 30px 50px;
+		.top_right_panel{
+			display: flex;
+			padding: 10px 0;
+			flex-direction: column;
+			// width: 50%;
+			// justify-content: end;
+			align-items: flex-end;
+			// background-color: red;
+			&__button_finish{
+				@include button_default;
+				background-color: $color-error;
+				border: $border_size_sm solid darken($color-error, 10);
+				width: 150px;
+				height: 40px;
+				&:hover{
+					background-color: darken($color-error, 10);
+				}
+			}
+			&__lang_toggler{
+				margin-bottom: 20px;
+				.main_lang_button, .second_lang_button{
+					padding: 3px 5px;
+					margin: 0 3px;
+					border-radius: $border_radius_sm;
+					cursor: pointer;
+					// box-sizing:content-box;
+					&-actived{
+						color: white;
+						background-color: $color-main;
+					}
+					&-non-actived{
+						color: #777;
+					}
+				}
+				.lang_toggler__seporator{
+					margin-top: -5px;
+					font-size: 1.2em;
+					margin: 0 3px;
+					cursor: pointer;
+				}
+			}
+		}
+	}
 }
 
 .lesson_card{
@@ -144,6 +195,68 @@
 		top: 20px;
 		left: 20px;
 	}
-
 }
 
+
+
+// Results
+
+.section_results{
+	padding: 10px 50px;
+	&__header{
+		font: 1.6em RobotoBold;
+		margin: 15px 0;
+	}
+	&_header_list{
+		display: flex;
+		padding: 5px 10px;
+		margin: 0;
+		width: 100%;
+		*{
+			width: calc(100% / 4);
+			color: rgb(124, 124, 124);
+			font: 1em RobotoLight;
+		}
+	}
+	&_list{
+		padding: 0;
+		&__item{
+			border: 1px solid $color-main;
+			margin-bottom: 5px;
+			padding: 5px 10px;
+			display: flex;
+			justify-content: space-between;
+			border-radius: $border_radius_sm;
+			*{
+				min-width: 160px;
+				width: calc(100% / 4);
+			}
+			&__main_word{
+				
+			}
+			&__answer{
+
+			}
+			&__successed{
+				&-correct{
+					span{
+						padding: 3px 7px;
+						border-radius: $border_radius_sm;							
+						background-color: $color-success;
+					}
+				}
+				&-non-correct{
+					span{
+						padding: 3px 7px;
+						border-radius: $border_radius_sm;							
+						background-color: $color-error;
+					}
+				}
+			}
+			&__time{
+
+			}
+		}
+	}
+	
+}

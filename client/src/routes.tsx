@@ -7,8 +7,6 @@ import {
 	FaChartBar,
 	FaStar,
 } from "react-icons/fa"
-import React from "react";
-import { ConnectedComponent } from "react-redux";
  
 export interface IRoute{
 	isNavBar?: boolean,

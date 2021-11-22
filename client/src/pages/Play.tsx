@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router'
 import { connect, ConnectedProps } from 'react-redux';
-import { FaArrowRight, FaTimesCircle } from "react-icons/fa"
+import { FaArrowRight, FaTimesCircle, FaArrowsAltH } from "react-icons/fa"
 
 import API from '../api';
 import { ICard } from '../domains/entities/card.entity';
@@ -60,6 +60,7 @@ interface LangTogglerProps{
 	// data props
 	mainLang: string
 	secondLang: string
+	changeable: boolean
 
 	// component props
 	className?: string
@@ -77,12 +78,49 @@ const LangToggler: React.FC<LangTogglerProps> = (props) => {
 	return (
 		<div className={`lang_toggler ${props.className || ""}`}>
 			<span 
-				style={{color: !mainLangBool? "#777": "#fff"}} 
-				onClick={() => handleChangeLang(props.mainLang, true)}>{props.mainLang}</span>/
+				className={`main_lang_button main_lang_button-${!mainLangBool? "non-actived": "actived"}`}
+				onClick={() => props.changeable && handleChangeLang(props.mainLang, true)}>
+					{props.mainLang}
+			</span>
+			<span className="lang_toggler__seporator" onClick={() => props.changeable && handleChangeLang(mainLangBool? props.secondLang : props.mainLang, !mainLangBool)}><FaArrowsAltH /></span>
 			<span 
-				style={{color: mainLangBool? "#777": "#fff"}} 
-				onClick={() => handleChangeLang(props.secondLang, false)}>{props.secondLang}</span>
+				className={`second_lang_button second_lang_button-${mainLangBool? "non-actived": "actived"}`}
+				onClick={() => props.changeable && handleChangeLang(props.secondLang, false)}>
+					{props.secondLang}
+			</span>
 		</div>
+	)
+}
+
+interface ListResultsProps{
+	results: Results[]
+}
+
+const ListResults: React.FC<ListResultsProps> = props => {
+	return (
+		<>
+			<h2 className="section_results__header">Results</h2>
+			<ul className="section_results_header_list">
+				<li>Main word</li>
+				<li>Answer word</li>
+				<li>Correct</li>
+				<li>Time answer</li>
+			</ul>
+			<ul className="section_results_list">
+				{
+					props.results.map((result, index) => {
+						return <li key={index} className="section_results_list__item">
+							<span className="section_results_list__item__main_word">{result.main_word}</span>
+							<span className="section_results_list__item__answer">{result.answer}</span>
+							<div className={`section_results_list__item__successed section_results_list__item__successed-${result.successed? "correct": "non-correct"}`}>
+								<span>{result.successed? "Correct": "Wrong"}</span>
+							</div>
+							<span className="section_results_list__item__time">{result.time}s</span>
+						</li>
+					})
+				}
+			</ul>
+		</>
 	)
 }
 
@@ -236,7 +274,20 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 			}
 		})
 	}
-
+	handleForceFinishGame(){
+		this.setState({
+			ended: true
+		})
+		API.getScoresAfterEndPlay({
+			results: this.state.successed
+		}, this.state.deck?.id || -1)
+			.then(res => {
+				// console.log(res);
+				this.setState({ scores: res.data.score || 0 })
+				this.props.addScores(res.data.score || 0)
+			})
+			.catch(err => console.log(err))
+	}
 	componentDidMount(){
 		const params: {id: number} = this.props.match.params as {id: number}
 		const id = Number(params.id)
@@ -250,7 +301,10 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 						currentLang: resp.deck.mainLang
 					})
 				})
-				.catch(err => console.log(err))
+				.catch(err => {
+					this.props.history.push("/")
+					Notification.error("Ошибка!", "Либо такой колоды не существует, либо она приватная", 3000)
+				})
 		}
 		else{
 			this.props.history.push("/decks")
@@ -264,22 +318,32 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 		return(
 			<div className="Play page" style={{color: "white"}}>
 				<div className={`Play__card ${this.state.ended? "ended": ""}`}>
-					<div className="top_panel">
 
+
+					<div className="top_panel">
+						<div className="top_left_panel">
+							<Currsection 
+								className="top_panel__currsection"
+								info = {{ 
+									[this.props.t("Pages.Play.name")]: this.state.deck?.name as string,
+									[this.props.t("Pages.Play.description")]: this.state.deck?.description || "no description",
+									[this.props.t("Pages.Play.currentCard")]: `${this.state.currentCard + 1} / ${this.state.deck?.cards.length}`
+								}}
+							/>
+						</div>
+
+						<div className="top_right_panel">
+							<LangToggler 
+								className="top_right_panel__lang_toggler"
+								changeable={this.state.endedWithLastLang}
+								mainLang={this.state.deck?.mainLang || ""}
+								secondLang={this.state.deck?.secondLang || ""}
+								changeLang={lang => this.state.endedWithLastLang && this.setState({ currentLang: lang, lastLang: this.state.currentLang, endedWithLastLang: false })}
+							/>
+							<button onClick={() => this.handleForceFinishGame()} className="top_right_panel__button_finish">Force Finish</button>
+						</div>
+						
 					</div>
-					<Currsection 
-						className="top_panel__currsection"
-						info = {{ 
-							[this.props.t("Pages.Play.name")]: this.state.deck?.name as string,
-							[this.props.t("Pages.Play.description")]: this.state.deck?.description || "no description",
-							[this.props.t("Pages.Play.currentCard")]: `${this.state.currentCard + 1} / ${this.state.deck?.cards.length}`
-						}}
-						/>
-						<LangToggler 
-							mainLang={this.state.deck?.mainLang || ""}
-							secondLang={this.state.deck?.secondLang || ""}
-							changeLang={lang => this.state.endedWithLastLang && this.setState({ currentLang: lang, lastLang: this.state.currentLang, endedWithLastLang: false })}
-						/>
 
 
 					<section className="lesson_section Play__card_section">
@@ -326,6 +390,8 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					</section>
 				</div>	
 				
+
+
 				{/* The end */}
 				<div className={`section_congratulations ${this.state.ended && !this.state.showResults? "ended": ""}`}>
 					<div className="congratulations">
@@ -354,15 +420,7 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 				</div>
 
 				<div className={`section_results ${this.state.showResults? "showed": "hided"}`}>
-					<ul className="section_results_items">
-						{
-							this.getResults().map((result, index) => {
-								return <li key={index} className="section_results_item">
-									<span>{result.main_word}</span> - <span>{result.answer}</span><span>{result.successed? "Yes!": "no!"}</span><span>{result.time}</span>
-								</li>
-							})
-						}
-					</ul>
+					<ListResults results={this.getResults()}/>
 					<button className="btn btn-primary" onClick={() => this.setState({ showResults: false })}>back</button>
 				</div>
 			</div>

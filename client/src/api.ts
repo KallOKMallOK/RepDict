@@ -200,7 +200,8 @@ class API {
 							...data,
 						},
 					});
-				});
+				})
+				.catch(() => reject({error: true}))
 		});
 	}
 
@@ -209,10 +210,14 @@ class API {
 			this.GET(API_URLS.GET_DECK, (localStorage.getItem('token')?.length !== undefined ? { token: localStorage.getItem('token'), id } : { id }))
 				.then((response) => {
 					console.log(response);
-					const data: IDeck = this.transormArrayOfDeck(response.data.deck);
-					resolve({
-						deck: data,
-					});
+					if(response.data.error){
+						reject({error: true})
+					}else{
+						const data: IDeck = this.transormArrayOfDeck(response.data.deck);
+						resolve({
+							deck: data,
+						});
+					}
 				});
 		});
 	}

@@ -2,9 +2,9 @@
 @import "../fonts";
 
 .Main{
-	background-color: $color-accent;
+	// background-color: $color-accent;
 	width: 100%;
-	height: calc(100vh - 95px);
+	height: calc(100vh - 130px);
 	.slider{
 		overflow: hidden;
 		height: 100%;
@@ -22,12 +22,14 @@
 				font-family: RobotoBlack;
 				font-size: 2em;
 				margin-bottom: 10px;
+				text-shadow: 0 0 10px $color-main;
 			}
 			h2{
 				font-family: RobotoBold;
 			}
 			p{
 				font-family: RobotoLight;
+				width: 70%;
 			}
 			.advantages{
 

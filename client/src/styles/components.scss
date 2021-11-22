@@ -64,9 +64,9 @@
 
 
 
-section.lesson_section{
-	padding: 20px 50px;
-	.lesson_info_item{
+.currsection{
+	// padding: 20px 50px;
+	&__item{
 		color: $color-bg-grey;
 		font-family: RobotoLight;
 		margin-bottom: 10px;

@@ -11,15 +11,15 @@ interface IProps{
 
 const Currsection: React.FC<IProps> = ({info, className}) => {
   return (
-	<section className={`lesson_section lesson_info ${className || ""}`}>
+	<section className={`currsection ${className || ""}`}>
 			{
 				Object.keys(info).map((key: string, index: number) => {
 					return (
-						<p className="lesson_info_item" key={index}>
-							<span className="lesson_info_item_key">
+						<p className="currsection__item" key={index}>
+							<span className="currsection__item_key">
 								{key}:
 							</span>
-							<span className="lesson_info_item_value">
+							<span className="currsection__item_value">
 								{Object.values(info)[index]}
 							</span>
 						</p>

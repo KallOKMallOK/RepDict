@@ -6,7 +6,8 @@ import { showLoader, hideLoader } from "../components"
 import { Deck, IDeckDefault } from '../components/Deck';
 import Pagination from "../components/Pagination"
 
-import "../styles/pages/Decks.scss"
+// import "../styles/pages/Decks.scss"
+import "../styles/pages/Store.scss"
 import { RootState } from '../redux/store';
 import { WithTranslation, withTranslation } from 'react-i18next';
 

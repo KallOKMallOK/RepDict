@@ -11,6 +11,7 @@
 	background-color: rgba(lighten($color-bg-ligth, 1), .7);
 	border: $border_size_sm solid $color-bg-ligth;
 	backdrop-filter: blur(3px);
+	min-width: 200px;
 	&_content{
 		position: relative;
 		&__icon{

@@ -10,7 +10,7 @@ $color-bg-dark: #161719;
 $color-bg-grey: #444748;
 $color-bg-mark: #db4f4f;
 $color-bg-mark_: #b34343;
-$color-link: #2235e0;
+$color-link: #3e87db;
 
 $color_success: rgb(52, 153, 35);
 $color_error: rgb(172, 51, 47);
@@ -37,17 +37,16 @@ $border_size_lg: 6px;
 	font-family: RobotoBold;
 	background-color: transparent;
 	border: 3px solid $color-main;
-	padding: 7px 10px;
 	border-radius: 50px;
 	@include trs;
+	// @include bs_plus_inset(2px, 1px, $color-main, 2px, 1px, $color-main);
 	// box-shadow: 0 0 5px $color-main_;
 	color: white;
 	outline: none;
 	cursor: pointer;
 
 	&:hover{
-		// background-color: $color-main__;
-		/* border: 3px solid $color-bg-mark__; */
+		background-color: darken($color-main, 4);
 	}
 }
 

@@ -3,20 +3,26 @@
 
 @media screen and (max-width: 660px) {
 
+	#root{
+		padding-bottom: 160px;
+	}
 	// -----------------------------------------------------------------------------
 	// ------------------------------- Header --------------------------------------
 	// -----------------------------------------------------------------------------
 	.main_header {
+		position: relative;
 		height: 90px !important;
-	
+		background-color: transparent !important;
+		backdrop-filter: blur(0) !important;
 		.logo {
+			visibility: hidden;
 			&_text {
 				a {
 					font-family: RobotoBlack;
-					color: white;
-					text-decoration: none;
-					position: absolute;
-					z-index: 9999;
+					// color: white;
+					// text-decoration: none;
+					// position: absolute;
+					// z-index: 9999;
 				}
 			}
 				
@@ -91,6 +97,9 @@
 			.text_block{
 				width: 100%;
 				text-align: center;
+				p{
+					width: 100%;
+				}
 			}
 		}
 	}
@@ -128,6 +137,53 @@
 		width: calc(100vw);
 		.loader{
 			left: calc(50% - 20px)
+		}
+	}
+	// -----------------------------------------------------------------------------
+	// ------------------------------- Footer --------------------------------------
+	// -----------------------------------------------------------------------------
+	
+	footer{
+		.wrap_content{
+			flex-direction: column;
+			align-items: center;
+			gap: 10px;
+		}
+	}
+	// -----------------------------------------------------------------------------
+	// ------------------------------- pagination --------------------------------------
+	// -----------------------------------------------------------------------------
+	
+	.pagination{
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+
+	// -----------------------------------------------------------------------------
+	// ------------------------------- Rating --------------------------------------
+	// -----------------------------------------------------------------------------
+
+	.Rating{
+		margin: 5px !important;
+	}
+
+	// -----------------------------------------------------------------------------
+	// ------------------------------- Play --------------------------------------
+	// -----------------------------------------------------------------------------
+
+	.Play{
+		.top_panel{
+			flex-direction: column;
+			columns: 1;
+			.top_right_panel{
+				align-items: center;
+				padding: 20px 0;
+			}
+		}
+		.lesson_section.answer{
+			padding: 0px 10px !important;
 		}
 	}
 }
