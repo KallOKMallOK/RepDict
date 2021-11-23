@@ -1,0 +1,52 @@
+@import "../vars.scss";
+@import "../fonts.scss";
+
+
+.settings{
+	// background-color: red;
+	$size_side: 100px;
+	&__changer_avatar{
+		// background-color: red;
+		width: $size_side;
+		height: $size_side;
+		border-radius: 50%;
+		overflow: hidden;
+		position: relative;
+		&:hover{
+			.settings__changer_avatar_label{
+				opacity: 1;
+			}
+		}
+		&_current_image{
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			img{
+				width: 100%;
+				// height: 100%;
+			}
+		}
+		&_label{
+			position: absolute;
+			top: 0;
+			left: 0;
+			@include trs(.1s);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			opacity: 0;
+			width: $size_side;
+			height: $size_side;
+			color: white;
+			font-size: 1.3em;
+		}
+		&_input{
+			display: none;
+		}
+	}
+}

@@ -8,6 +8,7 @@ import Store from "./Store"
 import Rating from "./Rating"
 import Main from "./Main"
 import UserPage from "./User"
+import SettingsUser from "./SettingsUser"
 
 const Pages = {
 	Main,
@@ -19,7 +20,8 @@ const Pages = {
 	Rating,
 	Registration,
 	Login,
-	User: UserPage
+	User: UserPage,
+	SettingsUser
 }
 
 export default Pages

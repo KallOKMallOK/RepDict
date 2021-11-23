@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { Link, useHistory, useParams } from "react-router-dom";
-import { FaStar } from "react-icons/fa"
+import { FaImages, FaStar } from "react-icons/fa"
 import ScrollContainer from 'react-indiana-drag-scroll'
 import API from "../api";
 import { Deck } from "../components/Deck";
 import { User } from "../domains/entities/user.entity"
+import * as CONFIG from '../config.json';
 
 import "../styles/pages/User.scss"
 import { hideLoader, showLoader } from "../components";
@@ -12,6 +13,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { Notification } from "../components/Notification";
 import { RootState } from "../redux/store";
 import { connect, ConnectedProps } from "react-redux";
+import LoaderContainer from "../components/Loader";
 
 interface ParamsUserPage{
 	login: string
@@ -33,6 +35,7 @@ const UserPage: React.FC<WithTranslation & PropsFromRedux> = props => {
 
 	const [user, setUser] = useState({} as User)
 	const [loader, setLoader] = useState(false)
+	const [imLoaded, setImLoaded] = useState(false)
 
 	!loader && showLoader()
 	useEffect(() => {
@@ -41,11 +44,10 @@ const UserPage: React.FC<WithTranslation & PropsFromRedux> = props => {
 				console.log(data);
 				setUser(data)
 				if(!loader){
-					hideLoader()
 					setLoader(true)
+					hideLoader()
 				}
 			})
-			.then(data => console.log(user))
 			.catch(err => {
 				console.log("[ERROR]: ", err);
 				Notification.error("Ошибка", "Кажется, данные пользователя не смогли загрузиться...", 4000)
@@ -63,7 +65,28 @@ const UserPage: React.FC<WithTranslation & PropsFromRedux> = props => {
 
 				<div className="top_panel_left">
 					<div className="avatar">
-						<img src="https://avatars.githubusercontent.com/u/73424545?v=4" alt="avatar"/>
+						{/* <LoaderContainer visible={!imLoaded} size="2em"/> */}
+						{
+							user.avatar ?
+							<img 
+								ref={(input) => {
+									// onLoad replacement for SSR
+									if (!input) { return; }
+									const img = input;
+							
+									const updateFunc = () => {
+										setImLoaded(true)
+									};
+									img.onload = updateFunc;
+									if (img.complete) {
+										updateFunc();
+									}
+								}}
+								src={`${CONFIG.HOST}/avatars/${user.avatar}`} 
+								alt="avatar"
+								/>:
+							<FaImages />
+						}
 					</div>
 					<div className="info">
 						<h2 className="info_name">{user.name || "USERNAME"}</h2>
@@ -74,7 +97,7 @@ const UserPage: React.FC<WithTranslation & PropsFromRedux> = props => {
 				<div className="top_panel_right">
 					<div className="info_rating">
 						<span className="info_rating_icon"><FaStar/></span>
-						<span className="info_rating_count">{user.rating || 10000}</span>
+						<span className="info_rating_count">{user.rating || 0}</span>
 					</div>
 					<div className="info_position">
 						<span className="info_position_cnt"><Link to="/rating" className="position_mark">#{1}</Link> {props.t("Pages.User.inRating")}!</span>

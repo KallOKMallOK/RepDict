@@ -6,6 +6,8 @@ import { connect, ConnectedProps } from 'react-redux'
 import API from "./api"
 import { routes } from './routes';
 import Action from "./redux/actions"
+import ReactHintFactory from 'react-hint'
+const ReactHint = ReactHintFactory(React)
 
 // Components
 import Components, { showLoader, hideLoader } from "./components"
@@ -134,7 +136,10 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 			<Router>
 				<React.Fragment>
 					<Components.Header routes={routes.filter(route => route.isNavBar)}/>
+					<ReactHint autoPosition events delay={{show: 100, hide: 300}} />
+
 					<Switcher auth={this.state.auth || this.props.auth}/>
+					
 					<Components.Notification {...this.props.notify}/>
 					<ModalContainer {...this.props.popupProps}/>
 					<Footer />

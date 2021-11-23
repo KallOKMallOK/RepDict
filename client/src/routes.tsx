@@ -119,6 +119,14 @@ export const routes: IRoute[] = [
 		name: 'User',
 		component: Pages.User
 	},
+	{
+		isNavBar: false,
+		isLogin: true,
+		isExact: true,
+		path: '/settings',
+		name: 'Settings for User',
+		component: Pages.SettingsUser
+	}
 
 	
 ];

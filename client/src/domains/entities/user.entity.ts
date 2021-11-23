@@ -1,6 +1,7 @@
 import { IDeck } from "./deсk.entity";
 
 export interface User{
+	avatar: string
 	average_rating: number
 	balance: number
 	donat_balance: number

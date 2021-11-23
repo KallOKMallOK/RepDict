@@ -7,25 +7,30 @@ import { User } from './domains/entities/user.entity';
 interface OptionsRequest{
 	token?: boolean
 	downloadFile?: boolean
+	isFormData?: boolean
 }
 
 const API_URLS = {
-	REGISTRATION: CONFIG.HOST + CONFIG.URLS.REGISTRATION,
-	LOGIN: CONFIG.HOST + CONFIG.URLS.LOGIN,
-	AUTH: CONFIG.HOST + CONFIG.URLS.AUTH,
-	GET_DECKS: CONFIG.HOST + CONFIG.URLS.GET_DECKS,
-	GET_DECK: CONFIG.HOST + CONFIG.URLS.GET_DECK,
-	GET_ALL_DECKS: CONFIG.HOST + CONFIG.URLS.GET_ALL_DECKS,
-	SET_LIKE: CONFIG.HOST + CONFIG.URLS.SET_LIKE,
-	ADD_DECK: CONFIG.HOST + CONFIG.URLS.ADD_DECK,
-	CHANGE_DECK: CONFIG.HOST + CONFIG.URLS.CHANGE_DECK,
-	SUBSCRIBE_DECK: CONFIG.HOST + CONFIG.URLS.SUBSCRIBE_DECK,
-	DELETE_DECK: CONFIG.HOST + CONFIG.URLS.DELETE_DECK,
-	GET_SCORES: CONFIG.HOST + CONFIG.URLS.GET_SCORES,
-	CLONE_DECK: CONFIG.HOST + CONFIG.URLS.CLONE_DECK,
-	GET_RATING: CONFIG.HOST + CONFIG.URLS.GET_RATING,
-	GET_USER: CONFIG.HOST + CONFIG.URLS.GET_USER
+	REGISTRATION: 			CONFIG.HOST + CONFIG.URLS.REGISTRATION,
+	LOGIN: 					CONFIG.HOST + CONFIG.URLS.LOGIN,
+	AUTH: 					CONFIG.HOST + CONFIG.URLS.AUTH,
+	GET_DECKS: 				CONFIG.HOST + CONFIG.URLS.GET_DECKS,
+	GET_DECK: 				CONFIG.HOST + CONFIG.URLS.GET_DECK,
+	GET_ALL_DECKS: 		CONFIG.HOST + CONFIG.URLS.GET_ALL_DECKS,
+	SET_LIKE: 				CONFIG.HOST + CONFIG.URLS.SET_LIKE,
+	ADD_DECK: 				CONFIG.HOST + CONFIG.URLS.ADD_DECK,
+	CHANGE_DECK: 			CONFIG.HOST + CONFIG.URLS.CHANGE_DECK,
+	SUBSCRIBE_DECK: 		CONFIG.HOST + CONFIG.URLS.SUBSCRIBE_DECK,
+	DELETE_DECK: 			CONFIG.HOST + CONFIG.URLS.DELETE_DECK,
+	GET_SCORES: 			CONFIG.HOST + CONFIG.URLS.GET_SCORES,
+	CLONE_DECK: 			CONFIG.HOST + CONFIG.URLS.CLONE_DECK,
+	GET_RATING: 			CONFIG.HOST + CONFIG.URLS.GET_RATING,
+	GET_USER: 				CONFIG.HOST + CONFIG.URLS.GET_USER,
+	SEND_AVATAR: 			CONFIG.HOST + CONFIG.URLS.SEND_AVATAR,
+	CHANGE_USER_PARAMS:	CONFIG.HOST + CONFIG.URLS.CHANGE_USER_PARAMS,
 };
+
+export const HOST = CONFIG.HOST
 
 const FAKE_DATA = (url: string) => {
 	switch (url) {
@@ -119,6 +124,20 @@ class API {
 				responseType: options?.downloadFile ? 'blob' : 'json',
 			},
 		);
+	}
+
+	private static ANYREQUEST(
+			method: "GET" | "POST" | "DELETE" | "PUT", 
+			url: string, 
+			data: any, 
+			headers: Record<string, string>
+		): Promise<any>{
+		return axios({
+			method,
+			url,
+			data,
+			headers
+		})
 	}
 
 	private static GETFake(url: string, data: any, options?: OptionsRequest): Promise<any> {
@@ -253,6 +272,14 @@ class API {
 
 	public static cloneDeck(deckId: number): Promise<any> {
 		return this.POST(API_URLS.CLONE_DECK, { deckId }, { token: true });
+	}
+
+	public static sendAvatar(data: FormData): Promise<any> {
+		return this.ANYREQUEST("POST", API_URLS.SEND_AVATAR, data, { "Content-Type": "multipart/form-data" })
+	}
+
+	public static changeUserParams(data: Array<{name: string, payload: string | number}>): Promise<any>{
+		return this.POST(API_URLS.CHANGE_USER_PARAMS, { payload: data })
 	}
 
 	// ***CHANGE DATA***

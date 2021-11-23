@@ -14,13 +14,20 @@
 			.avatar{
 				width: 50px;
 				height: 50px;
-				background-color: red;
+				background-color: $color-bg-dark;
 				border-radius: 50%;
 				overflow: hidden;
 				margin-right: 15px;
+				position: relative;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: white;
+				font-size: 1.2em;
+				color: $color-main;
 				img{
 					width: 100%;
-					height: 100%;
+					// height: 100%;
 				}
 			}
 			.info{

@@ -5,9 +5,10 @@ import { APP, ELangsInterface } from "../types"
 interface State{
    auth: boolean
    user: {
-      name: string,
-      login: string,
+      name: string
+      login: string
       balance: number
+      avatar: string
    }
    lang: ELangsInterface
 }
@@ -18,7 +19,8 @@ const initialState: State = {
    user: {
       name: "",
       login: "",
-      balance: 0
+      balance: 0,
+      avatar: ""
    },
    lang: localStorage.getItem("i18nextLng") as ELangsInterface || ELangsInterface.EN
 }
@@ -33,7 +35,8 @@ export const app = (state: State = initialState, action: PayloadAction<any>) => 
             user: {
                name: action.payload.name,
                login: action.payload.login,
-               balance: action.payload.balance
+               balance: action.payload.balance,
+               avatar: action.payload.avatar || ""
             }
          }
       case APP.LOGOUT:
@@ -44,7 +47,8 @@ export const app = (state: State = initialState, action: PayloadAction<any>) => 
             user: {
                name: "",
                login: "",
-               balance: 0
+               balance: 0,
+               avatar: ""
             }
          }
       case APP.ADD_SCORES:

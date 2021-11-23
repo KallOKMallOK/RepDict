@@ -271,7 +271,9 @@ header.main_header {
 	z-index: 9999;
 	top: 0;
 	@include trs();
-	background-color: $color-bg-dark;
+	// background-color: $color-bg-dark;
+	background-color: rgba($color-bg-dark, .8);
+	backdrop-filter: blur(3px);
 	.loader {
 		position: absolute;
 		top: calc(50% - 2.5em);

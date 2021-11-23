@@ -7,6 +7,7 @@ import {
 	FaHeart,
 	FaTimes
 } from "react-icons/fa"
+
 import { Link, useHistory } from 'react-router-dom'
 import Linkify from 'react-linkify'
 import API from '../../api'
@@ -17,6 +18,7 @@ import useOutsideClick from '../../hoc/OutsideClicker'
 import { Notification } from '../Notification'
 
 import "../../styles/components/deck.scss"
+import 'react-hint/css/index.css'
 
 type actionClick = (e: React.FormEvent<HTMLElement>, ...more: any[]) => void
 
@@ -194,6 +196,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 						style={{cursor: props.author === props.owner ? "pointer": "default"}}
 						className="private_lock" 
 						onClick={e => handleChangePrivate(e)}
+						data-rh={`${isPrivate? "make public": "make private"}`}
 					>
 						{isPrivate? <FaLock/>: <FaLockOpen/>}
 					</span>
@@ -209,8 +212,8 @@ export const Deck: React.FC<IDeckDefault> = props => {
 		
 		<div className="middle_layer">
 			<div className="card_item_head_langs">
-				<div className="lang main_lang">{props.mainLang}</div>/
-				<div className="lang sec_lang">{props.secondLang}</div>
+				<div className="lang main_lang" data-rh="main language">{props.mainLang}</div>/
+				<div className="lang sec_lang" data-rh="second language">{props.secondLang}</div>
 			</div>
 			<div className="info">
 				<p className="info_count_words">{props.countWords} words</p>
@@ -230,7 +233,7 @@ export const Deck: React.FC<IDeckDefault> = props => {
 					</button>:
 					<div></div>
 			}
-			<span className="likes" onClick={e => likeUser(e)}>
+			<span className="likes" onClick={e => likeUser(e)} data-rh="Like!">
 				<span className={`heart ${activedLike? "active": "noactive"}`}><FaHeart/></span>
 				{countLikes}
 			</span>

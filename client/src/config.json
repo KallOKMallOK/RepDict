@@ -19,6 +19,8 @@
 		"DELETE_DECK": "/delete_deck",
 		"GET_SCORES": "/statistic",
 		"CLONE_DECK": "/copy_deck",
+		"SEND_AVATAR": "/avatar",
+		"CHANGE_USER_PARAMS": "/change_user",
 		
 		"GET_STATISTIC": "/statistic",
 		
