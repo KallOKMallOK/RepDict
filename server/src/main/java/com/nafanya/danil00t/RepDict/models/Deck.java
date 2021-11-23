@@ -39,6 +39,7 @@ public class Deck {
         this.owner = user;
         this.price = price;
         this.likes = 0;
+        isWorst = false;
         cards = new ArrayList<Card>();
     }
 

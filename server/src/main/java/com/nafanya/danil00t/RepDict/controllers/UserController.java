@@ -58,7 +58,8 @@ public class UserController {
 //                "admin"
                 JWTokenUtils.getLoginFromJWToken(token)
         );
-        String avatarName = user.getLogin();
+        String avatarName = user.getLogin() + "." + file.getOriginalFilename().
+                substring(file.getOriginalFilename().lastIndexOf(".") + 1);
         file.transferTo(new File(uploadAvatarPath + "/" + avatarName));
         user.setAvatar(avatarName);
         userRepository.save(user);
