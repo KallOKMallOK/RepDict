@@ -94,8 +94,12 @@ public class DecksController {
             @RequestParam(defaultValue = "1") Integer page
     ) throws IOException{
         JSONObject object = MainController.getSuccess();
-        List<Deck> decksList = deckRepository.findAllByOrderByIdDesc();
-        int pages = (Integer) (decksList.size()  / decksOnOnePage) + 1;
+        List<Deck> decksList = deckRepository.
+                findAllByOrderByIdDesc().
+                stream().
+                filter(deck->deck.getIsPrivate().equals(0) && deck.getIsWorst().equals(false)).
+                collect(Collectors.toList());
+        int pages = (int) (decksList.size()  / decksOnOnePage) + 1;
         object.put("pages", pages);
         if(page > pages)
             return MainController.getError();
@@ -105,7 +109,6 @@ public class DecksController {
         decksList = decksList.subList(fromIndex, toIndex);
         if(token == null)
             decksList.forEach(deck -> {
-                if(deck.getIsPrivate().equals(0))
                     decks.add(JsonUtils.getDeckJson(deck));
             });
         else {
@@ -348,7 +351,6 @@ public class DecksController {
         );
     }
 
-
     private void changeCardSwitch(JSONObject payload, Deck deck){
         Card card = null;
         Integer cardId = (Integer) payload.get("id");
@@ -371,7 +373,7 @@ public class DecksController {
                 card.setType((String) payload.get("value"));
                 break;
             case "description":
-                card.setDescription((String) payload.get("description"));
+                card.setDescription((String) payload.get("value"));
                 break;
         }
         card.generateRating();

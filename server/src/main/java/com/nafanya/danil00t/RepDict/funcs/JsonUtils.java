@@ -132,6 +132,7 @@ public class JsonUtils {
     public static JSONObject getUserJson(User user){
         JSONObject object = MainController.getSuccess();
         object.put("login", user.getLogin());
+        object.put("avatar", user.getAvatar());
         object.put("id", user.getId());
         object.put("token", user.getToken());
         object.put("name", user.getName());
@@ -153,17 +154,20 @@ public class JsonUtils {
         object.put("rating", user.getRating());
         object.put("walkthroughs", user.getWalkthroughs());
         object.put("average_rating", user.getAverageRating());
+        object.put("avatar", user.getAvatar());
         return object;
     }
 
     public static JSONObject getUserPublicJson(User user, Integer page, DeckRepository deckRepository, User guest){
         JSONObject object = getUserRatingJson(user);
         Integer pages;
-        if(!user.equals(guest))
-            pages = (((int) user.getOwned(deckRepository).
-                    stream().
-                    filter(deck -> deck.getIsPrivate().
-                            equals(0)).count() / UserController.getUSERS_ON_PAGE())) + 1;
+        if(!user.equals(guest)) {
+                pages = (((int) user.getOwned(deckRepository).
+                        stream().
+                        filter(deck -> deck.getIsPrivate().
+                                equals(0)).count() / UserController.getUSERS_ON_PAGE())) + 1;
+
+        }
         else
             pages = ((int) (user.getOwned(deckRepository).size() / UserController.getUSERS_ON_PAGE())) + 1;
         if(page > pages)
@@ -186,9 +190,10 @@ public class JsonUtils {
                     page
             );
         JSONArray array = new JSONArray();
-        owned.forEach(deck -> {
-            array.add(JsonUtils.getDeckJson(deck, guest));
-        });
+        if(owned != null)
+            owned.forEach(deck -> {
+                array.add(JsonUtils.getDeckJson(deck, guest));
+            });
         object.put("decks", array);
         object.put("is_checked", user.getIsChecked());
         return object;
