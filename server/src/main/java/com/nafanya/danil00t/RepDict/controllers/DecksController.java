@@ -63,7 +63,7 @@ public class DecksController {
                 userRepository);
         Deck _deck = deckRepository.save(deck);
         cards.getCards().forEach(c -> {
-            Card card = new Card(c.getMain_word(), c.getAnswer(), c.getType());
+            Card card = new Card(c.getMain_word(), c.getAnswer(), c.getType(), c.getDescription());
             card = cardRepository.save(card);
             _deck.getCards().add(card);
         });
