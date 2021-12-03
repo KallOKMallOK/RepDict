@@ -29,6 +29,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { POPUP_TYPES } from './redux/types'
 import Footer from './components/Footer';
 import { Dispatch } from 'redux';
+import { Notification } from './components/Notification';
 
 // -----------------------------------------------------------------------------
 // ---------------------- Connect to redux emmiter -----------------------------
@@ -97,6 +98,7 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 
 	constructor(props: PropsFromRedux){
 		super(props)
+
 		console.log(`
     ____  __________  ____  ________________   _________            __
    / __ \\/ ____/ __ \\/ __ \\/  _/ ____/_  __/  / ____/ (_)__  ____  / /_
@@ -106,6 +108,7 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 		`);
 	}
 	componentDidMount(){
+		showLoader()
 		if(localStorage.getItem("token")?.length !== undefined && localStorage.getItem("token") !== "undefined"){
 			API.auth()
 				.then(res => {
@@ -121,7 +124,10 @@ class App extends React.Component<PropsFromRedux, StateApp>{
 					}
 					
 				})
-				.catch(err => console.log(err))
+				.catch(err => {
+					Notification.error("Ошибка!", "Кажется, что-то (опять) не так с сервером, либо на клиенте", 5000)
+					hideLoader()
+				}) 
 		}
 		else{
 			this.setState({ auth: false })

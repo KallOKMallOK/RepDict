@@ -93,6 +93,15 @@ const FAKE_DATA = (url: string) => {
 	}
 };
 
+type ResponseFromServer = { 
+	config: {url: string, method: 'get' | "post", headers: Record<string, string>, params: Record<string, string>, transformRequest: []},
+	// data: Record<string, any> & {error: boolean},
+	data: any,
+	headers: Record<string, string>,
+	status: number
+	statusText: string 
+}
+
 // Static class for wokring with API
 class API {
 	private static GET(url: string, data: any, options?: OptionsRequest): Promise<any> {
@@ -173,6 +182,10 @@ class API {
 				decks: [...decks]
 			}
 		})
+	}
+
+	public static changeUserParams(changes: {type: string, payload: string | Record<string, string>}[]): Promise<ResponseFromServer>{
+		return this.POST(API_URLS.CHANGE_USER_PARAMS, { payload: changes })
 	}
 
 	// --------------------------------------------------------------------------
@@ -258,28 +271,24 @@ class API {
 	}
 
 	// ***POST DATA***
-	public static addDeck(data: any): Promise<any> {
+	public static addDeck(data: any): Promise<ResponseFromServer> {
 		return this.POST(API_URLS.ADD_DECK, data, { token: true });
 	}
 
-	public static deleteDeck(deckId: number): Promise<any> {
+	public static deleteDeck(deckId: number): Promise<ResponseFromServer> {
 		return this.POST(API_URLS.DELETE_DECK, { deckId }, { token: true });
 	}
 
-	public static getScoresAfterEndPlay(data: any, deckId: number): Promise<any> {
+	public static getScoresAfterEndPlay(data: any, deckId: number): Promise<ResponseFromServer> {
 		return this.POST(API_URLS.GET_SCORES, { ...data, deckId }, { token: true });
 	}
 
-	public static cloneDeck(deckId: number): Promise<any> {
+	public static cloneDeck(deckId: number): Promise<ResponseFromServer> {
 		return this.POST(API_URLS.CLONE_DECK, { deckId }, { token: true });
 	}
 
-	public static sendAvatar(data: FormData): Promise<any> {
+	public static sendAvatar(data: FormData): Promise<ResponseFromServer> {
 		return this.ANYREQUEST("POST", API_URLS.SEND_AVATAR, data, { "Content-Type": "multipart/form-data" })
-	}
-
-	public static changeUserParams(data: Array<{name: string, payload: string | number}>): Promise<any>{
-		return this.POST(API_URLS.CHANGE_USER_PARAMS, { payload: data })
 	}
 
 	// ***CHANGE DATA***
@@ -288,11 +297,11 @@ class API {
 	}
 
 	// specific methods
-	public static setLike(deckId: number): Promise<any> {
+	public static setLike(deckId: number): Promise<ResponseFromServer> {
 		return this.POST(API_URLS.SET_LIKE, { deckId }, { token: true });
 	}
 
-	public static subscribe(deckId: number): Promise<any> {
+	public static subscribe(deckId: number): Promise<ResponseFromServer> {
 		return this.POST(API_URLS.SUBSCRIBE_DECK, { deckId }, { token: true });
 	}
 
@@ -300,7 +309,7 @@ class API {
 	// ------------------------------- Rating --------------------------------------
 	// -----------------------------------------------------------------------------
 
-	public static getRating(page?: number): Promise<any> {
+	public static getRating(page?: number): Promise<ResponseFromServer> {
 		return this.GET(API_URLS.GET_RATING, { }, { token: false });
 	}
 	

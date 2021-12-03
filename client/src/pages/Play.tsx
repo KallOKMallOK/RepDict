@@ -187,7 +187,6 @@ class Play extends React.Component<IPlayProps, StatePlay>{
 					results: this.state.successed
 				}, this.state.deck?.id || -1)
 					.then(res => {
-						// console.log(res);
 						this.setState({ scores: res.data.score || 0 })
 						this.props.addScores(res.data.score || 0)
 					})
