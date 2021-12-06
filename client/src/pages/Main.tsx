@@ -12,7 +12,6 @@ interface IMainProps{
 class Main extends React.Component<IMainProps>{
 	constructor(props: IMainProps){
 		super(props)
-		showLoader()
 	}
 
 	componentDidMount(){

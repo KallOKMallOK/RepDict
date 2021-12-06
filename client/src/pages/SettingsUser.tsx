@@ -23,7 +23,7 @@ type SettingsUserProps = RouteComponentProps & PropsFromRedux
 
 interface ChangeTextableValueUser{
 	name: string
-	payload: string | Record<string, string>
+	value: string | Record<string, string> 
 }
 
 interface SettingsUserState{
@@ -82,14 +82,14 @@ class SettingsUser extends React.Component<SettingsUserProps, SettingsUserState>
 		if(this.state.name !== this.inputNameRef.current?.value){
 			changes.push({
 				name: "name",
-				payload: this.inputNameRef.current?.value || ""
+				value: this.inputNameRef.current?.value || ""
 			})
 		
 		}
 		if(this.state.login !== this.inputLoginRef.current?.value){
 			changes.push({
 				name: "login",
-				payload: this.inputLoginRef.current?.value || ""
+				value: this.inputLoginRef.current?.value || ""
 			})
 		}
 
@@ -97,15 +97,27 @@ class SettingsUser extends React.Component<SettingsUserProps, SettingsUserState>
 			if(this.inputNewPasswordRef.current?.value.length !== 0)
 				changes.push({
 					name: "password",
-					payload: {
-						currentPassword: this.inputCurrentPasswordRef.current?.value || "",
-						newPassword: this.inputNewPasswordRef.current?.value || ""
-					}
+					// value: {
+					// 	currentPassword: this.inputCurrentPasswordRef.current?.value || "",
+					// 	newPassword: this.inputNewPasswordRef.current?.value || ""
+					// }
+					value: this.inputNewPasswordRef.current?.value || ""
 				})
 		}
 		else Notification.warning("Пароли не совпадают(", "Проверьте на совпадение нового и повторного пароля")
 
-		console.log(changes);
+		changes.length !== 0 && API.changeUserParams(changes)
+			.then(res => {
+				console.log(res.data);
+				if(!res.data.error){
+					Notification.success("Успех!", "Данные успешно сохранены!")
+					localStorage.setItem("token", res.data.token)
+				}
+				else
+					Notification.warning("Ничего не удалось(", "Данные не успешно сохранены!")
+				}
+			)
+			.catch((err) => Notification.error("Ошибка", err))
 	}
 	static getDerivedStateFromProps(p: SettingsUserProps){
 		if(p.auth)
@@ -123,35 +135,45 @@ class SettingsUser extends React.Component<SettingsUserProps, SettingsUserState>
 		return(
 			<div className="__container">
 				<div className="settings">
-					<div className="settings__changer_avatar">
-						<div className="settings__changer_avatar_current_image">
-							<img src={this.state.fileAsDataBase64 || `${HOST}/avatars/${this.props.user.avatar}` || ""} alt="Avatar"/>
-						</div>
-						<label className="settings__changer_avatar_label" data-rh="Change avatar">
-							<input type="file" 
-								className="settings__changer_avatar_input" 
-								accept=".jpg, .jpeg, .png"
-								onChange={e => this.handleChangeFile(e)}
-								/>
-							<FaCamera />
-						</label>
 
-					</div>
 
 					<div className="settings__changer_textable_values">
-						<div className="change_name">
-							<input type="text" placeholder="Input your name" ref={this.inputNameRef} defaultValue={this.state.name}/>
+						<div className="settings__changer_textable_values_content">
+							<div className="settings__changer_avatar">
+								<div className="settings__changer_avatar_current_image">
+									<img src={this.state.fileAsDataBase64 || `${HOST}/avatars/${this.props.user.avatar}` || ""} alt="Avatar"/>
+								</div>
+								<label className="settings__changer_avatar_label" data-rh="Change avatar">
+									<input type="file" 
+										className="settings__changer_avatar_input" 
+										accept=".jpg, .jpeg, .png"
+										onChange={e => this.handleChangeFile(e)}
+										/>
+									<FaCamera />
+								</label>
+							</div>
+							<div className="changer_value change_name">
+								<label htmlFor="name">Ваше имя: </label>
+								<input className="__input __input_default" id="name" type="text" placeholder="Input your name" ref={this.inputNameRef} defaultValue={this.state.name}/>
+							</div>
+							<div className="changer_value change_login">
+								<label htmlFor="login">Ваш логин: </label>
+								<input title="В разработке" className="__input __input_default disabled" type="text" id="login" autoComplete="login" placeholder="Input your login" ref={this.inputLoginRef} defaultValue={this.state.login}/>
+							</div>
+							<div className="changer_value change_password">
+								<label htmlFor="current_password">Ваш текущий пароль: </label>
+								<input className="__input __input_default" type="password" id="current_password" autoComplete="new-password" placeholder="Input your current password" ref={this.inputCurrentPasswordRef}/>
+							</div>
+							<div className="changer_value change_password">
+								<label htmlFor="new_password">Новый пароль: </label>
+								<input className="__input __input_default" type="password" id="new_password" placeholder="Input your new password" ref={this.inputNewPasswordRef}/>
+							</div>
+							<div className="changer_value change_password">
+								<label htmlFor="repeat_new_password">Повторите новый пароль: </label>
+								<input className="__input __input_default" type="password" id="repeat_new_password" placeholder="Repeat your new password" ref={this.inputRepeatNewPasswordRef}/>
+							</div>
+							<button className="__btn button_save" onClick={() => this.handleSaveChanges()}>Save</button>
 						</div>
-						<div className="change_login">
-							<input type="text" autoComplete="login" placeholder="Input your login" ref={this.inputLoginRef} defaultValue={this.state.login}/>
-						</div>
-						<div className="change_password">
-							<input type="password" autoComplete="new-password" placeholder="Input your current password" ref={this.inputCurrentPasswordRef}/>
-
-							<input type="password" placeholder="Input your new password" ref={this.inputNewPasswordRef}/>
-							<input type="password" placeholder="Repeat your new password" ref={this.inputRepeatNewPasswordRef}/>
-						</div>
-						<button onClick={() => this.handleSaveChanges()}>Save</button>
 					</div>
 				</div>
 			</div>

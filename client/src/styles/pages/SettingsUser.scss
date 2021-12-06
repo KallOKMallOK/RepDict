@@ -4,7 +4,10 @@
 
 .settings{
 	// background-color: red;
+	height: 100%;
 	$size_side: 100px;
+	display: flex;
+	width: 100%;
 	&__changer_avatar{
 		// background-color: red;
 		width: $size_side;
@@ -12,6 +15,7 @@
 		border-radius: 50%;
 		overflow: hidden;
 		position: relative;
+		margin-bottom: 20px;
 		&:hover{
 			.settings__changer_avatar_label{
 				opacity: 1;
@@ -47,6 +51,49 @@
 		}
 		&_input{
 			display: none;
+		}
+	}
+
+	&__changer_textable_values{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		&_content{
+			background-color: $color-bg-ligth;
+			border-radius: $border_radius_md;
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+			padding: 20px 40px;
+			width: 70%;
+			.changer_value{
+				display: flex;
+				// flex-direction: column;
+				width: 40%;
+				min-width: 500px;
+				align-items: center;
+				margin-bottom: 5px;
+				// justify-content: center;
+				label{
+					width: 40%;
+					text-align: right;
+					color: rgb(221, 221, 221);
+					margin-right: 10px;
+				}
+				input{
+					font: 1em RobotoBold;
+					min-width: 250px;
+					border-radius: $border_radius_sm;
+				}
+			}
+			.button_save{
+				margin-top: 20px;
+				min-width: 250px;
+			}
+			// .change_password{
+			// 	flex-direction: column;
+			// }
 		}
 	}
 }

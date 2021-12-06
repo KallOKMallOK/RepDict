@@ -26,12 +26,17 @@
 
 .__input.__input_default{
 	border: 2px solid $color-bg-ligth;
-	border-radius: 3px;
+	border-radius: $border_radius_sm;
 	background-color: $color-bg-dark;
 	color: white;
 	font: 1em RobotoLight;
 	padding: 7px 5px;
+	min-height: 40px;
 	outline: none;
+}
+.__input.disabled{
+	pointer-events: none;
+	color: rgb(141, 141, 141);
 }
 
 // Editing text

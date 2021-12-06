@@ -184,8 +184,9 @@ class API {
 		})
 	}
 
-	public static changeUserParams(changes: {type: string, payload: string | Record<string, string>}[]): Promise<ResponseFromServer>{
-		return this.POST(API_URLS.CHANGE_USER_PARAMS, { payload: changes })
+	public static changeUserParams(changes: {name: string, value: string | Record<string, string>}[]): Promise<ResponseFromServer>{
+		console.log({ payload: changes })
+		return this.POST(API_URLS.CHANGE_USER_PARAMS, { payload: changes }, { token: true })
 	}
 
 	// --------------------------------------------------------------------------
