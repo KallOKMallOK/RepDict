@@ -12,6 +12,7 @@ const resources = {
     translation: translationRU
   },
 };
+
 i18n
   .use(initReactI18next)
   // .use(reactI18nextModule as Module) // passes i18n down to react-i18next

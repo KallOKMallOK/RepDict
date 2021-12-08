@@ -7,13 +7,20 @@ import {
 	FaCaretUp
 } from "react-icons/fa"
 
+// import { Components }
+import AdderCardDefault from "./Default.card"
+import AdderCardChoice from "./Choice.card"
 import { EditText } from '../EditText'
+import { Notification } from '../Notification'
+
+
+// import { Entities }
 import { ActionChange } from '../../domains/entities/actions.entity'
 import { ICard } from '../../domains/entities/card.entity'
 import { IDeck } from '../../domains/entities/deсk.entity'
 import useOutsideClick from '../../hoc/OutsideClicker'
+import Select, { components } from 'react-select'
 
-import { Notification } from '../Notification'
 
 
 // -----------------------------------------------------------------------------
@@ -153,6 +160,8 @@ const EditedCard: React.FC<EditedCardProps> = props => {
 
 
 
+
+
 export interface IDeckActive extends IDeckDefault{
 	close: actionClick
 	save?: actionClick
@@ -165,9 +174,8 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 	const [countCards, incCountCards] = useState(props.countWords)
 	const [changes, addChange] = useState([] as ActionChange[])
 	const [name, changeName] = useState(props.name)
-	const [mainWordValue, changeMainWordValue] = useState("")
-	const [secondWordValue, changeSecondWordValue] = useState("")
-	const [descriptionCard, changeDescriptionCard] = useState("")
+	const [currentTypeCard, setCurrentTypeCard] = useState({value: "default", label: "Default"})
+
 	const [indexCard, changeIndexCard] = useState(1)
 
 	console.log(changes);
@@ -180,10 +188,8 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 	const [secondLang, changeSecondLang] = useState("RU")
 	// const [isPrivate, changeName] = useState(props.name || "Deck name")
 
-	const mainWordRef = useRef<HTMLInputElement>(null)
-	const secondWordRef = useRef<HTMLInputElement>(null)
 	const descriptionDeckRef = useRef<HTMLTextAreaElement>(null)
-	const descriptionCardRef = useRef<HTMLTextAreaElement>(null)
+	
 
 	const LANGS = [
 		"RUS",
@@ -211,44 +217,6 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		})
 	}
 
-	const handleAddCard = () => {
-		const newCard: ICard = {
-			id: (cards[cards.length - 1] || {id: -1}).id + 1,
-			main_word: mainWordValue,
-			answer: secondWordValue,
-			type: "default",
-			description: descriptionCard
-		}
-		changeCards(oldCards => [...oldCards, newCard])
-		incCountCards(countCardsOld => countCardsOld + 1)
-		addChange(oldChanges => {
-			return [...oldChanges, {
-				type: "NEW_CARD",
-				payload: newCard
-			}]
-		})
-
-		changeMainWordValue("")
-		changeSecondWordValue("")
-		changeDescriptionCard("")
-		changeIndexCard(indexCard + 1)
-		// mainWordRef.current?.value = ""
-	}
-
-	const handleChangeMainWord__press = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if(e.key === "Enter")
-			handleAddCard()
-	}
-	
-	const handleChangeSecondWord__press = (e: React.KeyboardEvent<HTMLInputElement>) => { if(e.key === "Enter")handleAddCard() }
-
-	const handleChangeDescriptionCard__press = (e: React.KeyboardEvent<HTMLTextAreaElement>) => { if(e.key === "Enter") handleAddCard() }
-
-	const handleChangeMainWord = (e: React.FormEvent<HTMLInputElement>) => { changeMainWordValue(e.currentTarget.value) }
-	
-	const handleChangeSecondWord = (e: React.FormEvent<HTMLInputElement>) => { changeSecondWordValue(e.currentTarget.value) }
-
-	const handleChangeDescriptionCard = (e: React.FormEvent<HTMLTextAreaElement>) => { changeDescriptionCard(e.currentTarget.value) }
 
 	const handleChangeMainLang = (e: React.FormEvent<HTMLSelectElement>) => { changeMainLang(e.currentTarget.value) }
 
@@ -310,9 +278,9 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		console.log(changesCard);
 		addChange((old) => [...old, ...changesCard])
 	} 
-	// -----------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------
 	// ---------------------------- Export JSON -----------------------------------
-	// -----------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const handleExportFileAsJSON = (e: React.FormEvent<HTMLInputElement>) => {
@@ -350,7 +318,50 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 		})
 		
 	}
+
+	// -----------------------------------------------------------------------------
+	// ---------------------- Handle methods for cards -----------------------------
+	// -----------------------------------------------------------------------------
 	
+	const switcherAdderCard = (type: string) => {
+		switch(type){
+			case "default":
+				return (
+					<AdderCardDefault 
+						index={indexCard}
+						mainLang={mainLang}
+						secondLang={secondLang}
+						lastIdCard={(cards[cards.length - 1] || {id: -1}).id}
+
+						// actions
+						addCard={handleAddCard}
+						addChange={change => addChange(__changes => [...__changes, change])}
+						handleSwapLangs={() => handleSwapLangs()}
+					/>
+				)
+			case "choice":
+				return (
+					<AdderCardChoice 
+						index={indexCard}
+						mainLang={mainLang}
+						secondLang={secondLang}
+						lastIdCard={(cards[cards.length - 1] || {id: -1}).id}
+
+						// actions
+						addCard={handleAddCard}
+						addChange={change => addChange(__changes => [...__changes, change])}
+						handleSwapLangs={() => handleSwapLangs()}
+					/>
+				)
+			default:
+		}
+	}
+
+	const handleAddCard = (card: ICard) => {
+		changeCards(__cards => [...__cards, card])
+		changeIndexCard(indexCard => indexCard + 1)
+		
+	}
 
 	return (
 		<div className="card_item card_item_active">
@@ -389,7 +400,6 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 				<div></div>
 			</div>
 
-
 			<div className="info">
 				<span className="card_item_count_words">{countCards} words</span>
 				<p className="card_item_count_repetitions">{props.countRepetitions} repetitions</p>
@@ -405,66 +415,39 @@ export const DeckActive: React.FC<IDeckActive> = props => {
 					cols={60} 
 					rows={10}>
 				</textarea>
+				<Select
+					options={[
+						{
+							value: "default",
+							label: "Default"
+						},
+						{
+							value: "choice",
+							label: "Choice"
+						}
+					]}
+					onChange={e => setCurrentTypeCard(e || {value: "", label: ""})}
+					value={currentTypeCard}
+					isSearchable={false}
+					components={{
+						Control: ({ children, ...rest }) => (
+							<components.Control {...rest}>
+								{children}
+							</components.Control>
+						)}
+					}
+					className="select_current_type_card"
+				/>
 			</div>
 
 
-			<div className="card_item_panel_adding__wrapper">
-				<div className="card_item_panel_adding">
-					<span className="index_card">
-						#{indexCard}
-					</span>
-					<div className="main-answer-words">
-						<div className="input-wrapper form-floating">
-							<input 
-								onKeyPress={handleChangeMainWord__press} 
-								onChange={handleChangeMainWord}
-								value={mainWordValue} 
-								type="text" 
-								className="form-control" 
-								id="floatingInput" 
-								placeholder="type word..." 
-								ref={mainWordRef}
-							/>
-							<label htmlFor="floatingInput">Main word on {mainLang}</label>
-						</div>
-
-						<span className="card_item_panel_toggler" onClick={handleSwapLangs}><FaLongArrowAltRight /></span>
-
-						<div className="input-wrapper form-floating">
-							<input 
-								onKeyPress={handleChangeSecondWord__press} 
-								onChange={handleChangeSecondWord} 
-								value={secondWordValue} 
-								type="text" 
-								className="form-control" 
-								id="floatingInput" 
-								placeholder="type word..." 
-								ref={secondWordRef}
-							/>
-							<label htmlFor="floatingInput">Second word {secondLang}</label>
-						</div>
-					</div>
-
-					<div className="control_bottom__wrapper">
-						<textarea 
-							ref={descriptionCardRef} 
-							value={descriptionCard} 
-							onKeyPress={handleChangeDescriptionCard__press} 
-							onChange={handleChangeDescriptionCard} 
-							placeholder="Type description" 
-							name="" 
-							id="" 
-							cols={60} 
-							rows={10}>
-						</textarea>
-						<button  className="card_item_panel_button_add" onClick={handleAddCard}>add</button>
-					</div>
+			{/* Adder Card -> switch type*/}
+			
 
 
-
-				</div>
-
-			</div>
+			{
+				switcherAdderCard(currentTypeCard.value)
+			}
 			
 			{
 				visibleCardWatch && <EditedCard 

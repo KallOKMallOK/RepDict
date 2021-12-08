@@ -2,12 +2,14 @@ import Header from "./Header"
 import { Deck } from "./Deck"
 import Currsection from "./Currsection"
 import Notification from "./Notification"
+import Input from "../components/Input"
 
 const Components = {
 	Header,
 	Deck,
 	Currsection,
-	Notification
+	Notification,
+	Input
 }
 
 const loader = document.querySelector('.loader__wrapper') || document.body;

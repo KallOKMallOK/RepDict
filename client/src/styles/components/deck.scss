@@ -225,7 +225,7 @@
 			padding: 5px;
 			cursor: pointer;
 		}
-
+		
 		.top-panel{
 			display: flex;
 			align-items: center;
@@ -249,7 +249,8 @@
 		.description_deck__wrapper{
 			width: 100%;
 			display: flex;
-			justify-content: center;
+			align-items: center;
+			flex-direction: column;
 			textarea{
 				width: calc(80%);
 				height: 80px;
@@ -262,6 +263,12 @@
 				padding: 10px;
 				font: 1em RobotoLight;
 			}
+
+			.select_current_type_card{
+				width: 80%;
+				margin-top: 20px;
+			}
+
 		}
 		.card_item_panel_adding__wrapper{
 			width: 100%;

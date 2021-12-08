@@ -6,6 +6,7 @@ import { RouteComponentProps } from "react-router"
 import API,{ HOST } from "../api"
 import { Notification } from "../components/Notification"
 import { RootState } from "../redux/store"
+import Input from "../components/Input"
 
 
 // include styles
@@ -158,7 +159,8 @@ class SettingsUser extends React.Component<SettingsUserProps, SettingsUserState>
 							</div>
 							<div className="changer_value change_login">
 								<label htmlFor="login">Ваш логин: </label>
-								<input title="В разработке" className="__input __input_default disabled" type="text" id="login" autoComplete="login" placeholder="Input your login" ref={this.inputLoginRef} defaultValue={this.state.login}/>
+								<Input title="В разработке" disabled id="login" autoComplete="login" placeholder="Input your login" defaultValue={this.state.login}/>
+								{/* <input title="В разработке" className="__input __input_default disabled" type="text" id="login" autoComplete="login" placeholder="Input your login" ref={this.inputLoginRef} defaultValue={this.state.login}/> */}
 							</div>
 							<div className="changer_value change_password">
 								<label htmlFor="current_password">Ваш текущий пароль: </label>
